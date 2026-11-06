@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Tus tres bonos de la clase: patrón de elección, el genio de la lámpara y los 3 innegociables.">
+<meta property="og:title" content="Bonos de la clase">
+<meta property="og:description" content="Tus tres bonos de la clase: patrón de elección, el genio de la lámpara y los 3 innegociables.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta name="robots" content="noindex,nofollow">
+<title>Bonos de la clase</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+/* Tres bonos en una columna: patrón de elección (10 pares verde/rojo), lista del genio (escritura), tres innegociables (regalo) */
+:root{--bg:#0b0a08;--card:#16120d;--line:#3a3022;--text:#f2ece0;--muted:#b3a893;--gold:#d9a93f;--gold2:#f1cf79;--ink:#0b0a08;--red:#e0735a;--green:#7fbf8a;color-scheme:dark;
+--head:'Barlow Condensed','Arial Narrow',sans-serif;--body:'DM Sans',system-ui,sans-serif}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.55;margin:0;
+padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
+.brand{display:flex;align-items:center;gap:12px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.brand img{width:44px;height:44px;border-radius:50%;object-fit:cover}
+h1{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:clamp(44px,12vw,70px);line-height:.95;margin:0;text-wrap:balance}
+h1 span{color:var(--gold)}
+h2{font-family:var(--head);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:clamp(30px,8vw,40px);line-height:1;margin:0;text-wrap:balance}
+h3{font-family:var(--head);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:22px;margin:0;color:var(--gold)}
+p{margin:0}
+.lead{color:var(--gold2);font-size:19px}
+.note{color:var(--muted);font-size:15px}
+.tag{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--gold);color:var(--gold2);text-decoration:none;padding:10px 14px;font-size:15px;font-weight:700;min-height:44px;display:inline-flex;align-items:center}
+.chip:focus-visible,.btn:focus-visible,.pick:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
+section.bono{display:flex;flex-direction:column;gap:16px;scroll-margin-top:16px}
+.btn{font:700 17px var(--body);padding:14px 20px;min-height:48px;border:0;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;text-align:center;background:var(--gold);color:var(--ink)}
+.btn.alt{background:transparent;color:var(--gold2);border:1px solid var(--gold)}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.row .btn{flex:1 1 200px}
+.safe{border:1px solid var(--line);padding:14px 16px;color:var(--muted);font-size:15px}
+.safe strong{color:var(--text)}
+.pair{background:var(--card);border:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:10px}
+.pair .t{font-family:var(--head);font-weight:700;font-size:21px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold2)}
+.pick{font:500 16px var(--body);text-align:left;color:var(--text);background:transparent;border:1px solid var(--line);padding:12px 14px;min-height:48px;cursor:pointer;display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px;align-items:start}
+.mk{width:26px;height:26px;border:2px solid var(--line);margin-top:0;background-repeat:no-repeat;background-position:center;background-size:22px 22px;display:block}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pick{grid-template-columns:28px minmax(0,1fr)!important}
+.pick:hover{border-color:var(--gold)}
+.pick[aria-pressed="true"].r{border-color:var(--red);background:#241410}
+.pick[aria-pressed="true"].r .mk{border-color:transparent;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 2.5v19' stroke='%23e0735a' stroke-width='2.2' stroke-linecap='round' fill='none'/%3E%3Cpath d='M6 3.5h13l-3.6 4.8L19 13H6z' fill='%23e0735a'/%3E%3C/svg%3E")}
+.pick[aria-pressed="true"].g{border-color:var(--green);background:#12201a}
+.pick[aria-pressed="true"].g .mk{border-color:transparent;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 2.5v19' stroke='%237fbf8a' stroke-width='2.2' stroke-linecap='round' fill='none'/%3E%3Cpath d='M6 3.5h13l-3.6 4.8L19 13H6z' fill='%237fbf8a'/%3E%3C/svg%3E")}
+.pick[aria-pressed="true"].o{border-color:var(--gold);background:#211a10}
+.pick[aria-pressed="true"].o .mk{background:var(--gold);border-color:var(--gold)}
+.pick[aria-pressed="true"].o .mk::after{content:"\270E";display:flex;align-items:center;justify-content:center;height:100%;color:var(--ink);font-size:15px}
+.own{width:100%;min-height:84px}
+.mini{font:700 15px var(--body);background:transparent;color:var(--gold2);border:1px solid var(--line);padding:10px 14px;min-height:44px;cursor:pointer}
+.mini:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
+.saved{border:1px dashed var(--line);padding:12px 14px;color:var(--muted);font-size:15px;display:flex;flex-direction:column;gap:6px}
+.res{border:1px solid var(--gold);padding:18px;display:flex;flex-direction:column;gap:12px}
+.res ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.score{display:flex;gap:10px;flex-wrap:wrap}
+.score div{flex:1 1 120px;background:var(--card);border:1px solid var(--line);padding:10px 14px}
+.score b{display:block;font-family:var(--head);font-size:40px;line-height:1}
+.score small{color:var(--muted);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.score .g b{color:var(--green)}
+.score .r b{color:var(--red)}
+label.q{display:flex;flex-direction:column;gap:6px;font-weight:700}
+label.q span{color:var(--gold2)}
+textarea,input[type=text]{font:400 17px var(--body);color:var(--text);background:var(--card);border:1px solid var(--line);padding:12px 14px;width:100%;min-height:92px;resize:vertical}
+input[type=text]{min-height:48px}
+.card{background:var(--card);border:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:10px}
+.card .big{font-family:var(--head);font-weight:700;font-size:30px;text-transform:uppercase;letter-spacing:.04em;color:var(--gold2);line-height:1.05}
+.card .try{border-top:1px dashed var(--line);padding-top:10px;color:var(--gold2)}
+footer{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px;font-size:14px;color:var(--muted)}
+footer em{font-style:normal;font-family:var(--head);font-weight:700;font-size:20px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold2)}
+</style>
+
+<style>html{background:#0b0a08}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<main>
+ <div class="brand"><img src="data:image/jpeg;base64,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" alt="Logo 1%"><span>Rodrigo Marco · entrenador de mentalidad</span></div>
+ <header style="display:flex;flex-direction:column;gap:14px">
+  <h1>Tus tres <span>bonos</span></h1>
+  <p class="lead">Para llegar a la clase con más claridad, y para seguir después. Acompañan la clase, no la reemplazan.</p>
+  <div class="chips">
+   <a class="chip" href="#bono-patron">1 · Tu patrón de elección</a>
+   <a class="chip" href="#bono-genio">2 · El genio de la lámpara</a>
+   <a class="chip" href="#bono-innegociables">3 · Mis 3 innegociables</a>
+  </div>
+ </header>
+
+ <section class="bono" id="bono-patron">
+  <span class="tag">Bono 1</span>
+  <h2>¿Cuál es tu patrón de elección en los vínculos?</h2>
+  <p>Pensá en un vínculo, de pareja o de otra área de tu vida. En cada fila elegí qué se parece más a ese vínculo. Se mira el vínculo, no a la persona, y sin culpa ni reproche.</p>
+  <label class="q"><span>Vínculo (sin nombres, solo para vos)</span><input type="text" id="vlabel" placeholder="Ej.: mi última relación" maxlength="60"></label>
+  <div id="pairs" style="display:flex;flex-direction:column;gap:12px"></div>
+  <div class="res" id="res" hidden></div>
+  <div class="saved" id="saved" hidden></div>
+  <p class="note">Tus respuestas se guardan solas en este dispositivo y no las ve nadie. Si cerrás la página, las encontrás cuando vuelvas desde el mismo navegador.</p>
+  <p class="safe"><strong>Si hay miedo, golpes, control o amenazas,</strong> esto no es un ejercicio: pedí ayuda. La Línea 144 atiende en Argentina de forma gratuita las 24 horas.</p>
+ </section>
+
+ <section class="bono" id="bono-genio">
+  <span class="tag">Bono 2</span>
+  <h2>Pedile al genio de la lámpara</h2>
+  <p>Imaginá que tenés al genio enfrente y te concede todo lo que pidas en una pareja. Escribí sin filtro y sin autoboicot, aunque te suene demasiado. Nadie lo lee, solo vos.</p>
+  <div id="genio" style="display:flex;flex-direction:column;gap:14px"></div>
+  <div class="card">
+   <h3>El último paso</h3>
+   <p>Releé tu lista y marcá con una estrella lo que vos también ofrecés hoy. Lo que no marcaste es tu 1% de esta semana: elegí una sola cosa y practicala.</p>
+  </div>
+  <div class="row"><button class="btn" id="copyg" type="button">Copiar mi lista</button></div>
+  <p class="note" id="copymsg" aria-live="polite"></p>
+  <p class="note">Se guarda sola en este dispositivo. Nadie la ve, solo vos.</p>
+ </section>
+
+ <section class="bono" id="bono-innegociables">
+  <span class="tag">Bono 3 · Mi regalo</span>
+  <h2>Los 3 innegociables de una relación sana</h2>
+  <p>Son los tres hábitos que me permitieron sostener una relación sana. Cada uno viene con una práctica de 30 segundos.</p>
+  <div class="card">
+   <span class="big">La manera</span>
+   <p>Podés decir lo que sentís y expresar lo que te molesta o incomoda. La manera en que lo decís sí importa.</p>
+   <p class="try"><b>Tu práctica:</b> antes de hablar, respirá tres veces y empezá con “yo siento…”, luego “yo pienso…” y finalmente “yo propongo…”.</p>
+  </div>
+  <div class="card">
+   <span class="big">Ser fiel a uno mismo</span>
+   <p>La clave está en cumplir tu palabra. No te engañes, y vas a ser libre de elegir hacerte caso.</p>
+   <p class="try"><b>Tu práctica:</b> hoy hacé una promesa chica con vos y cumplila.</p>
+  </div>
+  <div class="card">
+   <span class="big">No des por sentado</span>
+   <p>El error más común en las relaciones es creer que ya sabemos cómo es el otro. Así dejás de verlo como alguien que puede mejorar a cada momento, empezando por tu parte. Si no das nada por sentado, podés volver a conocerlo cada día y reconquistar el vínculo.</p>
+   <p class="try"><b>Tu práctica:</b> hoy hacele una pregunta que nunca le hayas hecho.</p>
+  </div>
+ </section>
+
+ <section class="bono" id="bono-pdf">
+  <span class="tag">Para llevarte</span>
+  <h2>Tu cuaderno en PDF</h2>
+  <p>Los tres bonos en un cuaderno para imprimir o completar a mano, con espacio para escribir.</p>
+  <div class="row"><a class="btn" href="cuaderno-bonos-RCM.pdf" download>Descargar el cuaderno (PDF)</a></div>
+ </section>
+
+ <div class="row"><button class="mini" id="wipe" type="button">Borrar mis respuestas de este dispositivo</button></div>
+ <p class="note">Estos bonos son entrenamiento de la mentalidad y acompañamiento. No son terapia ni reemplazan la atención profesional. Nos vemos en la clase del sábado 7, a las 10:30, por Meet.</p>
+ <footer><span>@soyrodrigochino</span><em>Hoy somos un 1% más conscientes</em></footer>
+</main>
+<script>
+var P=[
+ ['Cómo se habla lo que molesta','Cuando digo lo que me molesta, me hacen sentir que exagero o que es mi culpa.','Puedo decir lo que siento y lo que me incomoda, y me escuchan, aunque no coincidamos.'],
+ ['La palabra','Lo que se promete no se cumple, y yo tampoco cumplo la mía.','Se cumple lo que se dice. Yo también cumplo mi palabra, conmigo y con el otro.'],
+ ['Mi mundo','Me alejé de mis amigos, mi familia o mis cosas para sostener el vínculo.','Mis amistades, mi familia y mis proyectos siguen vivos y bienvenidos.'],
+ ['Claridad','Tengo que adivinar cómo está el otro: silencios, idas y vueltas.','Hay claridad. Se pregunta y se cuenta, no hay que adivinar.'],
+ ['Dar y recibir','Doy mucho más de lo que recibo y lo llamo amor.','Dar y recibir se siente parejo, sin llevar cuentas.'],
+ ['Mi cuerpo','Antes de verlo o hablarle siento tensión, un nudo o ganas de que pase rápido.','Mi cuerpo se relaja y tengo ganas de estar.'],
+ ['Límites','Los límites se negocian siempre en una sola dirección.','Los límites se respetan de los dos lados.'],
+ ['Desacuerdos','Las discusiones terminan en reproches del pasado, silencios, incluso enojos y distancia.','Las diferencias terminan en acuerdos chicos y concretos.'],
+ ['Crecimiento','Me siento más pequeño/a o con menos ganas de mis propios proyectos.','Me dan más ganas de crecer, y se celebran los logros de los dos.'],
+ ['No dar por sentado','Doy por sentado cómo es el otro, o me dan por sentada/o.','Nos volvemos a conocer: hay curiosidad y preguntas, incluso después de años.']
+];
+var G=[
+ ['Cómo me trata y cómo lo trato','Escribí cómo querés que te trate en lo cotidiano: palabras, gestos, tiempos.'],
+ ['Cómo se habla lo que molesta','Cómo querés que se digan las cosas incómodas, y cómo querés poder decirlas vos.'],
+ ['Valores','Qué valores querés que compartan. Por ejemplo: la palabra, la lealtad, el humor, el crecimiento.'],
+ ['Un día de semana juntos','Cómo se ve un día común: qué hacen, cómo se cuidan, qué comparten.'],
+ ['Un desacuerdo bien resuelto','Qué pasa cuando no piensan igual y lo resuelven bien.'],
+ ['La vida que quiero construir','El proyecto de vida que imaginás, sin recortarlo.'],
+ ['Lo que yo ofrezco','Qué estás dispuesto/a a ser y a dar en ese vínculo, hoy.']
+];
+var $=function(i){return document.getElementById(i)};
+var st={label:'',sel:[],own:[],rounds:[]};
+function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function load(k){try{return localStorage.getItem(k)||''}catch(e){return ''}}
+function save(){store('b1',JSON.stringify(st))}
+try{var raw=load('b1');if(raw){var o=JSON.parse(raw);if(o&&o.sel){st=o}}}catch(e){}
+function answered(v,n,d){return (v==='r'||v==='g')||(v==='o'&&!!(d.own[n]||'').trim())}
+
+function mkBtn(cls,text,pressed,fn,sr){
+ var b=document.createElement('button');b.type='button';b.className='pick '+cls;b.setAttribute('aria-pressed',pressed?'true':'false');
+ var m=document.createElement('i');m.className='mk';m.setAttribute('aria-hidden','true');b.appendChild(m);
+ var w=document.createElement('span');
+ if(sr){var h=document.createElement('span');h.className='sr';h.textContent=sr;w.appendChild(h)}
+ w.appendChild(document.createTextNode(text));b.appendChild(w);
+ b.addEventListener('click',fn);return b;
+}
+function drawPairs(){
+ var box=$('pairs');box.textContent='';
+ $('vlabel').value=st.label||'';
+ P.forEach(function(p,n){
+  var d=document.createElement('div');d.className='pair';
+  var t=document.createElement('div');t.className='t';t.textContent=p[0];d.appendChild(t);
+  d.appendChild(mkBtn('r',p[1],st.sel[n]==='r',function(){pickv(n,'r')},'Señal roja: '));
+  d.appendChild(mkBtn('g',p[2],st.sel[n]==='g',function(){pickv(n,'g')},'Señal verde: '));
+  d.appendChild(mkBtn('o','Con mis palabras',st.sel[n]==='o',function(){pickv(n,'o')}));
+  if(st.sel[n]==='o'){
+   var ta=document.createElement('textarea');ta.className='own';ta.id='own'+n;
+   ta.setAttribute('aria-label','Con tus palabras: '+p[0]);
+   ta.placeholder='Escribí cómo es en este vínculo, con tus palabras.';
+   ta.value=st.own[n]||'';
+   ta.addEventListener('input',function(){st.own[n]=ta.value;save();result()});
+   d.appendChild(ta);
+  }
+  box.appendChild(d);
+ });
+ drawSaved();result();
+}
+function pickv(n,v){st.sel[n]=v;save();drawPairs();if(v==='o'){var t=$('own'+n);if(t)t.focus()}}
+function summary(d){
+ var g=0,r=0,reds=[],own=[];
+ P.forEach(function(p,n){var v=d.sel[n];
+  if(v==='g')g++;
+  if(v==='r'){r++;reds.push(p[0]+': '+p[1])}
+  if(v==='o'&&(d.own[n]||'').trim())own.push(p[0]+': '+d.own[n].trim());
+ });
+ return {g:g,r:r,reds:reds,own:own};
+}
+function result(){
+ var done=0;P.forEach(function(p,n){if(answered(st.sel[n],n,st))done++});
+ var box=$('res');
+ if(done<P.length){box.hidden=true;return}
+ var m=summary(st);
+ box.hidden=false;box.textContent='';
+ var h=document.createElement('h3');h.textContent='Lo que muestra este vínculo'+(st.label?(' · '+st.label):'');box.appendChild(h);
+ var sc=document.createElement('div');sc.className='score';
+ sc.innerHTML='<div class="g"><b>'+m.g+'</b><small>Verdes</small></div><div class="r"><b>'+m.r+'</b><small>Rojos</small></div>';
+ box.appendChild(sc);
+ var msg=document.createElement('p');
+ msg.textContent=m.r===0?'No marcaste rojos en este vínculo. Mirá qué verdes querés cuidar más.':
+  (m.r>=5?'Hay varios rojos. No es una sentencia: es información para elegir un solo movimiento esta semana.':
+          'Hay señales para mirar con calma. Elegí una sola y empezá por ahí, sin apuro.');
+ box.appendChild(msg);
+ if(m.reds.length){var u=document.createElement('ul');m.reds.forEach(function(x){var li=document.createElement('li');li.textContent=x;u.appendChild(li)});box.appendChild(u)}
+ if(m.own.length){
+  var h2=document.createElement('h3');h2.textContent='En tus palabras';box.appendChild(h2);
+  var u2=document.createElement('ul');m.own.forEach(function(x){var li=document.createElement('li');li.textContent=x;u2.appendChild(li)});box.appendChild(u2);
+ }
+ var nx=document.createElement('p');nx.className='note';
+ nx.textContent='Para ver tu patrón de elección, repetilo con otros dos vínculos de tu vida. Lo que se repite entre ellos es tu patrón, y ahí está tu 1%.';
+ box.appendChild(nx);
+ if(st.rounds.length){
+  var rep=P.map(function(p,n){return n}).filter(function(n){
+   return st.sel[n]==='r'&&st.rounds.every(function(rd){return rd.sel[n]==='r'});
+  });
+  var pp=document.createElement('p');pp.style.color='var(--gold2)';
+  pp.textContent=rep.length?('Se repite en '+(st.rounds.length+1)+' vínculos: '+rep.map(function(n){return P[n][0]}).join(', ')+'.'):
+   'Entre estos vínculos no se repite ningún rojo. Eso también es información.';
+  box.appendChild(pp);
+ }
+ var row=document.createElement('div');row.className='row';
+ var b1=document.createElement('button');b1.type='button';b1.className='btn';b1.textContent='Guardar y probar con otro vínculo';
+ b1.addEventListener('click',function(){
+  st.rounds.push({label:st.label||'Sin nombre',sel:st.sel.slice(),own:st.own.slice()});
+  st.sel=[];st.own=[];st.label='';save();drawPairs();
+  document.getElementById('bono-patron').scrollIntoView();
+ });
+ var b2=document.createElement('button');b2.type='button';b2.className='btn alt';b2.textContent='Copiar mi resumen';
+ b2.addEventListener('click',function(){
+  var t='Vínculo: '+(st.label||'sin nombre')+'\nVerdes: '+m.g+' · Rojos: '+m.r+'\n';
+  if(m.reds.length)t+='\nRojos:\n- '+m.reds.join('\n- ')+'\n';
+  if(m.own.length)t+='\nEn mis palabras:\n- '+m.own.join('\n- ')+'\n';
+  copy(t,$('cmsg'));
+ });
+ row.appendChild(b1);row.appendChild(b2);box.appendChild(row);
+ var cm=document.createElement('p');cm.className='note';cm.id='cmsg';cm.setAttribute('aria-live','polite');box.appendChild(cm);
+}
+function drawSaved(){
+ var box=$('saved');
+ if(!st.rounds.length){box.hidden=true;return}
+ box.hidden=false;box.textContent='';
+ var h=document.createElement('strong');h.textContent='Vínculos guardados en este dispositivo';box.appendChild(h);
+ st.rounds.forEach(function(rd){var m=summary(rd);var p=document.createElement('span');p.textContent=rd.label+' · '+m.g+' verdes, '+m.r+' rojos';box.appendChild(p)});
+}
+function copy(txt,msgEl){
+ function ok(){msgEl.textContent='Copiado. Pegalo donde quieras guardarlo.'}
+ function fail(){msgEl.textContent='No pude copiarlo solo. Seleccioná el texto y copialo.'}
+ try{navigator.clipboard.writeText(txt).then(ok,fail)}catch(e){fail()}
+}
+$('vlabel').addEventListener('input',function(){st.label=$('vlabel').value;save();var h=$('res').querySelector('h3');if(h&&!$('res').hidden){h.textContent='Lo que muestra este vínculo'+(st.label?(' · '+st.label):'')}});
+function drawGenio(){
+ var box=$('genio');box.textContent='';
+ G.forEach(function(q,n){
+  var l=document.createElement('label');l.className='q';l.setAttribute('for','g'+n);
+  var s=document.createElement('span');s.textContent=q[0];l.appendChild(s);
+  var h=document.createElement('span');h.style.cssText='font-weight:400;color:var(--muted);font-size:15px';h.textContent=q[1];l.appendChild(h);
+  var t=document.createElement('textarea');t.id='g'+n;t.value=load('g'+n);
+  t.addEventListener('input',function(){store('g'+n,t.value)});
+  l.appendChild(t);box.appendChild(l);
+ });
+}
+$('copyg').addEventListener('click',function(){
+ copy(G.map(function(q,n){return q[0]+'\n'+($('g'+n).value||'')}).join('\n\n'),$('copymsg'));
+});
+var wipeArm=false,wipeT;
+$('wipe').addEventListener('click',function(){
+ var b=$('wipe');
+ if(!wipeArm){wipeArm=true;b.textContent='Tocá de nuevo para borrar todo';wipeT=setTimeout(function(){wipeArm=false;b.textContent='Borrar mis respuestas de este dispositivo'},4000);return}
+ clearTimeout(wipeArm&&wipeT);wipeArm=false;b.textContent='Borrar mis respuestas de este dispositivo';
+ try{localStorage.removeItem('b1');G.forEach(function(q,n){localStorage.removeItem('g'+n)})}catch(e){}
+ st={label:'',sel:[],own:[],rounds:[]};drawPairs();drawGenio();
+});
+drawPairs();drawGenio();
+</script>
+
+</body>
+</html>

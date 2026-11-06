@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Clase en vivo por Meet el sábado 7 de noviembre, 10:30 hs. Cómo construir y sostener vínculos sanos y potenciadores, con Rodrigo Marco.">
+<meta property="og:title" content="Relaciones sanas y potenciadoras">
+<meta property="og:description" content="Clase en vivo por Meet el sábado 7 de noviembre, 10:30 hs. Cómo construir y sostener vínculos sanos y potenciadores, con Rodrigo Marco.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<title>Relaciones sanas y potenciadoras</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+/* Una columna: fecha y para quién arriba, tus 3 primeros pasos bajo "qué vas a practicar", precio y contacto antes de las preguntas frecuentes */
+:root{--bg:#0b0a08;--card:#16120d;--line:#3a3022;--text:#f2ece0;--muted:#b3a893;--gold:#d9a93f;--gold2:#f1cf79;--ink:#0b0a08;--sel:#211a10;color-scheme:dark;
+--head:'Barlow Condensed','Arial Narrow',sans-serif;--body:'DM Sans',system-ui,sans-serif}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.55;margin:0;
+padding-block:32px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:30px}
+.brand{display:flex;align-items:center;gap:12px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.brand img{width:48px;height:48px;border-radius:50%;object-fit:cover}
+h1{font-family:var(--head);font-weight:700;text-transform:uppercase;font-size:clamp(38px,10vw,72px);line-height:.95;margin:0;text-wrap:balance;overflow-wrap:anywhere}
+h1 span{color:var(--gold)}
+h2{font-family:var(--head);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:24px;margin:0;color:var(--gold)}
+h3{font-family:var(--head);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:22px;margin:0;color:var(--gold)}
+p{margin:0}
+.lead{color:var(--gold2);font-size:19px;max-width:52ch}
+.offer{border:1px solid var(--gold);padding:20px;display:flex;flex-direction:column;gap:16px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.fact{background:var(--card);border:1px solid var(--line);padding:12px 14px;min-width:0}
+.fact small{display:block;color:var(--muted);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.fact b{font-family:var(--head);font-size:27px;line-height:1.1;color:var(--gold2);font-weight:700}
+.price{font-family:var(--head);font-weight:700;font-size:60px;line-height:1;color:var(--gold2)}
+.price small{font-family:var(--body);font-size:15px;font-weight:400;color:var(--muted);margin-left:8px}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.btn{font:700 17px var(--body);padding:15px 20px;min-height:48px;border:0;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;text-align:center;background:var(--gold);color:var(--ink)}
+.btn.alt{background:transparent;color:var(--gold2);border:1px solid var(--gold)}
+.btn.main{flex:1 1 220px}
+.btn:focus-visible,.opt:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
+.note{margin:0;color:var(--muted);font-size:15px}
+section{display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
+ul.dots{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+ul.dots li{padding-left:18px;position:relative}
+ul.dots li::before{content:"";position:absolute;left:0;top:.65em;width:8px;height:8px;background:var(--gold)}
+.story{border-left:3px solid var(--gold);padding:4px 0 4px 16px;display:flex;flex-direction:column;gap:10px;font-size:18px}
+.story b{color:var(--gold2);font-weight:500}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.steps li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;align-items:start;background:var(--card);border:1px solid var(--line);padding:14px}
+.steps b.n{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--gold);color:var(--ink);font-family:var(--head);font-size:24px}
+.steps strong{display:block;font-size:18px}
+.steps span{color:var(--muted)}
+.after{background:var(--card);border:1px dashed var(--gold);padding:16px;display:flex;flex-direction:column;gap:10px}
+.after strong{color:var(--gold2)}
+.contact{border:1px dashed var(--gold);background:var(--card);padding:16px;display:flex;flex-direction:column;gap:10px}
+.contact strong{color:var(--gold2)}
+.num{font-family:var(--head);font-size:34px;font-weight:700;letter-spacing:.04em;line-height:1.1}
+details{background:var(--card);border:1px solid var(--line)}
+summary{cursor:pointer;padding:14px 16px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px;min-height:48px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--gold);font-size:22px}
+details[open] summary::after{content:"–"}
+summary:focus-visible{outline:3px solid var(--gold2);outline-offset:-3px}
+details p{padding:0 16px 16px;color:var(--muted)}
+.safe{border:1px solid var(--line);padding:14px 16px;color:var(--muted);font-size:15px}
+.safe strong{color:var(--text)}
+footer{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px;font-size:14px;color:var(--muted)}
+footer em{font-style:normal;font-family:var(--head);font-weight:700;font-size:20px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold2)}
+/* tus 3 primeros pasos */
+.pasos{--card:#fffaf0;--line:#cdbf9f;--text:#1a1610;--muted:#5f553f;--gold:#9a6c0e;--gold2:#6e4d06;--sel:#f3e4bd;
+ background:#f2ece0;color:var(--text);border:0;border-top:6px solid var(--gold);padding:20px;display:flex;flex-direction:column;gap:16px}
+.pasos .tagx{align-self:flex-start;background:var(--ink);color:var(--gold2);color:#f1cf79;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:6px 10px}
+.screen{display:flex;flex-direction:column;gap:16px}
+.bar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg{border:1px solid var(--line);background:var(--card);padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;text-align:center}
+.seg i{font-style:normal;font-family:var(--head);font-weight:700;font-size:22px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);color:var(--muted);flex:none}
+.seg span{font-size:10.5px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);min-width:0;overflow-wrap:normal}
+.seg.on{border-color:var(--gold)}
+.seg.on i{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.seg.on span{color:var(--gold2)}
+.seg.pop i{animation:pop .5s ease-out}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+.tally{color:var(--gold2);font-weight:700;font-size:15px}
+.qt{font-family:var(--head);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:26px;line-height:1.1;margin:0;text-wrap:balance}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{font:500 17px var(--body);text-align:left;background:var(--card);color:var(--text);border:1px solid var(--line);padding:15px 16px;min-height:52px;cursor:pointer;display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px;align-items:start}
+.opt::before{content:"";width:20px;height:20px;border:2px solid var(--line);margin-top:2px}
+.opt:hover{border-color:var(--gold)}
+.opt[aria-pressed="true"]{border-color:var(--gold);background:var(--sel)}
+.opt[aria-pressed="true"]::before{background:var(--gold);border-color:var(--gold);box-shadow:inset 0 0 0 3px var(--sel)}
+.opt:disabled{cursor:default}
+.opt:disabled:not([aria-pressed="true"]){opacity:.45}
+.reward{border:1px solid var(--gold);background:var(--card);padding:16px;display:flex;flex-direction:column;gap:10px;animation:rise .35s ease-out}
+@keyframes rise{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+.reward strong{color:var(--gold2);font-size:18px}
+.reward .unlock{font-family:var(--head);font-weight:700;font-size:20px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.sum{display:flex;flex-direction:column;gap:10px}
+.sum div{background:var(--card);border:1px solid var(--line);padding:12px 14px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start}
+.sum b{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--gold);color:var(--ink);font-family:var(--head);font-size:24px}
+.sum small{display:block;color:var(--muted);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.guide{border:1px solid var(--gold);padding:18px;display:flex;flex-direction:column;gap:12px}
+.guide ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px}
+.guide li::marker{color:var(--gold);font-weight:700}
+.guide li{padding-left:4px}
+.btn.pulse{animation:glow 1.4s ease-out 2}
+@keyframes glow{0%{box-shadow:0 0 0 0 rgba(241,207,121,.75)}100%{box-shadow:0 0 0 18px rgba(241,207,121,0)}}
+@media (prefers-reduced-motion:reduce){.seg.pop i,.reward,.btn.pulse{animation:none}}
+</style>
+
+<style>html{background:#0b0a08}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<main>
+ <div class="brand"><img src="data:image/jpeg;base64,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" alt="Logo 1%"><span>Rodrigo Marco · entrenador de mentalidad</span></div>
+ <h1>Relaciones <span>sanas y potenciadoras</span></h1>
+ <p class="lead">Cómo construirlas y cómo sostenerlas. Para mujeres y hombres, y para los vínculos de toda tu vida, no solo la pareja.</p>
+
+ <section class="offer" aria-label="La clase">
+  <div class="facts">
+   <div class="fact"><small>Cuándo</small><b>Sábado 7 de noviembre</b></div>
+   <div class="fact"><small>Hora y duración</small><b>10:30 hs · 120 min</b></div>
+   <div class="fact"><small>Dónde</small><b>En vivo por Meet</b></div>
+  </div>
+ </section>
+
+ <section>
+  <h2>Esta clase es para vos si</h2>
+  <ul class="dots">
+   <li>Te descubrís repitiendo el mismo tipo de vínculo y querés entender qué se repite.</li>
+   <li>Sentís que das de más o que te cuesta sostener tu palabra, y querés dejar de hacerlo con culpa.</li>
+   <li>Dudás de que una relación sana y potenciadora sea posible.</li>
+   <li>Querés un vínculo que te valore y no sabés por dónde empezar.</li>
+  </ul>
+ </section>
+
+ <section>
+  <h2>La historia detrás de mi método</h2>
+  <div class="story">
+   <p>Durante años repetí el mismo patrón en mis relaciones: aprendía algo, cambiaba algo… y volvía a fallar a mi palabra.</p>
+   <p>Me fui a vivir solo a la playa y lo vi con claridad: <b>la relación que no estaba priorizando era la mía conmigo.</b></p>
+   <p>Hoy llevo 5 años en una relación que construí sin tener precedentes. Esto no es una teoría: es lo que practiqué, 1% cada día.</p>
+  </div>
+ </section>
+
+ <section>
+  <h2>Qué vas a practicar</h2>
+  <ol class="steps">
+   <li><b class="n">R</b><div><strong>Reconocer</strong><span>Qué siente tu cuerpo en tus vínculos.</span></div></li>
+   <li><b class="n">C</b><div><strong>Comunicación</strong><span>Lo que pensás con mayor frecuencia, lo terminás expresando de alguna manera a los demás.</span></div></li>
+   <li><b class="n">M</b><div><strong>Movimiento</strong><span>Elegir una acción concreta y una práctica de 1 a 30 segundos para tu semana.</span></div></li>
+  </ol>
+
+  <div class="pasos" id="pasos">
+   <span class="tagx">Ejercicio · 1 minuto</span>
+   <div class="bar" aria-label="Progreso">
+    <div class="seg" id="s0"><i>R</i><span>Reconocer</span></div>
+    <div class="seg" id="s1"><i>C</i><span>Comunicación</span></div>
+    <div class="seg" id="s2"><i>M</i><span>Movimiento</span></div>
+   </div>
+
+   <div class="screen" id="intro">
+    <h2>Tus 3 primeros pasos</h2>
+    <p>Probalo ahora: tres preguntas, un minuto. Con cada respuesta desbloqueás un paso, y al final te llevás tu primer 1% para esta semana.</p>
+    <p class="note">Es un ejercicio de entrenamiento de la mentalidad. No es un test psicológico ni un diagnóstico, y no hay respuestas malas.</p>
+    <button class="btn" id="start" type="button">Hacer mis 3 pasos</button>
+   </div>
+
+   <div class="screen" id="q" hidden>
+    <p class="tally" id="tally"></p>
+    <h3 class="qt" id="qtitle" style="color:var(--text)"></h3>
+    <div class="opts" id="opts"></div>
+    <div class="reward" id="reward" hidden>
+     <span class="unlock" id="unlock"></span>
+     <strong id="rtitle"></strong>
+     <p id="rtext"></p>
+     <button class="btn" id="next" type="button">Seguir</button>
+    </div>
+   </div>
+
+   <div class="screen" id="result" hidden>
+    <h2>Completaste tus 3 pasos</h2>
+    <div class="sum" id="sum"></div>
+    <div class="guide">
+     <h3>Tu guía de 5 minutos</h3>
+     <p>Las 3 preguntas para priorizarte con el vínculo que tenés en mente y observar la respuesta:</p>
+     <ol>
+      <li>¿Cómo me siento después de estar con esta persona: con más liviandad o con más peso?</li>
+      <li>¿Puedo expresar lo que siento sin miedo a que me juzguen o me rechacen?</li>
+      <li>¿Qué estoy aprendiendo de mí al elegir cómo me relaciono acá?</li>
+     </ol>
+     <p class="note">No hace falta resolver nada hoy. Alcanza con observar la respuesta y darte el permiso de sentir lo que surja.</p>
+    </div>
+    <p>Esto es un adelanto de lo que vamos a practicar en la clase del sábado 7, a las 10:30.</p>
+    <div class="row">
+     <a class="btn main" id="go" href="#pagar">Quiero sumarme</a>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <section>
+  <h2>Qué recibís al pagar</h2>
+  <div class="after">
+   <strong>Cuando me envíes el comprobante, te escribo por WhatsApp con:</strong>
+   <ul class="dots">
+    <li>El link de Meet para entrar a la clase. No es público.</li>
+    <li>El acceso a tus 3 bonos, para empezar hoy y avanzar más rápido (abajo).</li>
+    <li>La grabación de la clase, después del sábado.</li>
+   </ul>
+  </div>
+ </section>
+
+ <section>
+  <h2>Bonos incluidos</h2>
+  <p class="note">Acompañan la clase y te ayudan a llegar con más claridad. No la reemplazan.</p>
+  <ol class="steps">
+   <li><b class="n">1</b><div><strong>Tu patrón de elección</strong><span>10 señales verdes y rojas para ver qué se repite en tus vínculos.</span></div></li>
+   <li><b class="n">2</b><div><strong>El genio de la lámpara</strong><span>Escribí todo lo que querés en una pareja, sin filtro y sin autoboicot.</span></div></li>
+   <li><b class="n">3</b><div><strong>Mis 3 innegociables</strong><span>La manera, ser fiel a uno mismo y no dar por sentado. Mi regalo.</span></div></li>
+  </ol>
+ </section>
+
+ <section class="offer" id="precio" aria-label="Precio y pago">
+  <h2>Sumate a la clase</h2>
+  <div class="price">$10.000<small>pago único por Mercado Pago</small></div>
+  <div class="row">
+   <a class="btn main" id="pagar" href="https://mpago.la/2FJFESo" target="_blank" rel="noopener">Quiero sumarme</a>
+   <a class="btn alt" href="https://wa.me/5492915724766?text=%C2%A1Hola%21%20Mi%20duda%20es..." target="_blank" rel="noopener">Tengo dudas</a>
+  </div>
+  <div class="contact">
+   <strong>Después de pagar</strong>
+   <span>Enviame el comprobante por WhatsApp a este número y te paso el acceso a los bonos y el link de la clase.</span>
+   <div class="num">+54 9 2915 724766</div>
+   <div class="row">
+    <a class="btn alt" href="https://wa.me/5492915724766?text=COMPROBANTE" target="_blank" rel="noopener">Enviar comprobante</a>
+    <button class="btn alt copy" type="button">Copiar número</button>
+   </div>
+  </div>
+ </section>
+
+ <section>
+  <h2>Preguntas frecuentes</h2>
+  <details><summary>¿Esto es terapia?</summary><p>No. Es entrenamiento de la mentalidad y acompañamiento. No reemplaza la atención profesional.</p></details>
+  <details><summary>¿Sirve si ya hice terapia?</summary><p>Sí. Acá no se analiza tu pasado: se practica una acción concreta, aplicable y sin culpa para tus vínculos de hoy.</p></details>
+  <details><summary>¿Sirve para hombres?</summary><p>Sí. La clase es para mujeres y hombres.</p></details>
+  <details><summary>¿Y si no puedo estar el sábado?</summary><p>Te envío la grabación para que la veas cuando puedas.</p></details>
+  <details><summary>¿Cómo pago?</summary><p>Con el botón de arriba, por Mercado Pago. Me enviás el comprobante y te comparto el acceso a los bonos y el link de la clase.</p></details>
+ </section>
+
+ <p class="safe"><strong>Si estás atravesando una situación de violencia,</strong> la Línea 144 atiende en Argentina de forma gratuita las 24 horas.</p>
+
+ <footer><span>@soyrodrigochino</span><em>Hoy somos un 1% más conscientes</em></footer>
+</main>
+<script>
+var Q=[
+ {k:'R',name:'Reconocer',t:'Pensá en un vínculo importante de tu vida. ¿Qué siente tu cuerpo cuando pensás en él?',
+  o:[['Calma y ganas de estar','Sabés cómo se siente un vínculo que suma. Esa sensación es tu brújula.'],
+     ['Tensión o un nudo','Tu cuerpo te está avisando algo. Notarlo, sin juzgarlo, ya es el primer paso.'],
+     ['Cansancio o vacío','Notar el cansancio sin culparte es reconocer. Desde ahí se empieza.']]},
+ {k:'C',name:'Comunicación',t:'¿Qué se repite en tus vínculos?',
+  o:[['Doy de más y después me cuesta pedir lo que necesito','Ya viste el patrón. Verlo es lo que lo vuelve distinto.'],
+     ['Digo que sí, pero por dentro pienso que no','Ya lo pusiste en palabras, y eso cambia lo que viene después.'],
+     ['Me callo lo que me molesta para evitar el conflicto','Nombrarlo sin reproche es comunicar. Es un paso real.']]},
+ {k:'M',name:'Movimiento',t:'Elegí un 1% para esta semana. Dura entre 1 y 30 segundos.',
+  o:[['Respirar tres veces antes de contestar un mensaje que me tensiona','Un 1% aplicable a propósito: se puede cumplir. Lo que se cumple, se sostiene.'],
+     ['Decir “lo pienso y te aviso” en vez de un sí automático','Un 1% aplicable a propósito: se puede cumplir. Lo que se cumple, se sostiene.'],
+     ['Escribirle dos líneas sinceras a alguien que quiero','Un 1% aplicable a propósito: se puede cumplir. Lo que se cumple, se sostiene.']]}
+];
+var i=0,picks=[];
+var $=function(id){return document.getElementById(id)};
+function show(id){['intro','q','result'].forEach(function(x){$(x).hidden=(x!==id)})}
+function render(){
+ var q=Q[i];
+ $('tally').textContent='Paso '+(i+1)+' de 3 · '+q.name;
+ $('qtitle').textContent=q.t;
+ $('reward').hidden=true;
+ var box=$('opts');box.textContent='';
+ q.o.forEach(function(o,n){
+  var b=document.createElement('button');b.type='button';b.className='opt';b.setAttribute('aria-pressed','false');
+  var s=document.createElement('span');s.textContent=o[0];b.appendChild(s);
+  b.addEventListener('click',function(){pick(n)});
+  box.appendChild(b);
+ });
+}
+function pick(n){
+ var q=Q[i],o=q.o[n];
+ picks[i]=o[0];
+ var bs=$('opts').children;
+ for(var k=0;k<bs.length;k++){bs[k].setAttribute('aria-pressed',k===n?'true':'false');bs[k].disabled=true}
+ $('s'+i).classList.add('on','pop');
+ $('unlock').textContent='Desbloqueaste: '+q.name;
+ $('rtitle').textContent=(i+1)+' de 3 ✓';
+ $('rtext').textContent=o[1];
+ $('next').textContent=i<2?'Seguir':'Ver mi resultado';
+ $('reward').hidden=false;
+ $('next').focus();
+}
+function finish(){
+ var box=$('sum');box.textContent='';
+ var labels=['Lo que reconocí','El patrón que vi','Mi 1% de esta semana'];
+ Q.forEach(function(q,n){
+  var d=document.createElement('div'),b=document.createElement('b'),w=document.createElement('p'),sm=document.createElement('small');
+  b.textContent=q.k;sm.textContent=labels[n];w.appendChild(sm);w.appendChild(document.createTextNode(picks[n]));
+  d.appendChild(b);d.appendChild(w);box.appendChild(d);
+ });
+  show('result');
+ $('pasos').scrollIntoView();
+}
+$('go').addEventListener('click',function(e){
+ e.preventDefault();
+ var t=$('pagar'),calm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ t.scrollIntoView({behavior:calm?'auto':'smooth',block:'center'});
+ setTimeout(function(){t.focus({preventScroll:true});t.classList.remove('pulse');void t.offsetWidth;t.classList.add('pulse')},calm?0:900);
+});
+$('start').addEventListener('click',function(){i=0;show('q');render()});
+$('next').addEventListener('click',function(){if(i<2){i++;render()}else{finish()}});
+Array.prototype.forEach.call(document.querySelectorAll('.copy'),function(b){
+ b.addEventListener('click',function(){
+  function ok(){b.textContent='Número copiado';setTimeout(function(){b.textContent='Copiar número'},2000)}
+  function fail(){b.textContent='Seleccionalo y copialo';setTimeout(function(){b.textContent='Copiar número'},2500)}
+  try{navigator.clipboard.writeText('+5492915724766').then(ok,fail)}catch(e){fail()}
+ });
+});
+</script>
+
+</body>
+</html>
