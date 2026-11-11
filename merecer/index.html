@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Merecer · 21 minutos</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#13100c;--card:#1d1813;--card2:#251f18;--line:#3a3127;--text:#f3ede2;--muted:#bdb19c;--gold:#c9a24a;--gold2:#e4c67f;--ok:#7fd6a4;--serif:'Cormorant Garamond',Georgia,serif;--sans:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.55 var(--sans)}
+.top{position:sticky;top:0;z-index:5;background:rgba(19,16,12,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .in{max-width:640px;margin:0 auto;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;gap:12px}
+.top img{width:30px;height:30px;border-radius:50%;flex:none}
+.top .meta{flex:1;min-width:0;display:flex;flex-direction:column}
+#fase{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold2)}
+#min{font-size:13px;color:var(--muted)}
+.icon{background:none;border:1px solid var(--line);color:var(--text);border-radius:999px;min-height:40px;padding:0 14px;font:500 14px var(--sans);cursor:pointer}
+.bar{height:4px;background:var(--line)}#fill{display:block;height:100%;width:0;background:var(--gold);transition:width .4s}
+main{max-width:640px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right,0px)) 48px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 20px;display:flex;flex-direction:column;gap:14px}
+.hero{background:linear-gradient(180deg,var(--card2),var(--card))}
+h1,h2{font-family:var(--serif);font-weight:600;margin:0;text-wrap:balance;line-height:1.15}
+h1{font-size:clamp(34px,8vw,46px)}h2{font-size:clamp(25px,6vw,31px)}
+.gold{color:var(--gold2)}
+p{margin:0}.lead{font-size:18px;color:var(--text)}.sub{color:var(--muted);font-size:15px}
+.eyebrow,.pk{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.mini{margin:0;padding-left:20px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.nota{font-size:14px;color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:10px}.row.center{justify-content:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:999px;border:0;background:var(--gold);color:#1a140c;font:700 16px var(--sans);text-decoration:none;cursor:pointer}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.sm{min-height:38px;font-size:13px;padding:0 14px}
+.btn:focus-visible,.opt:focus-visible,.icon:focus-visible,summary:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;width:100%;min-height:56px;padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--text);font:400 16px/1.4 var(--sans);cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--gold)}
+.opt.sel{border-color:var(--gold);background:#2f2618}
+.opt.check::before{content:"";flex:none;width:20px;height:20px;border:1.5px solid var(--muted);border-radius:6px;order:-1}
+.opt.check.sel::before{background:var(--gold);border-color:var(--gold);box-shadow:inset 0 0 0 4px #2f2618}
+.opt span{flex:1;min-width:0}
+.tag{font:500 11px var(--sans);font-style:normal;color:#1a140c;background:var(--gold2);border-radius:6px;padding:2px 6px;flex:none}
+.punto{border-left:3px solid var(--gold);background:#231c12;border-radius:0 12px 12px 0;padding:16px;display:flex;flex-direction:column;gap:10px;animation:in .35s ease}
+.punto p{font-size:17px}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+input[type=text]{font:400 18px var(--sans);min-height:52px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--text);width:100%}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.pausa{align-items:center;text-align:center}
+.breath{width:96px;height:96px;border-radius:50%;background:radial-gradient(circle,var(--gold2),var(--gold) 60%,transparent 70%);animation:breath 8s ease-in-out infinite;opacity:.9}
+@keyframes breath{0%,100%{transform:scale(.6);opacity:.5}50%{transform:scale(1);opacity:1}}
+.niveles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.niveles span{font-size:12px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);color:var(--muted)}
+.niveles span.on{background:var(--gold);border-color:var(--gold);color:#1a140c;font-weight:700}
+.mapa{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.mapa li{display:flex;flex-direction:column;gap:6px}
+.mn{font-size:15px}.mn i{color:var(--gold2);font-style:normal;font-size:13px}
+.mb{height:10px;border-radius:99px;background:var(--line);overflow:hidden}.mb b{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px}
+.uno{border-color:var(--gold)}.big{font-family:var(--serif);font-size:24px;line-height:1.25;color:var(--gold2)}
+.precio{font-weight:700;color:var(--gold2)}
+details summary{cursor:pointer;font-weight:500}
+.det{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:14px}
+.det li{display:flex;flex-direction:column;gap:4px}.det span{color:var(--gold2)}.det em{color:var(--muted);font-style:normal;font-size:15px}
+.intent{border:1px dashed var(--gold);border-radius:14px;padding:16px 18px;background:#1a1712;display:flex;flex-direction:column;gap:8px}.intent p{font-size:15px;color:var(--text)}
+.planes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.plan{border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--card2)}
+.plan.destacado{border-color:var(--ok)}
+.pn{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.pp{font-family:var(--serif);font-size:30px;font-weight:600}.pp small{font-family:var(--sans);font-size:14px;color:var(--muted);font-weight:400}
+.ahorro{color:var(--ok);font-weight:700;font-size:15px}
+.pp s{font-family:var(--sans);font-size:18px;font-weight:400;color:var(--muted);text-decoration-thickness:1.5px}
+#prueba{max-width:640px;margin:0 auto 32px;padding:12px max(16px,env(safe-area-inset-left,0px));font:400 13px/1.5 ui-monospace,monospace;color:var(--muted);border-top:1px dashed var(--line);word-break:break-word}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+ <div class="in">
+  <img src="data:image/png;base64,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" alt="">
+  <div class="meta"><span id="fase"></span><span id="min"></span></div>
+  <button class="icon" id="atras" type="button">Atrás</button>
+  <button class="icon" id="modo" type="button" hidden aria-pressed="false" title="Muestra la intención de cada pregunta, a qué nivel suma cada opción, y permite completar al azar">Creador</button>
+ </div>
+ <div class="bar"><span id="fill"></span></div>
+</header>
+<main id="app" aria-live="polite"></main>
+<div id="prueba" hidden></div>
+<script>
+/* ===== Contenido: Merecer · 21 minutos (prototipo) =====
+   Niveles: 1 = la que tiene la información · 2 = la que sabe y aplica · 3 = la que integra
+   Cada opción: [nivel, texto de la opción, punto de conciencia]                         */
+
+var NIVELES={
+ 1:{nombre:"La que tiene la información",
+    desc:"Sabés mucho de lo que querés cambiar: leíste, escuchaste, probaste afirmaciones y pensamiento positivo. Pero en el día a día todavía respondés en automático, con los demás y con vos. Tu conversación interna suele ser dura, y muchas veces priorizás agradar antes que agradarte. No es poco: ya miraste hacia adentro. Lo que falta es pasar de saber a aplicar, de a 1%.",
+    paso:{nombre:"Domingos del 1%",precio:"",texto:"Un encuentro semanal para pasar de la información a la acción, acompañada y sin culpa ni reproche."}},
+ 2:{nombre:"La que sabe y aplica",
+    desc:"Ya empezaste a aplicar: cambiaste cómo te hablás y cómo les hablás a otros, prestás atención a cómo te sentís y empezaste a priorizarte. Lo que todavía falta es integrarlo en todas las áreas de tu vida. A veces te identificás con el proceso (“estoy trabajando esto”), y eso te mantiene en camino, pero sin llegar.",
+    paso:{nombre:"Reto 21 días",precio:"$150.000",texto:"21 días para dejar de estar “en proceso” e integrar lo que ya sabés en cada área de tu vida."}},
+ 3:{nombre:"La que integra · la mujer del 1%",
+    desc:"Ya no decís “estoy trabajando esto”. Te sentís completa, merecedora y reconocida, sin necesitar que nadie te lo diga ni decírselo a nadie. Tus innegociables son claros y no te quedás donde no pertenecés. Sabés que tu realidad se construye con cada palabra que elegís.",
+    paso:{nombre:"[Siguiente paso a definir]",precio:"",texto:"Un espacio para mujeres que ya integran y quieren sostenerlo y expandirlo."}}
+};
+
+var DOMINGOS={nombre:"Domingos del 1%",texto:"Ya tenés el ebook y tu resultado. Los Domingos son donde lo aplicás: un encuentro en vivo cada semana, una herramienta por vez, acompañada y sin culpa ni reproche.",
+ planes:[{id:"mensual",nombre:"Mensual",antes:"$65.000",precio:"$49.000",detalle:"el primer mes",bono:"Bono especial por tener el ebook: ahorrás $16.000 el primer mes. Después, $65.000 por mes.",destacado:true},
+         {id:"trimestral",nombre:"Trimestral",precio:"$120.000",detalle:"por 3 meses",ahorro:"Ahorrás $75.000 (38%) frente a pagar 3 meses sueltos"}]};
+var AUTO={nunca:"Nunca hizo nada de autoconocimiento",escucho:"Escuchó o leyó, pero no practica",probe:"Probó alguna vez (taller, terapia, retiro)",regular:"Practica con regularidad",estilo:"Es su estilo de vida"};
+
+var PATRONES={
+ da:{nombre:"La que da y no recibe",desc:"Sos generosa con todos, pero cuando algo llega para vos aparece la necesidad de devolverlo enseguida. En algún momento aprendiste que el amor se gana dando.",
+     accion:"Esta semana, cuando alguien te dé algo (un elogio, una ayuda, un regalo), respondé solo “gracias” y respirá una vez antes de decir cualquier otra cosa."},
+ gana:{nombre:"La que se lo tiene que ganar",desc:"Sentís que lo bueno llega recién después de esforzarte lo suficiente. Y lo suficiente nunca termina de llegar.",
+     accion:"Una vez por día, hacé algo agradable para vos sin habértelo ganado: 30 segundos de sol, un café tranquilo, una canción entera."},
+ achica:{nombre:"La que se achica",desc:"Para no incomodar ni quedar expuesta, le bajás el volumen a lo que sos, a lo que sabés y a lo que querés.",
+     accion:"Una vez por día, decí una opinión tuya en una sola frase, sin poner “no sé” ni “capaz” adelante."},
+ permiso:{nombre:"La que espera permiso",desc:"Antes de disfrutar o de decidir, esperás que alguien te confirme que está bien.",
+     accion:"Tomá una decisión chica por día sin consultarla con nadie: qué comer, qué ponerte, a dónde ir."},
+ recibe:{nombre:"La que recibe",desc:"Recibir ya no te incomoda: sabés que lo bueno también es para vos.",
+     accion:"Elegí el área de tu mapa donde más te cuesta y llevá ahí la misma forma de recibir que ya tenés."}
+};
+
+var GRUPOS={recibir:"Recibir",cuidarte:"Cuidarte",voz:"Tu voz",decisiones:"Tus decisiones"};
+var AREAS={pareja:"Tu pareja",ex:"Tu historia anterior",amor:"El amor que querés",hijos:"Tus hijos",familia:"Tu familia de origen",amistades:"Tus amistades",trabajo:"Tu trabajo",clientes:"Tu emprendimiento",dinero:"El dinero",yo:"Vos misma"};
+
+/* ---------- Fase 1: perfil (ramificado) ---------- */
+var PERFIL=[
+ {id:"p_nombre",tipo:"texto",t:"¿Cómo te gusta que te llamen?",sub:"Lo vas a ver solo vos, en tu resultado."},
+ {id:"p_edad",t:"¿Qué edad tenés?",o:[["25-34","Entre 25 y 34"],["35-44","Entre 35 y 44"],["45-54","Entre 45 y 54"],["55+","55 o más"]]},
+ {id:"p_pareja",t:"¿Cómo está hoy tu vida amorosa?",o:[["enpareja","Estoy en pareja o casada"],["separada","Me separé o me divorcié"],["buscando","Estoy sola y me gustaría estar en pareja"],["sola","Estoy sola y elijo estarlo"],["confuso","Estoy en un vínculo que no sé bien qué es"]]},
+ {id:"p_hijos",t:"¿Tenés hijos?",o:[["chicos","Sí, chicos (hasta 12 años)"],["adolescentes","Sí, adolescentes"],["adultos","Sí, ya adultos"],["no","No"],["deseo","No, y es un tema para mí"]]},
+ {id:"p_origen",t:"En tu familia de origen, ¿qué lugar ocupás?",o:[["unica","Soy hija única"],["mayor","Soy la mayor"],["medio","Soy la del medio"],["menor","Soy la menor"]]},
+ {id:"p_fam",t:"¿Con quién de tu familia de origen sentís hoy más peso?",
+  sub:function(c){return c.origen==="unica"?"Como sos hija única, no aparecen opciones de hermanos.":"Elegí la que más pese hoy."},
+  o:function(c){var o=[["madre","Con mi mamá"],["padre","Con mi papá"],["ambos","Con mis dos padres"]];if(c.origen!=="unica"){o.push(["hermana","Con una hermana"]);o.push(["hermano","Con un hermano"]);o.push(["hermanos","Con mis hermanos, en general"])}o.push(["crianza","Con otra persona que me crió (abuela, tía, otra)"]);o.push(["nadie","Con nadie, estoy en paz"]);return o}},
+ {id:"p_presencia",when:function(c){return /madre|padre|ambos|hermana|hermano|crianza/.test(c.fam||"")},
+  t:function(c){return c.fam==="ambos"?"¿Tus padres están presentes en tu vida hoy?":"¿"+cap(c.famTxt)+" está presente en tu vida hoy?"},
+  o:function(c){var pl=c.fam==="ambos";var o=[["cerca","Sí, y tenemos contacto frecuente"],["lejos","Sí, pero con poco contacto"]];if(pl)o.push(["uno","Uno de los dos ya no está"]);o.push(["partio",pl?"Ya no están":"Ya no está"]);return o}},
+ {id:"p_trabajo",t:"¿A qué te dedicás hoy?",o:[["empleada","Trabajo en relación de dependencia"],["emprende","Emprendo o trabajo por mi cuenta"],["casa","Me dedico a mi casa y mi familia"],["ambas","Trabajo en relación de dependencia y también emprendo"],["busca","Estoy buscando trabajo o en transición"]]},
+ {id:"p_foco",tipo:"multi",max:2,t:"¿Qué vínculo querés mejorar primero?",sub:"Elegí uno o dos. Las preguntas se van a abrir según lo que elijas.",
+  o:function(c){var o=[];
+   if(c.pareja==="enpareja"||c.pareja==="confuso")o.push(["pareja","Con mi pareja"]);
+   if(c.pareja==="separada")o.push(["ex","Con mi historia anterior y cómo la cerré"]);
+   if(c.pareja==="buscando")o.push(["amor","Con el amor que quiero recibir"]);
+   if(/chicos|adolescentes|adultos/.test(c.hijos||""))o.push(["hijos","Con "+c.hijosMi]);
+   if(c.fam&&c.fam!=="nadie")o.push(["familia","Con "+c.famMi]);
+   o.push(["amistades","Con mis amistades"]);
+   if(c.trabajo==="empleada"||c.trabajo==="ambas")o.push(["trabajo","Con mi trabajo"]);
+   if(c.trabajo==="emprende"||c.trabajo==="ambas")o.push(["clientes","Con mi emprendimiento y lo que cobro"]);
+   o.push(["dinero","Con el dinero"]);
+   o.push(["yo","Conmigo misma: mi descanso, mi cuerpo, mi tiempo"]);
+   return o}}
+];
+
+/* ---------- Fase 2: punto de partida (nivel + patrón) ---------- */
+var DIAG=[
+ {id:"d1",t:"Cuando escuchás hablar de merecimiento, ¿qué te pasa?",o:[
+  [1,"Sé mucho del tema: leí, escuché, hice afirmaciones. Pero en mi día a día sigo igual.","Tener la información es el primer escalón, y ya lo subiste. El salto no es saber más: es aplicar una cosa chica, hoy."],
+  [2,"Empecé a aplicarlo: me priorizo más que antes, aunque me cuesta sostenerlo en todo.","Ya lo estás viviendo, no solo pensando. Lo que sigue es llevarlo a las áreas donde todavía no entró."],
+  [3,"No lo pienso como un tema: me siento merecedora y desde ahí elijo.","Cuando el merecimiento deja de ser un tema, se vuelve una forma de estar. Eso es integrar."]]},
+ {id:"d2",t:"Alguien te pide un favor que no querés hacer.",o:[
+  [1,"Digo que sí, y después me enojo conmigo.","Cada sí que no sentís es un no a vos misma. El enojo de después es tu cuerpo avisándote."],
+  [2,"A veces digo que no, y me quedo un rato justificándome.","Ya ponés límites. La justificación posterior es la culpa reacomodándose; con práctica se acorta."],
+  [3,"Digo que no con calma, sin explicar de más.","Un no claro es una forma de respeto, para vos y para el otro."]]},
+ {id:"d3",t:"Después de equivocarte, tu voz interna suena más a…",o:[
+  [1,"“Siempre lo mismo, nunca aprendo.”","Le hablás a vos como nunca le hablarías a una amiga. Esa voz se aprendió, y por eso se puede cambiar."],
+  [2,"“Bueno, estoy en proceso, estoy trabajando esto.”","Es un gran cambio. Fijate si “estoy en proceso” no se volvió tu nueva identidad: a veces es una forma elegante de no terminar de elegirte."],
+  [3,"“Me equivoqué. ¿Qué elijo ahora?”","Sin drama y sin etiqueta. Esa sola pregunta ya es una acción de 1%."]]},
+ {id:"d4",t:"Cuando lográs algo importante…",o:[
+  [1,"Lo minimizo, o siento que fue suerte.","Achicar tus logros te protege de quedar expuesta, pero también le confirma a tu mente que no los merecés."],
+  [2,"Lo celebro y lo cuento: me costó mucho llegar.","Celebrar está bien. Fijate si necesitás contarlo para que sea real, o si ya es real para vos."],
+  [3,"Lo disfruto. No necesito contarlo para que sea real.","Tu logro no necesita testigos. Esa es la seguridad de quien ya se reconoce."]]},
+ {id:"d5",patron:true,t:"Cuando algo bueno llega a tu vida, lo primero que aparece es…",o:[
+  ["da","Pensar cómo devolverlo o compensarlo","Si recibir te deja en deuda, aprendiste que el amor se paga. Hoy alcanza con notarlo."],
+  ["gana","Sentir que todavía no hice lo suficiente para merecerlo","El “todavía no” es una meta que se corre siempre un poco más lejos. Lo bueno no se gana: se recibe."],
+  ["achica","Bajarle el precio para no incomodar a nadie","Achicarte para que nadie se incomode tiene un costo: te incomodás vos."],
+  ["permiso","Esperar a que alguien me confirme que está bien disfrutarlo","Esperar permiso es dejar la llave de tu bienestar en manos de otro. Esa llave es tuya."],
+  ["recibe","Recibirlo con gratitud","Recibir con gratitud, sin cuentas pendientes, es merecimiento integrado."]]}
+];
+
+/* ---------- Fase 3: las 21 preguntas (generales) ---------- */
+var GENERAL=[
+ /* ===== R · Reconocer: qué siente, qué nota, qué aparece en su cuerpo y en su mente =====
+    El orden es la prioridad: si eligió 1 o 2 vínculos, se quitan las últimas. */
+ {id:"R1",fase:"R",patron:true,g:"recibir",t:"Cuando algo bueno llega a tu vida, ¿qué es lo primero que sentís?",o:[
+  ["da","Ganas de devolverlo o compensarlo enseguida.","Si recibir te deja en deuda, en algún momento aprendiste que el amor se paga. Hoy alcanza con notarlo, sin culpa ni reproche."],
+  ["gana","Que todavía no hice lo suficiente para merecerlo.","El “todavía no” es una meta que se corre siempre un poco más lejos. Lo bueno no se gana: se recibe."],
+  ["achica","Ganas de bajarle el precio para no incomodar a nadie.","Achicarte para que nadie se incomode tiene un costo: te incomodás vos."],
+  ["permiso","Necesidad de que alguien me confirme que está bien disfrutarlo.","Esperar permiso es dejar la llave de tu bienestar en manos de otro. Esa llave es tuya."],
+  ["recibe","Gratitud. Lo recibo sin cuentas pendientes.","Recibir con gratitud, sin deber nada a cambio, es merecimiento integrado. Registrá cómo se siente en el cuerpo: es tu referencia."]]},
+ {id:"R7",fase:"R",auto:true,t:"¿Practicaste alguna terapia holística, actividad de desarrollo personal o algo que te lleve a conocerte más?",o:[
+  ["nunca","No, nunca hice nada de esto.","Empezar a mirarte por primera vez es valiente. Este recorrido ya es un primer paso de reconocimiento."],
+  ["escucho","Escuché o leí sobre el tema, pero no lo practico.","Tenés la información. Lo que falta es llevarla al cuerpo y al día a día, de a 1%."],
+  ["probe","Probé alguna vez: un taller, una terapia, un retiro.","Ya sabés lo que se siente mirar hacia adentro. La diferencia la hace la constancia, no la intensidad."],
+  ["regular","Sí, lo practico con regularidad.","Tu práctica ya es parte de tu semana. Fijate si también llega a las áreas donde todavía te cuesta."],
+  ["estilo","Es parte de mi estilo de vida.","El autoconocimiento ya es tu forma de vivir. Lo que sigue es integrarlo sin identificarte con el proceso."]]},
+ {id:"R2",fase:"R",g:"voz",t:"Cuando querés decir algo y te frenás, ¿lo notás en el cuerpo?",o:[
+  [1,"No me doy cuenta en el momento. Lo noto después, cuando ya pasó.","El cuerpo avisa antes que la mente: un nudo, calor, la garganta cerrada. Empezar a notarlo, aunque sea después, ya es reconocimiento."],
+  [2,"Sí, siento algo (en la garganta, el pecho, la panza), aunque no siempre sé qué es.","Ya escuchás la señal. El próximo paso es ponerle nombre: ¿es miedo, vergüenza, enojo? Nombrarlo le baja el volumen."],
+  [3,"Lo reconozco enseguida y sé qué me está diciendo.","Leer tu cuerpo en el momento te da la posibilidad de elegir en lugar de reaccionar."]]},
+ {id:"R3",fase:"R",g:"recibir",t:"Te dicen: “Qué bien lo hiciste”. ¿Qué sentís por dentro?",o:[
+  [1,"Incomodidad. Quiero que cambien de tema.","Esa incomodidad es miedo a quedar expuesta, incluso para bien. Cada vez que esquivás un elogio, le confirmás a tu mente que no lo merecés."],
+  [2,"Me gusta, pero una parte mía duda de que sea verdad.","La parte que duda es una voz vieja. Más tarde, repetite el elogio en voz baja: es tu forma de recibirlo dos veces."],
+  [3,"Lo siento verdadero y lo disfruto.","Recibís el reconocimiento sin agrandarlo ni achicarlo. Eso es presencia genuina."]]},
+ {id:"R4",fase:"R",g:"voz",t:"Cuando algo te molesta, ¿cuánto tardás en darte cuenta?",o:[
+  [1,"Mucho. Me doy cuenta días después, o cuando exploto.","Si te das cuenta tarde, es porque aprendiste a no sentir para no molestar. Lo que no se reconoce se acumula hasta que desborda."],
+  [2,"Lo noto en el momento, pero no siempre sé bien qué siento.","Ya lo registrás a tiempo. Preguntate “¿qué siento?” y “¿qué necesito?”: dos preguntas que ordenan."],
+  [3,"Lo reconozco enseguida y puedo nombrar qué siento.","Nombrar lo que sentís en el momento es la base de una comunicación sin reproche."]]},
+ {id:"R5",fase:"R",g:"recibir",t:"Te das un gusto: una comida, una salida, algo para vos. ¿Qué sentís después?",o:[
+  [1,"Culpa. Pienso en quién lo necesitaba más, o en lo que gasté.","La culpa después del disfrute dice “primero los demás”. Notarla ya es empezar a soltarla."],
+  [2,"Bienestar, aunque siento que lo tengo que justificar.","Disfrutás, pero todavía rendís cuentas. ¿A quién le estás explicando? Muchas veces es una voz vieja, no una persona real."],
+  [3,"Bienestar. No necesito justificar lo que elijo para mí.","El disfrute sin culpa es señal de que te sentís digna de lo bueno."]]},
+ {id:"R6",fase:"R",g:"cuidarte",t:function(c){return c.hijos==="chicos"?"Tus hijos están con alguien más y tenés dos horas libres. ¿Qué sentís?":"Es domingo a la tarde y no tenés nada pendiente. ¿Qué sentís?"},o:[
+  [1,"Culpa de estar quieta. Enseguida busco algo para hacer.","Si descansar te genera culpa, en algún momento aprendiste que tu valor depende de lo que hacés. Tu valor no se gana: ya está."],
+  [2,"Alivio, pero la cabeza sigue repasando lo que falta.","Le diste lugar al descanso, y eso es un cambio real. Ahora el desafío es que la cabeza también descanse, no solo el cuerpo."],
+  [3,"Calma. Descansar es parte de mi vida.","El descanso no es un premio para vos: es parte de tu vida. Esa es una de las marcas de una mujer que integra."]]},
+
+ /* ===== C · Comunicar: cómo se habla a sí misma y cómo les habla a los demás ===== */
+ {id:"C1",fase:"C",g:"voz",t:"Cuando algo te sale mal, ¿cómo te hablás?",o:[
+  [1,"Con dureza: “otra vez lo mismo, no aprendo más”.","Esa voz no nació con vos: la aprendiste. Probá hablarte como le hablarías a tu mejor amiga, aunque sea una sola frase."],
+  [2,"Me corrijo: “estoy en proceso, estoy trabajando esto”.","Fijate si “estoy en proceso” no se volvió una forma de quedarte en el camino. La integración empieza cuando dejás de presentarte como alguien que se está arreglando."],
+  [3,"“Me equivoqué. ¿Qué elijo ahora?”","Te hablás con respeto y vas directo a la elección. Así se ve una conversación interna potenciadora."]]},
+ {id:"C2",fase:"C",g:"voz",t:function(c){return /chicos|adolescentes/.test(c.hijos||"")?"Llegás cansada y te piden algo más (en tu casa o en el trabajo) que no querés hacer. ¿Qué respondés?":"Te piden algo que no querés hacer. ¿Qué respondés?"},o:[
+  [1,"Digo que sí, y después me arrepiento y me enojo conmigo.","Cada sí que no sentís te aleja un poco de vos. Ese arrepentimiento es información: te muestra dónde está tu límite."],
+  [2,"A veces digo que no, y me quedo un rato dándole vueltas.","Ya ponés límites. Las vueltas son la culpa acomodándose; con práctica se acortan."],
+  [3,"Digo que no con calma, sin explicar de más.","Un no tranquilo cuida el vínculo más que un sí con enojo."]]},
+ {id:"C3",fase:"C",g:"voz",t:"Alguien dice algo con lo que no estás de acuerdo. ¿Qué decís?",o:[
+  [1,"Nada. Me callo para no generar conflicto.","Callarte te protege de la exposición, pero te deja afuera de tu propia vida. Tu opinión también merece lugar."],
+  [2,"Lo digo, pero lo suavizo tanto que casi no se entiende.","Ya hablás. El próximo 1% es decir una sola frase clara, sin almohadones."],
+  [3,"Lo digo con respeto, aunque el otro no esté de acuerdo.","No necesitás que te den la razón para sostener lo que pensás. Eso es presencia."]]},
+ {id:"C4",fase:"C",g:"voz",t:"Te piden que hables frente a otras personas, o que te muestres en una foto o un video. ¿Qué respondés?",o:[
+  [1,"Busco cualquier excusa para no hacerlo.","Evitar la exposición alivia en el momento, pero confirma el miedo. Una micro exposición de 10 segundos ya cambia el mensaje."],
+  [2,"Digo que sí, pero después me reviso una y otra vez.","Te mostrás, y eso es enorme. Revisarte después es el último resto del miedo: soltalo de a 1%."],
+  [3,"Digo que sí y me muestro desde lo que soy, sin buscar aprobación.","Mostrarte sin buscar aprobación es la libertad que muchas mujeres están buscando."]]},
+ {id:"C5",fase:"C",g:"voz",t:"Algo que hizo una persona cercana te dolió. ¿Cómo se lo decís?",o:[
+  [1,"No se lo digo. Hago como si nada y me lo guardo.","Lo que se guarda no desaparece: se acumula. Reconocer que te dolió, aunque sea solo para vos, ya es un movimiento."],
+  [2,"Se lo digo, pero en forma de reproche.","Te animás a expresarlo, y eso es valiente. El paso siguiente es hablar de lo que sentiste en vez de lo que el otro hizo mal."],
+  [3,"Le digo lo que sentí, sin culpar ni culparme.","Hablar desde lo que sentís, sin reproche, es comunicación potenciadora."]]},
+ {id:"C6",fase:"C",g:"voz",t:"Necesitás ayuda con algo. ¿Cómo la pedís?",o:[
+  [1,"No la pido. Prefiero arreglármelas sola.","Arreglártelas sola parece fortaleza, pero muchas veces es miedo a molestar. Pedir no te hace menos: te da la posibilidad de ser sostenida."],
+  [2,"La pido, pero con tantas explicaciones que parece que pido perdón.","Ya pedís, y eso es un paso grande. Contá cuántas explicaciones agregás: cada una es una forma de pedir permiso para necesitar."],
+  [3,"La pido con claridad, y acepto si me dicen que no.","Pedir sin aferrarte a la respuesta es libertad. Tu valor no depende del sí del otro."]]},
+ {id:"C7",fase:"C",g:"decisiones",t:"¿Qué tan fácil te resulta decir en voz alta “esto es lo que quiero”?",o:[
+  [1,"Me cuesta. A veces ni siquiera tengo claro qué quiero.","Cuando pasaste mucho tiempo atenta a lo que quieren los demás, tu deseo queda en voz baja. Se recupera escuchándolo de a poco."],
+  [2,"Lo sé, pero al decirlo me da vergüenza parecer egoísta.","Querer algo para vos no es egoísmo: es información sobre quién sos."],
+  [3,"Lo digo con naturalidad. Lo que quiero también importa.","Tu deseo tiene voz propia. Desde ahí se construyen vínculos más sanos."]]},
+
+ /* ===== M · Moverte: qué hace, qué elige, qué acción sostiene ===== */
+ {id:"M1",fase:"M",g:"decisiones",t:"Leés o escuchás algo que te inspira (un libro, un video, un podcast, una frase). ¿Qué hacés después?",o:[
+  [1,"Lo guardo o lo comparto, pero en mi día a día no cambio nada.","Esta es la diferencia entre tener la información y aplicarla. No hace falta aplicar todo: alcanza con una acción chica, hoy."],
+  [2,"Intento aplicarlo unos días, hasta que la rutina me gana.","Ya pasás a la acción. Lo que falta es que sea tan chico que la rutina no pueda ganarle: eso es el 1%."],
+  [3,"Elijo una sola acción chica y la hago ese mismo día.","Convertir la inspiración en acción el mismo día es integrar."]]},
+ {id:"M2",fase:"M",g:"decisiones",t:"Llega un momento de presión. ¿Qué hacés con tus innegociables (lo que no estás dispuesta a resignar)?",o:[
+  [1,"No sé bien cuáles son. Me adapto a lo que haga falta.","Adaptarte siempre te deja sin centro. Elegir un solo innegociable esta semana es un gran 1%."],
+  [2,"Los tengo claros, pero bajo presión termino cediendo.","Saberlos ya es mucho. Sostenerlos se entrena en lo chico, no en lo grande."],
+  [3,"Los sostengo. Me muevo desde ellos.","Tus innegociables te ordenan. No necesitás explicarlos: los vivís."]]},
+ {id:"M3",fase:"M",g:"decisiones",t:"Estás en un lugar o un grupo donde no te sentís bien. ¿Qué hacés?",o:[
+  [1,"Me quedo para no quedar mal.","Quedarte para no quedar mal tiene un costo: tu energía. Notar ese costo es el primer paso para elegir."],
+  [2,"Me voy, aunque me cuesta y me siento rara.","Ya elegís irte. Esa rareza es tu cuerpo acostumbrándose a una nueva forma de cuidarte."],
+  [3,"Me voy con naturalidad, sin dar explicaciones.","Sabés dónde pertenecés. No necesitás pelearte con lo que no es para vos."]]},
+ {id:"M4",fase:"M",g:"decisiones",t:"Aparece una oportunidad que te entusiasma, pero te da miedo. ¿Qué hacés?",o:[
+  [1,"La dejo pasar: siento que no estoy lista.","“No estoy lista” muchas veces es el miedo disfrazado de prudencia. Nadie se siente lista antes de empezar."],
+  [2,"Digo que sí, pero me preparo de más antes de mostrarme.","Prepararte está bien. Prepararte de más puede ser otra forma de postergarte."],
+  [3,"Doy el paso y aprendo en el camino.","Te movés aunque haya miedo. Eso es confianza en acción."]]},
+ {id:"M5",fase:"M",g:"cuidarte",t:"Empezás un hábito nuevo para vos. ¿Qué pasa con el paso de los días?",o:[
+  [1,"Arranco con todo y a los pocos días lo dejo.","Arrancar con todo es la trampa. El 1% funciona porque es tan chico que se puede cumplir."],
+  [2,"Lo sostengo un tiempo, pero si fallo un día me castigo.","Fallar un día no borra lo que hiciste. Volver sin culpa ni reproche es lo que lo sostiene."],
+  [3,"Lo hago parte de mi vida, sin exigencias.","Cuando el hábito es parte de quién sos, ya no hace falta fuerza de voluntad."]]},
+ {id:"M6",fase:"M",g:"cuidarte",t:"¿Qué hacés con el tiempo que es solo tuyo, sin que nadie te necesite?",o:[
+  [1,"Casi no lo tengo. Siempre hay algo o alguien antes.","Si no hay tiempo para vos, no es un problema de agenda: es de prioridad. Cinco minutos por día ya son tu 1%."],
+  [2,"Lo reservo, pero lo cedo cuando alguien me necesita.","Ya lo defendés. Notá cuándo lo cedés por elección y cuándo por culpa."],
+  [3,"Lo cuido como un innegociable.","Tu tiempo es sagrado y lo sabés. Por eso, cuando das, das con más presencia."]]},
+ {id:"M7",fase:"M",g:"recibir",t:"Una persona cercana te pide mucho y te da poco. ¿Qué hacés?",o:[
+  [1,"Sigo dando igual, aunque me agote.","Si siempre das más de lo que recibís, el vínculo está desequilibrado. Moverte no es castigar a nadie: es cuidarte."],
+  [2,"Empiezo a dar menos, aunque me siento culpable.","Ya ajustás. La culpa es el precio de salir del rol de siempre, y va bajando."],
+  [3,"Lo hablo y ajusto el vínculo, o tomo distancia.","Vínculos de ida y vuelta: eso es ser sostenida, no mantenida."]]}
+];
+
+/* ---------- Fase 3: preguntas por área (se abren según el perfil) ---------- */
+var AREA_Q={
+ pareja:{
+  R:{t:"Cuando tu pareja tiene un gesto de cariño con vos, ¿qué te pasa?",o:[
+   [1,"Me sorprende, como si no fuera para mí.","Si el cariño te sorprende, quizás en el fondo no esperás merecerlo. Recibirlo sin desconfiar se practica."],
+   [2,"Lo disfruto, pero enseguida pienso qué dar a cambio.","Estás aprendiendo a recibir. El próximo paso es soltar la cuenta de lo que das y lo que recibís."],
+   [3,"Lo recibo con alegría. Es parte de lo que construimos.","Te sentís merecedora del amor que hay en tu vínculo."]]},
+  C:{t:"Hay algo de la relación que no te gusta. ¿Cómo lo hablás?",o:[
+   [1,"No lo hablo. Espero que se dé cuenta.","Esperar que lo adivine te deja frustrada, y a tu pareja sin información. Decirlo es darle al vínculo una oportunidad."],
+   [2,"Lo hablo, pero termino discutiendo o pidiendo perdón.","Te animás a hablar. Probá decir qué necesitás en lugar de qué hizo mal."],
+   [3,"Lo digo con calma y escucho la otra parte.","Conversar sin ganar ni perder es lo que hace potenciadora a una relación."]]},
+  M:{t:"Si mañana pudieras cambiar una sola cosa en tu forma de estar en la relación…",o:[
+   [1,"Dejaría de postergarme para que esté todo bien.","Esa respuesta ya es reconocimiento. Elegí un momento chico mañana para no postergarte."],
+   [2,"Sostendría lo que ya cambié, aunque al otro le incomode.","Los cambios incomodan al principio, a vos y a quien está cerca. Sostenerlos con amor es integrar."],
+   [3,"Nada esencial: elijo esta relación cada día.","Elegir cada día, en lugar de quedarte por costumbre, es la marca de un vínculo integrado."]]}},
+ ex:{
+  R:{t:"Cuando pensás en tu relación anterior, ¿qué es lo que más aparece?",o:[
+   [1,"Lo que hice mal, o lo que aguanté de más.","Lo que aguantaste habla de lo que creías merecer en ese momento, no de quién sos hoy."],
+   [2,"Lo que aprendí, aunque todavía me duele un poco.","Aprender sin negar el dolor es honesto. Cuidá que ese aprendizaje no se vuelva tu nueva identidad."],
+   [3,"Gratitud por lo vivido y claridad sobre lo que hoy elijo.","Cerraste desde la gratitud. Esa claridad es tu brújula para lo que viene."]]},
+  C:{t:"Cuando hablás con tu ex, o hablás de esa historia, ¿cómo te sale?",o:[
+   [1,"Me pongo a la defensiva, o vuelvo a sentirme chiquita.","Sentirte chiquita es una memoria del cuerpo. Reconocerlo en el momento ya te devuelve un poco de tu lugar."],
+   [2,"Me mantengo firme, aunque me deja agotada.","Sostenés tu lugar. Con el tiempo deja de costar tanto, porque deja de ser una pelea."],
+   [3,"Con calma: ya no tengo nada que demostrar.","Cuando no hay nada que demostrar, la conversación se vuelve simple."]]},
+  M:{t:"¿Qué estás lista para hacer distinto de ahora en adelante?",o:[
+   [1,"No sé si confío en mí para elegir mejor.","Esa desconfianza se entiende. Se reconstruye eligiendo bien en lo chico: un café, una conversación, un límite."],
+   [2,"Poner primero mis innegociables, aunque me dé miedo quedarme sola.","Poner tus innegociables primero es elegirte. El miedo a quedarte sola pierde fuerza cuando te tenés."],
+   [3,"Ya lo hago: elijo desde lo que soy, no desde lo que me falta.","Elegir desde la plenitud cambia a quién atraés y a quién dejás ir."]]}},
+ amor:{
+  R:{t:"Cuando imaginás la pareja que querés, ¿qué aparece primero?",o:[
+   [1,"Que alguien me elija, que por fin me vea.","Querer ser elegida es humano. Pero si esperás que otro te vea primero, le das la llave de tu valor."],
+   [2,"Lo tengo claro, aunque a veces dudo de merecerlo.","La claridad ya está. La duda es lo que falta integrar: merecerlo no depende de cumplir requisitos."],
+   [3,"Alguien con quien compartir lo que ya tengo, no alguien que me complete.","Desde ahí se construyen los vínculos más sanos: compartir, no completar."]]},
+  C:{t:"Alguien te interesa. ¿Cómo te mostrás?",o:[
+   [1,"Me adapto a lo que creo que le gusta.","Adaptarte para gustar te agota, y la otra persona termina conociendo a alguien que no sos vos."],
+   [2,"Me muestro, pero me freno cuando siento que soy “demasiado”.","¿Demasiado para quién? Lo que tenés para dar no necesita recortes."],
+   [3,"Me muestro tal cual soy. Quien tenga que quedarse, se queda.","Mostrarte entera es el mejor filtro que existe."]]},
+  M:{t:"¿Qué vas a dejar de aceptar en tu próximo vínculo?",o:[
+   [1,"Todavía no lo sé. Al principio me cuesta poner límites.","El principio es justo cuando más importan. Elegí un solo límite y practicalo en el próximo encuentro."],
+   [2,"Lo sé, pero me da miedo espantar a alguien.","Si un límite sano espanta a alguien, te ahorró tiempo. Tus innegociables te cuidan."],
+   [3,"Lo tengo claro y lo sostengo desde el primer día.","Los límites claros desde el inicio son amor propio y respeto por el otro."]]}},
+ hijos:{
+  R:{t:function(c){return "Cuando dedicás tiempo a vos en lugar de a "+c.hijosTxt+", ¿qué sentís?"},o:[
+   [1,"Culpa. Siento que les estoy quitando algo.","La culpa de madre es de las más aprendidas. Una mamá que se cuida les enseña a sus hijos que cuidarse está permitido."],
+   [2,"Lo hago, aunque una voz me dice que soy egoísta.","Esa voz no es tuya: la heredaste. Vas por buen camino."],
+   [3,"Lo vivo con tranquilidad: cuidarme también es cuidarlos.","Les mostrás con tu ejemplo qué es merecer."]]},
+  C:{t:function(c){return c.hijos==="adultos"?"Cuando tus hijos te piden algo que no querés dar (tiempo, dinero, ayuda), ¿cómo respondés?":"Cuando "+c.hijosTxt+" te hablan mal o te exigen, ¿cómo respondés?"},o:[
+   [1,"Me enojo, o cedo para que termine la discusión.","Enojarte o ceder son dos caras de la misma reacción. En el medio hay un lugar más tranquilo."],
+   [2,"Pongo el límite, pero después dudo si estuve bien.","Poner el límite ya es enseñarles. La duda se va cuando confiás en tu criterio."],
+   [3,"Pongo el límite con firmeza y con cariño a la vez.","Firmeza y cariño juntos: así se ve un vínculo sano."]]},
+  M:{t:function(c){return "¿Qué hacés para que "+c.hijosTxt+" aprendan que merecen lo bueno?"},o:[
+   [1,"Les digo que se cuiden, pero yo no me cuido.","Los hijos aprenden más de lo que ven que de lo que escuchan. Un 1% tuyo, a la vista, ya les enseña."],
+   [2,"Empecé a cuidarme delante de ellos, aunque me cuesta.","Te están viendo aprender, y eso también es enseñarles."],
+   [3,"Me cuido y me priorizo sin culpa, y ellos lo ven.","Lo enseñás porque lo vivís."]]}},
+ familia:{
+  R:{t:function(c){return "Cuando estás con "+c.famTxt+", ¿cómo te sentís?"},o:[
+   [1,"Vuelvo a sentirme chiquita, como si tuviera que demostrar algo.","Con la familia de origen se activan los pilotos automáticos más viejos. Darte cuenta es el primer paso para no quedar atrapada."],
+   [2,"Me doy cuenta de lo que se activa, aunque no siempre lo manejo.","Ver lo que se activa ya cambia el vínculo. El manejo llega con la práctica."],
+   [3,"Me siento yo, adulta, sin necesitar su aprobación.","Estar con tu familia desde tu lugar adulto es una de las integraciones más profundas."]]},
+  Rp:{t:function(c){return "Cuando pensás en "+c.famTxt+", "+c.famYa+", ¿qué aparece?"},o:[
+   [1,"Lo que no pude decir, o lo que nunca recibí.","Lo que no recibiste no define lo que merecés. Hoy podés darte, de a poco, algo de eso que faltó."],
+   [2,"Nostalgia, y algunas cosas que todavía estoy acomodando.","Acomodar lleva tiempo, y está bien. No hace falta cerrarlo todo hoy."],
+   [3,"Gratitud y paz. Tomo lo que me dejó y elijo lo mío.","Tomar lo bueno y elegir lo propio es honrar sin repetir."]]},
+  C:{t:function(c){return "Cuando "+c.famTxt+" opina"+(c.famPl?"n":"")+" sobre tu vida, ¿qué hacés?"},o:[
+   [1,"Me justifico, o me callo para no discutir.","Justificarte es pedir permiso para vivir tu vida. Ya no lo necesitás, aunque el cuerpo todavía no lo sepa."],
+   [2,"Escucho y a veces respondo, aunque me quedo removida.","Lo que te remueve te muestra dónde todavía buscás aprobación."],
+   [3,"Escucho con respeto y decido yo.","Escuchar sin obedecer: así se ve una hija adulta e integrada."]]},
+  Cp:{t:function(c){return "Si hoy pudieras decirle"+(c.famPl?"s":"")+" algo, ¿cómo te saldría?"},o:[
+   [1,"No me sale. Se me cierra la garganta.","Que se cierre la garganta muestra cuánto hay guardado. Escribirlo, aunque no se lo leas a nadie, ya es expresarlo."],
+   [2,"Con mucha emoción, y también con algún reproche.","Emoción y reproche pueden convivir. Escribirlo todo, sin filtro, en una carta puede liberar mucho."],
+   [3,"Con un gracias, en paz.","Agradecer desde la paz es la forma más integrada de cerrar."]]},
+  M:{t:"¿Qué estás dispuesta a hacer distinto con tu historia familiar?",o:[
+   [1,"No sé. Siento que es así y no va a cambiar.","Quizás el otro no cambie, pero tu forma de estar sí. Ahí está tu poder."],
+   [2,"Seguir poniendo límites, aunque me sienta culpable.","Cada límite sostenido le quita peso a la culpa."],
+   [3,"Tomar lo bueno, soltar lo que no es mío y seguir mi camino.","Esa frase resume la integración."]]}},
+ amistades:{
+  R:{t:"En tus amistades, ¿quién suele dar más?",o:[
+   [1,"Yo. Estoy para todas, pero cuando necesito, no hay nadie.","Si siempre das y nadie está, quizás también te cuesta mostrar que necesitás. Abrirte es parte de recibir."],
+   [2,"Estoy equilibrando: aprendí a pedir, aunque todavía me cuesta.","Pedir en la amistad le da a la otra la oportunidad de estar. Vas bien."],
+   [3,"Es parejo: nos sostenemos mutuamente.","Amistades de ida y vuelta: un bien que merecés y que sabés cuidar."]]},
+  C:{t:"Una amiga hace un comentario que te molesta. ¿Qué hacés?",o:[
+   [1,"Me río y lo dejo pasar, aunque me quedo mal.","Reírte para no incomodar te incomoda a vos. Tu malestar también importa."],
+   [2,"Se lo digo, aunque después me preocupa haberla ofendido.","Decirlo es cuidar la amistad. La preocupación de después va a ir bajando."],
+   [3,"Se lo digo con cariño, en el momento.","Decir las cosas a tiempo es lo que mantiene sanos los vínculos."]]},
+  M:{t:"Tenés una amistad que no te hace bien. ¿Qué hacés?",o:[
+   [1,"Sigo igual: no me animo a alejarme.","No hace falta cortar hoy. Alcanza con poner un poco más de distancia: ese es tu 1%."],
+   [2,"Le empiezo a decir lo que siento, a ver si cambia.","Seguí. Las amistades que soportan la verdad son las que valen."],
+   [3,"Tomo distancia sin culpa: elijo con quién estar.","Saber con quién estar es parte de saber dónde pertenecés."]]}},
+ trabajo:{
+  R:{t:"En tu trabajo, cuando hacés algo bien, ¿qué sentís?",o:[
+   [1,"Que no es para tanto: era mi obligación.","Si todo lo que hacés bien es “obligación”, nunca hay lugar para reconocerte. Tu valor también se nota en lo cotidiano."],
+   [2,"Satisfacción, aunque espero que alguien lo note.","Ya lo valorás. Fijate si tu satisfacción depende de que otro lo vea."],
+   [3,"Orgullo tranquilo, lo note alguien o no.","Tu valor no depende del reconocimiento ajeno. Desde ahí lo podés mostrar sin miedo."]]},
+  C:{t:"Querés pedir algo en tu trabajo: un aumento, un cambio, un día libre.",o:[
+   [1,"Lo postergo. Siento que no es el momento.","“No es el momento” puede ser real, o puede ser miedo a escuchar un no. Fijate cuál de los dos es."],
+   [2,"Lo pido, pero con tantas explicaciones que parezco disculparme.","Probá pedirlo en una sola frase. Tu pedido es válido sin justificativos."],
+   [3,"Lo pido con claridad, sabiendo lo que valgo.","Pedir desde tu valor cambia la conversación."]]},
+  M:{t:"¿Qué cambiarías en tu forma de trabajar si te sintieras completamente merecedora?",o:[
+   [1,"Dejaría de hacer lo que no me corresponde.","Hacer lo que no te corresponde es una forma de ganarte el lugar. Ya lo tenés."],
+   [2,"Sostendría los límites de horario que ya empecé a poner.","Los límites de horario son innegociables que protegen tu vida."],
+   [3,"Ya trabajo así.","Trabajar desde el merecimiento hace que tu trabajo sea expresión, no sacrificio."]]}},
+ clientes:{
+  R:{t:"Cuando ponés el precio de lo que ofrecés, ¿qué sentís?",o:[
+   [1,"Que es demasiado. Termino cobrando menos o regalando.","Cobrar menos de lo que vale tu trabajo es pedir permiso para existir. Tu precio también habla de cuánto te valorás."],
+   [2,"Cobro lo justo, pero me pongo nerviosa al decirlo.","Ya cobrás lo que vale. Los nervios bajan cuando dejás de esperar que el otro lo apruebe."],
+   [3,"Cobro lo que vale, con tranquilidad.","Tu precio es una decisión, no una disculpa."]]},
+  C:{t:"Alguien te pide un descuento, o algo extra que no está incluido.",o:[
+   [1,"Digo que sí, aunque me molesta.","Cada sí que te molesta te cuesta energía. Un “eso no está incluido”, dicho con amabilidad, también es buen servicio."],
+   [2,"Digo que no, pero me excuso mucho.","El no ya está. Ahora probalo más corto."],
+   [3,"Explico con claridad qué incluye y qué no.","La claridad te cuida a vos y le da seguridad a quien te compra."]]},
+  M:{t:"¿Qué harías distinto si te sintieras merecedora de que te vaya muy bien?",o:[
+   [1,"Me mostraría más, pero me da vergüenza.","La vergüenza de mostrarte es justo lo que se entrena. Una publicación de 10 segundos ya es un 1%."],
+   [2,"Subiría precios y diría que no a lo que no me suma.","Lo tenés claro. Elegí una sola de esas acciones para esta semana."],
+   [3,"Ya lo hago: me muevo desde lo que valgo.","Tu emprendimiento refleja tu merecimiento."]]}},
+ dinero:{
+  R:{t:"Cuando entra dinero inesperado, ¿qué sentís primero?",o:[
+   [1,"Que no es para mí: ya tiene destino en otros o en deudas.","Si el dinero siempre se va a otros, quizás sentís que no es para vos. Separar una parte chica para vos ya es un acto de merecimiento."],
+   [2,"Alegría, aunque me cuesta usar una parte para mí.","Te alegrás, y eso ya es recibir. Esa incomodidad de usarlo para vos va a ir bajando."],
+   [3,"Gratitud, y ganas de usarlo con conciencia, incluyéndome.","Lo recibís, lo cuidás y lo disfrutás: una relación sana con el dinero."]]},
+  C:{t:"Cuando hablás de dinero (con tu pareja, tu familia o quien sea), ¿cómo te sale?",o:[
+   [1,"Evito el tema: me da vergüenza o miedo.","El dinero es uno de los temas donde más vergüenza se acumula. Nombrarlo es empezar a ordenarlo."],
+   [2,"Lo hablo, aunque me pongo tensa.","La tensión no te frena, y eso ya es mucho."],
+   [3,"Lo hablo con naturalidad, como cualquier otro tema.","Hablar de dinero sin vergüenza es señal de merecimiento integrado."]]},
+  M:{t:"¿Qué hacés hoy para recibir más dinero?",o:[
+   [1,"Nada concreto: me da miedo, o siento que no lo merezco.","Ese miedo muestra el techo que te pusiste. Se sube de a 1%: un pedido, un precio, un cobro a tiempo."],
+   [2,"Algunas cosas, aunque me freno cuando me toca cobrar o pedir.","Ya te movés. El freno aparece justo en el momento de recibir: ahí está tu práctica."],
+   [3,"Me muevo con claridad: pido, cobro y recibo lo que vale mi trabajo.","Estás disponible para la abundancia, y actuás en consecuencia."]]}},
+ yo:{
+  R:{t:"Al final del día, ¿cuánto te escuchaste a vos?",o:[
+   [1,"Muy poco. Escuché a todos menos a mí.","Escuchar a todos menos a vos te aleja de tu centro. Un minuto de silencio al final del día ya es reconocerte."],
+   [2,"Bastante, aunque cuando hay presión me olvido.","Bajo presión volvemos al piloto automático. Darte cuenta después ya es parte del cambio."],
+   [3,"Me escucho todo el día: sé cómo me siento y qué necesito.","Esa escucha es la base de una vida integrada."]]},
+  C:{t:"Si hoy te escribieras una carta, ¿cómo empezaría?",o:[
+   [1,"Con todo lo que tengo que mejorar.","Empezar por lo que falta es el hábito de la exigencia. Probá empezar por algo que hiciste bien hoy."],
+   [2,"Con lo que estoy trabajando y lo que ya logré.","Valorás tu camino. Probá escribirte sin hablar del proceso, solo de quién sos."],
+   [3,"“Te quiero, y estoy orgullosa de quién sos.”","Hablarte con amor, sin condiciones, es el merecimiento hecho palabras."]]},
+  M:{t:"¿Qué gesto de cuidado te debés hace tiempo?",o:[
+   [1,"Muchos: el médico, el descanso, algo que me guste. Siempre lo postergo.","Elegí uno solo, el más chico, y hacelo esta semana. Ese es tu 1%."],
+   [2,"Uno o dos, que ya tengo agendados.","Cumplir lo que te prometés construye confianza con vos misma."],
+   [3,"Ninguno: me cuido como parte de mi vida.","El cuidado ya no es una deuda: es tu forma de vivir."]]}}
+};
+
+/* ===== Intención de cada pregunta (solo modo creador, no lo ven las clientas) ===== */
+var INTENCION={
+ /* Fase 1 · perfil */
+ p_nombre:"Crear cercanía: el resultado le habla por su nombre. Es opcional para no frenar a la que tiene vergüenza de exponerse.",
+ p_edad:"Segmentar. Hoy no cambia preguntas; sirve para ver qué edades llegan y compran, y para ajustar ejemplos y anuncios más adelante.",
+ p_pareja:"Abrir la rama amorosa. Define qué foco se le ofrece después: “mi pareja” (en pareja o vínculo confuso), “mi historia anterior” (separada), “el amor que quiero recibir” (busca pareja). La que eligió estar sola no recibe preguntas de pareja.",
+ p_hijos:"Abrir la rama de maternidad. Si tiene hijos, se le ofrece ese foco y cambia el texto de algunas preguntas (por ejemplo, el descanso con hijos chicos). “Es un tema para mí” queda registrado para una rama futura (deseo o duelo de maternidad).",
+ p_origen:"Ubicar su lugar en la familia de origen. Filtra la pregunta siguiente: si es hija única, no aparecen opciones de hermanos. A futuro puede afinar patrones (la mayor que cuida a todos, la menor que espera permiso).",
+ p_fam:"Detectar el vínculo de origen con más carga: es donde suelen nacer las creencias de no merecer. Define a quién nombran las preguntas de familia (“tu mamá”, “tu hermana”, “quien te crió”).",
+ p_presencia:"Ver si ese vínculo está vivo y presente, o si la persona ya no está. Si ya no está, las preguntas de familia cambian de “cuando estás con ella” a “lo que no pudiste decir”: no se le pregunta por un vínculo que no puede ejercer.",
+ p_trabajo:"Abrir la rama laboral. Empleada: foco “mi trabajo” (pedir, hacerse ver). Emprendedora: foco “lo que cobro” (precio, descuentos, mostrarse). Si hace las dos cosas, se le ofrecen ambos focos. Es donde el merecimiento se vuelve dinero concreto.",
+ p_foco:"La pregunta más importante del perfil: ella elige dónde le duele. Cada vínculo elegido reemplaza una pregunta general en cada etapa, así que siempre son 7 por letra y 21 en total (de 3 a 6 son de sus vínculos) y aparece marcado como “tu foco” en su mapa. Así el recorrido va directo al punto de dolor.",
+ /* R · Reconocer: qué siente, qué nota, qué aparece en el cuerpo y en la mente */
+ R1:"Reconocer su patrón de merecimiento: qué siente cuando algo bueno llega. Define el nombre de su patrón (da y no recibe, se lo tiene que ganar, se achica, espera permiso, recibe) y su primer 1%. Es la única pregunta que no suma al nivel. Siempre aparece primera.",
+ R2:"Reconocer en el cuerpo: si nota el freno cuando quiere decir algo. Es el corazón de la R de RCM y de la clase “decí lo que pensás sin pedir permiso”. Alimenta “Tu voz”.",
+ R3:"Reconocer qué siente ante el reconocimiento ajeno. Detecta la vergüenza a quedar expuesta, incluso para bien. Alimenta “Recibir”.",
+ R4:"Reconocer la emoción a tiempo: si se da cuenta cuando algo le molesta o recién cuando explota. Sin esto no hay comunicación posible. Alimenta “Tu voz”.",
+ R5:"Reconocer la culpa después del disfrute (“primero los demás”). Alimenta “Recibir”.",
+ R6:"Reconocer qué siente al descansar: si su valor depende de hacer. Con hijos chicos se adapta la situación. Alimenta “Cuidarte”.",
+ R7:"Reconocer cuánto se conoce cuando entra: si nunca hizo nada, si escuchó pero no practica, si probó, si practica con regularidad o si es su estilo de vida. No suma al nivel: queda como dato propio (columna “autoconocimiento”) para saber con qué tipo de mujeres estás hablando y qué tan profundas pueden ser las conversaciones. Siempre aparece, segunda en la etapa R.",
+ /* C · Comunicar: cómo se habla a sí misma y cómo les habla a los demás */
+ C1:"Comunicación interna: el tono de su voz interior. La opción “estoy en proceso” detecta el nivel 2, la mujer identificada con su proceso. Alimenta “Tu voz”.",
+ C2:"Comunicación de límites: si puede decir que no. El “sí, y después me arrepiento y me enojo conmigo” es la marca del nivel 1: agradar antes que agradarse. Alimenta “Tu voz”.",
+ C3:"Comunicación de su opinión cuando no coincide. Mide directo el “decí lo que pensás sin pedir permiso”. Alimenta “Tu voz”.",
+ C4:"Comunicación expuesta: hablar en público, mostrarse en foto o video. Es el dolor principal de tu clienta ideal. Alimenta “Tu voz”.",
+ C5:"Comunicación del dolor: si se lo guarda, lo dice con reproche o desde lo que sintió. Alimenta “Tu voz”.",
+ C6:"Comunicación de una necesidad: pedir ayuda. Detecta la falsa fortaleza de “me arreglo sola” y conecta con el deseo de ser sostenida. Alimenta “Tu voz”.",
+ C7:"Comunicación del deseo: decir en voz alta lo que quiere. Es la primera que se quita si eligió dos vínculos. Alimenta “Tus decisiones”.",
+ /* M · Moverte: qué hace, qué elige, qué acción sostiene */
+ M1:"Movimiento de la información a la acción: qué hace después de algo que la inspira (libro, video, podcast, frase). Mide directo tu eje “tiene la información / aplica / integra”. Alimenta “Tus decisiones”.",
+ M2:"Movimiento bajo presión: si sostiene sus innegociables o cede. Rasgo central de la mujer del 1%. Alimenta “Tus decisiones”.",
+ M3:"Movimiento de pertenencia: si se va de donde no pertenece. Alimenta “Tus decisiones”.",
+ M4:"Movimiento ante el miedo: si posterga, se sobreprepara o da el paso. Alimenta “Tus decisiones”.",
+ M5:"Movimiento sostenido: su relación con la constancia. Prepara la venta del 1% y del Reto 21 días. Alimenta “Cuidarte”.",
+ M6:"Movimiento de cuidado: qué hace con su tiempo propio. Alimenta “Cuidarte”.",
+ M7:"Movimiento en el vínculo desequilibrado: si sigue dando, ajusta o toma distancia. Ser sostenida, no mantenida. Es la primera que se quita si eligió dos vínculos. Alimenta “Recibir”.",
+ /* Fase 3 · por área (se abren según el foco) */
+ pareja_R:"Foco pareja · Reconocer: si se siente merecedora del cariño o lleva la cuenta de lo que da y recibe.",
+ pareja_C:"Foco pareja · Comunicar: si habla lo que no le gusta o espera que el otro adivine.",
+ pareja_M:"Foco pareja · Moverte: qué haría distinto. Distingue a la que se posterga de la que elige la relación cada día.",
+ ex_R:"Foco historia anterior · Reconocer: si sigue atada a la culpa, al aprendizaje (posible identificación con el proceso) o cerró en gratitud.",
+ ex_C:"Foco historia anterior · Comunicar: si al hablar con el ex o de esa historia vuelve a sentirse chiquita.",
+ ex_M:"Foco historia anterior · Moverte: su confianza para elegir distinto y si pone primero sus innegociables.",
+ amor_R:"Foco amor que quiere · Reconocer: si espera ser elegida para valer, o busca compartir y no completarse.",
+ amor_C:"Foco amor que quiere · Comunicar: si se adapta para gustar o se muestra entera.",
+ amor_M:"Foco amor que quiere · Moverte: si tiene límites claros desde el inicio de un vínculo.",
+ hijos_R:"Foco hijos · Reconocer: la culpa de madre al dedicarse tiempo.",
+ hijos_C:"Foco hijos · Comunicar: cómo pone límites (cambia según la edad de los hijos).",
+ hijos_M:"Foco hijos · Moverte: qué quiere enseñar sobre merecer, y si lo enseña con el ejemplo.",
+ familia_R:"Foco familia de origen (presente) · Reconocer: si con esa persona vuelve a sentirse chiquita o se siente adulta.",
+ familia_Rp:"Foco familia de origen (ya no está) · Reconocer: lo que quedó sin decir o sin recibir, sin preguntar por un vínculo que ya no puede ejercer.",
+ familia_C:"Foco familia de origen (presente) · Comunicar: si se justifica ante sus opiniones o decide ella.",
+ familia_Cp:"Foco familia de origen (ya no está) · Comunicar: cuánto hay guardado por expresar. Abre la puerta a una carta como ejercicio.",
+ familia_M:"Foco familia de origen · Moverte: si cree que puede cambiar su forma de estar, aunque el otro no cambie.",
+ amistades_R:"Foco amistades · Reconocer: el desequilibrio de dar y recibir.",
+ amistades_C:"Foco amistades · Comunicar: si dice lo que le molesta o se ríe para no incomodar.",
+ amistades_M:"Foco amistades · Moverte: si puede tomar distancia de una amistad que le hace mal.",
+ trabajo_R:"Foco trabajo · Reconocer: si se hace ver o espera que noten su valor (perfil bajo).",
+ trabajo_C:"Foco trabajo · Comunicar: si puede pedir (aumento, cambio, día libre) sin disculparse.",
+ trabajo_M:"Foco trabajo · Moverte: qué cambiaría si se sintiera merecedora; detecta si hace lo que no le corresponde para ganarse el lugar.",
+ clientes_R:"Foco emprendimiento · Reconocer: cómo vive su precio. Es el merecimiento convertido en número.",
+ clientes_C:"Foco emprendimiento · Comunicar: si sostiene su precio ante un pedido de descuento.",
+ clientes_M:"Foco emprendimiento · Moverte: si la vergüenza le impide mostrarse y crecer.",
+ dinero_R:"Foco dinero · Reconocer: si el dinero que llega siempre es para otros.",
+ dinero_C:"Foco dinero · Comunicar: la vergüenza de hablar de dinero.",
+ dinero_M:"Foco dinero · Moverte: el techo que se puso para recibir más.",
+ yo_R:"Foco ella misma · Reconocer: cuánto se escucha en el día.",
+ yo_C:"Foco ella misma · Comunicar: cómo se habla por escrito; detecta exigencia o identificación con el proceso.",
+ yo_M:"Foco ella misma · Moverte: el gesto de cuidado que viene postergando; se convierte en un 1% concreto."
+};
+var INT_PANTALLA={
+ inicio:"Bajar la guardia: aclara que no es un test ni terapia, muestra qué se lleva al final para que valgan la pena los 21 minutos, y avisa que las respuestas se guardan de forma anónima.",
+ intro_R:"Ubicarla en la etapa de Reconocimiento y pedirle honestidad (“lo que te pasa, no lo que te gustaría”). Sin esto, todas elegirían el nivel 3.",
+ intro_C:"Ubicarla en la etapa de Comunicación del método RCM.",
+ intro_M:"Ubicarla en la etapa de Movimiento del método RCM.",
+ pausa_R:"Llevar lo pensado al cuerpo (reconocimiento corporal) y darle aire para que no se sienta un interrogatorio.",
+ pausa_C:"Fijar la frase que más le resonó: suele ser la de su dolor real.",
+ resultado:"Devolverle una identidad (nivel y patrón), una foto (mapa), una acción inmediata (primer 1%) y una puerta concreta (siguiente paso según su nivel). Ahí está la venta: el producto que se le ofrece depende de su nivel, y los Domingos del 1% aparecen siempre con sus dos planes (el trimestral destaca el ahorro). Al llegar acá se guarda su registro; el contacto es opcional."
+};
+
+/* ===== Motor del recorrido ===== */
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s}
+var WA="5492915724766";
+var KEY="merecer21-v1";
+var S={a:{},pos:"inicio",picks:{}};   // a: respuestas de perfil y preguntas · pos: id del paso actual
+var PRUEBA=false;
+
+function load(){try{var x=JSON.parse(localStorage.getItem(KEY)||"null");if(x&&x.a)return x}catch(e){}return null}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function clearSave(){try{localStorage.removeItem(KEY)}catch(e){}}
+
+function ctx(){
+ var a=S.a,c={nombre:(a.p_nombre||"").trim(),edad:a.p_edad,pareja:a.p_pareja,hijos:a.p_hijos,origen:a.p_origen,fam:a.p_fam,presencia:a.p_presencia,trabajo:a.p_trabajo,foco:a.p_foco||[]};
+ c.famTxt={madre:"tu mamá",padre:"tu papá",ambos:"tus padres",hermana:"tu hermana",hermano:"tu hermano",hermanos:"tus hermanos",crianza:"quien te crió"}[c.fam]||"";
+ c.famMi={madre:"mi mamá",padre:"mi papá",ambos:"mis padres",hermana:"mi hermana",hermano:"mi hermano",hermanos:"mis hermanos",crianza:"quien me crió"}[c.fam]||"";
+ c.hijosMi={adolescentes:"mis hijos adolescentes"}[c.hijos]||"mis hijos";
+ c.famPl=c.fam==="ambos"||c.fam==="hermanos";
+ c.famYa=c.famPl?"que ya no están":"que ya no está";
+ c.hijosTxt={chicos:"tus hijos",adolescentes:"tus hijos adolescentes",adultos:"tus hijos"}[c.hijos]||"tus hijos";
+ return c;
+}
+function txt(v,c){return typeof v==="function"?v(c):v}
+
+/* hash simple para mezclar las opciones siempre igual en cada pregunta */
+function order(id,n){var h=0;for(var i=0;i<id.length;i++)h=(h*31+id.charCodeAt(i))>>>0;var idx=[];for(var j=0;j<n;j++)idx.push(j);for(var k=n-1;k>0;k--){h=(h*1103515245+12345)>>>0;var r=h%(k+1);var t=idx[k];idx[k]=idx[r];idx[r]=t}return idx}
+
+/* Arma las 7 preguntas de cada etapa según el perfil */
+function etapa(f,c){
+ var out=[];
+ c.foco.forEach(function(ar){
+  var bank=AREA_Q[ar];if(!bank)return;
+  var key=f;
+  if(ar==="familia"&&c.presencia==="partio"&&bank[f+"p"])key=f+"p";
+  var q=bank[key];
+  out.push({id:ar+"_"+key,fase:f,area:ar,t:q.t,o:q.o});
+ });
+ var gen=GENERAL.filter(function(q){return q.fase===f}).slice(0,7-out.length);
+ /* las preguntas de su foco se intercalan: posición 3 y 6 de cada etapa */
+ var res=gen.slice();
+ if(out[0])res.splice(2,0,out[0]);
+ if(out[1])res.splice(5,0,out[1]);
+ return res.slice(0,7);
+}
+
+var FASES={R:{n:"Reconocer",intro:"7 preguntas para reconocer qué sentís y dónde aparece el “no merezco”: en lo que recibís, en tu cuerpo, en tu descanso, en tus vínculos. No hay respuestas buenas ni malas: elegí lo que te pasa de verdad, no lo que te gustaría que te pasara.",pausa:"Antes de seguir, respirá tres veces. Notá en qué parte del cuerpo sentiste más las preguntas."},
+ C:{n:"Comunicar",intro:"7 preguntas sobre cómo te hablás a vos y cómo les hablás a los demás. Ahí es donde el merecimiento se escucha.",pausa:"Respirá otra vez. Fijate si alguna frase te quedó resonando: esa es la que más te habla."},
+ M:{n:"Moverte",intro:"7 preguntas sobre lo que hacés. El merecimiento se integra cuando se mueve, aunque sea un 1%.",pausa:""}};
+
+function flow(){
+ var c=ctx(),f=[{id:"inicio",tipo:"inicio"}];
+ PERFIL.forEach(function(q){if(!q.when||q.when(c))f.push({id:q.id,tipo:q.tipo||"perfil",q:q,fase:"P"})});
+ ["R","C","M"].forEach(function(F){
+  f.push({id:"intro_"+F,tipo:"pantalla",fase:F,titulo:FASES[F].n,texto:FASES[F].intro});
+  etapa(F,c).forEach(function(q,i){f.push({id:q.id,tipo:"pregunta",q:q,fase:F,num:i+1})});
+  if(FASES[F].pausa)f.push({id:"pausa_"+F,tipo:"pausa",fase:F,texto:FASES[F].pausa});
+ });
+ f.push({id:"resultado",tipo:"resultado",fase:"X"});
+ return f;
+}
+
+
+/* ---------- Registro de cada recorrido ---------- */
+/* Pegá acá la URL del Apps Script publicado (ver instrucciones). Vacío = solo se guarda en este navegador. */
+var REGISTRO_URL="https://script.google.com/macros/s/AKfycbzP6kPBeia2Mx-qn9pywfrXpaLubPFljLRT_vBaFHwx3OMQSPPVeLM5kmsHUoWMft4D/exec";
+var REG_LOCAL="merecer21-registros";
+function nuevoId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function fila(R){
+ var c=R.c,f=flow(),row={id:S.id||(S.id=nuevoId()),fecha:new Date().toISOString(),duracion_min:S.t0?Math.round((Date.now()-S.t0)/60000):"",
+  nombre:c.nombre,edad:c.edad||"",pareja:c.pareja||"",hijos:c.hijos||"",lugar_familia:c.origen||"",familia_peso:c.fam||"",presencia:c.presencia||"",trabajo:c.trabajo||"",
+  foco:c.foco.join(", "),nivel:R.nivel+" · "+NIVELES[R.nivel].nombre,promedio:R.avg.toFixed(2),patron:PATRONES[R.patron].nombre,autoconocimiento:R.auto?AUTO[R.auto]:"",
+  area_mas_baja:R.peor?R.peor.n:"",mapa:R.mapa.map(function(m){return m.n+": "+m.v+"%"}).join(" | "),contacto:""};
+ var n={R:0,C:0,M:0};
+ f.forEach(function(s){if(s.tipo!=="pregunta")return;var j=S.a[s.id];var o=j===undefined?null:s.q.o[j];n[s.fase]++;
+  row[s.fase+n[s.fase]]=o?(s.id+" | "+((s.q.patron||s.q.auto)?o[0]:"N"+o[0])+" | "+o[1]):"";});
+ return row;
+}
+function enviar(row){
+ try{var l=JSON.parse(localStorage.getItem(REG_LOCAL)||"[]");var k=l.findIndex(function(x){return x.id===row.id});if(k>=0)l[k]=Object.assign(l[k],row);else l.push(row);localStorage.setItem(REG_LOCAL,JSON.stringify(l))}catch(e){}
+ if(!REGISTRO_URL)return;
+ try{fetch(REGISTRO_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(row)}).catch(function(){})}catch(e){}
+}
+function registrar(R){
+ if(S.enviado===S.id)return;
+ enviar(fila(R));S.enviado=S.id;save();
+}
+function enviarContacto(v){enviar({id:S.id,contacto:v})}
+function csv(){
+ var l=[];try{l=JSON.parse(localStorage.getItem(REG_LOCAL)||"[]")}catch(e){}
+ var cols=[];l.forEach(function(r){Object.keys(r).forEach(function(k){if(cols.indexOf(k)<0)cols.push(k)})});
+ var q=function(v){v=v==null?"":String(v);return '"'+v.replace(/"/g,'""')+'"'};
+ return [cols.map(q).join(",")].concat(l.map(function(r){return cols.map(function(k){return q(r[k])}).join(",")})).join("\n");
+}
+
+/* ---------- Render ---------- */
+var app=document.getElementById("app");
+function el(h){var d=document.createElement("div");d.innerHTML=h.trim();return d.firstChild}
+function esc(s){return String(s).replace(/[&<>"]/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]})}
+
+function go(id){S.pos=id;save();render();window.scrollTo(0,0)}
+function marcarInicio(){if(!S.t0)S.t0=Date.now()}
+function next(){marcarInicio();var f=flow(),i=f.findIndex(function(s){return s.id===S.pos});go(f[Math.min(i+1,f.length-1)].id)}
+function back(){var f=flow(),i=f.findIndex(function(s){return s.id===S.pos});if(i>0)go(f[i-1].id)}
+
+function faseLabel(s,f){
+ if(s.fase==="P")return "Tu perfil";
+ if(s.fase==="D")return "Tu punto de partida";
+ if(FASES[s.fase])return FASES[s.fase].n+(s.num?" · "+s.num+" de 7":"");
+ return "";
+}
+
+function render(){
+ var f=flow(),i=f.findIndex(function(s){return s.id===S.pos});
+ if(i<0){i=0;S.pos=f[0].id}
+ var s=f[i],c=ctx();
+ var pct=Math.round(i/(f.length-1)*100);
+ document.getElementById("fill").style.width=pct+"%";
+ document.getElementById("fase").textContent=faseLabel(s,f);
+ document.getElementById("min").textContent=s.tipo==="inicio"||s.tipo==="resultado"?"":"Minuto "+Math.max(1,Math.round(i/(f.length-1)*21))+" de 21";
+ document.getElementById("atras").hidden=(i===0||s.tipo==="resultado");
+ app.innerHTML="";
+ ({inicio:vInicio,perfil:vPerfil,texto:vTexto,multi:vMulti,pantalla:vPantalla,pregunta:vPregunta,pausa:vPausa,resultado:vResultado})[s.tipo](s,c);
+ if(PRUEBA)intencion(s);
+ renderPrueba(f,c);
+}
+function intencion(s){
+ var t=INT_PANTALLA[s.id]||INTENCION[s.id]||(s.q&&INTENCION[s.q.id]);
+ if(!t)return;
+ app.appendChild(el('<aside class="intent"><span class="pk">Intención · solo para vos</span><p>'+esc(t)+'</p></aside>'));
+}
+
+function vInicio(){
+ var saved=Object.keys(S.a).length>0;
+ app.appendChild(el('<section class="card hero"><p class="eyebrow">Tu regalo con el ebook · 21 minutos</p><h1>¿Qué creés que merecés?</h1><p class="lead">Ya tenés “Decí que no sin sentirte mala persona”. Ahora mirá desde dónde partís. Un recorrido de preguntas para reconocer dónde te cuesta recibir lo bueno: el amor, el descanso, el dinero, el reconocimiento. Cada respuesta te devuelve un punto de conciencia, y al final te llevás tu mapa y tu primer 1%.</p><ul class="mini"><li>Primero, unas preguntas para conocerte.</li><li>Después, 21 preguntas en tres etapas de 7: reconocer, comunicar y moverte.</li><li>Al final, tu resultado.</li></ul><p class="nota">No es un test psicológico ni un diagnóstico, y no reemplaza la atención profesional. Si algo te moviliza mucho, podés parar cuando quieras.</p><p class="nota">Tus respuestas se guardan de forma anónima para mejorar este programa. Tu nombre es opcional.</p><div class="row" id="btns"></div></section>'));
+ var b=document.getElementById("btns");
+ if(saved){
+  var c1=el('<button class="btn" type="button">Seguir donde quedé</button>');c1.onclick=function(){var f=flow();var last=f.filter(function(s){return S.a[s.id]!==undefined}).pop();go(last?last.id:"inicio");};b.appendChild(c1);
+  var c2=el('<button class="btn ghost" type="button">Empezar de nuevo</button>');c2.onclick=function(){S={a:{},pos:"inicio",id:nuevoId()};clearSave();next()};b.appendChild(c2);
+ }else{
+  var c3=el('<button class="btn" type="button">Empezar</button>');c3.onclick=next;b.appendChild(c3);
+ }
+}
+
+function opts(q,c){return typeof q.o==="function"?q.o(c):q.o}
+
+function vPerfil(s,c){
+ var q=s.q,sec=el('<section class="card"><h2>'+esc(txt(q.t,c))+'</h2>'+(q.sub?'<p class="sub">'+esc(txt(q.sub,c))+'</p>':'')+'<div class="opts"></div></section>');
+ var box=sec.querySelector(".opts");
+ opts(q,c).forEach(function(o){
+  var b=el('<button class="opt" type="button"><span>'+esc(o[1])+'</span>'+(PRUEBA?'<em class="tag">'+o[0]+'</em>':'')+'</button>');
+  if(S.a[q.id]===o[0])b.classList.add("sel");
+  b.onclick=function(){S.a[q.id]=o[0];limpiarRamas();save();Array.prototype.forEach.call(box.children,function(x){x.classList.remove("sel")});b.classList.add("sel");setTimeout(next,220)};
+  box.appendChild(b);
+ });
+ app.appendChild(sec);
+}
+
+/* si cambia una respuesta del perfil, se borran las que dependen de ella */
+function limpiarRamas(){
+ var c=ctx(),valid={};
+ PERFIL.forEach(function(q){if(!q.when||q.when(c))valid[q.id]=1});
+ PERFIL.forEach(function(q){if(!valid[q.id])delete S.a[q.id]});
+ var p=PERFIL.filter(function(q){return q.id==="p_fam"})[0];
+ if(S.a.p_fam&&!opts(p,c).some(function(o){return o[0]===S.a.p_fam}))delete S.a.p_fam;
+ if(S.a.p_foco){var ok=opts(PERFIL[PERFIL.length-1],ctx()).map(function(o){return o[0]});S.a.p_foco=S.a.p_foco.filter(function(k){return ok.indexOf(k)>=0});if(!S.a.p_foco.length)delete S.a.p_foco}
+}
+
+function vTexto(s,c){
+ var q=s.q,sec=el('<section class="card"><h2>'+esc(q.t)+'</h2><p class="sub">'+esc(q.sub)+'</p><label class="vh" for="nom">Tu nombre</label><input id="nom" type="text" autocomplete="given-name" maxlength="30" placeholder="Tu nombre"><div class="row"><button class="btn" type="button" id="ok">Seguir</button><button class="btn ghost" type="button" id="skip">Prefiero no decirlo</button></div></section>');
+ app.appendChild(sec);
+ var inp=document.getElementById("nom");inp.value=S.a.p_nombre||"";
+ document.getElementById("ok").onclick=function(){S.a.p_nombre=inp.value.trim();save();next()};
+ document.getElementById("skip").onclick=function(){S.a.p_nombre="";save();next()};
+ inp.addEventListener("keydown",function(e){if(e.key==="Enter")document.getElementById("ok").click()});
+}
+
+function vMulti(s,c){
+ var q=s.q,sel=(S.a[q.id]||[]).slice();
+ var sec=el('<section class="card"><h2>'+esc(txt(q.t,c))+'</h2><p class="sub">'+esc(q.sub)+'</p><div class="opts"></div><div class="row"><button class="btn" type="button" id="ok" disabled>Seguir</button></div></section>');
+ var box=sec.querySelector(".opts"),ok=sec.querySelector("#ok");
+ function upd(){ok.disabled=sel.length===0;Array.prototype.forEach.call(box.children,function(b){var on=sel.indexOf(b.dataset.k)>=0;b.classList.toggle("sel",on);b.setAttribute("aria-pressed",on)})}
+ opts(q,c).forEach(function(o){
+  var b=el('<button class="opt check" type="button" aria-pressed="false"><span>'+esc(o[1])+'</span>'+(PRUEBA?'<em class="tag">'+o[0]+'</em>':'')+'</button>');b.dataset.k=o[0];
+  b.onclick=function(){var k=o[0],j=sel.indexOf(k);if(j>=0)sel.splice(j,1);else{if(sel.length>=q.max)sel.shift();sel.push(k)}upd()};
+  box.appendChild(b);
+ });
+ ok.onclick=function(){S.a[q.id]=sel;save();next()};
+ app.appendChild(sec);upd();
+}
+
+function vPantalla(s){
+ var sec=el('<section class="card hero"><p class="eyebrow">'+("Etapa "+({R:"1",C:"2",M:"3"}[s.fase])+" de 3")+'</p><h1>'+esc(s.titulo)+'</h1><p class="lead">'+esc(s.texto)+'</p><div class="row"><button class="btn" type="button">Seguir</button></div></section>');
+ sec.querySelector("button").onclick=next;app.appendChild(sec);
+}
+
+function vPausa(s){
+ var sec=el('<section class="card hero pausa"><div class="breath" aria-hidden="true"></div><p class="lead">'+esc(s.texto)+'</p><div class="row"><button class="btn" type="button">Seguir</button></div></section>');
+ sec.querySelector("button").onclick=next;app.appendChild(sec);
+}
+
+function vPregunta(s,c){
+ var q=s.q,list=q.o,ord=order(q.id,list.length);
+ var sec=el('<section class="card"><h2>'+esc(txt(q.t,c))+'</h2><div class="opts"></div><div class="punto" hidden><span class="pk">Punto de conciencia</span><p></p><div class="row"><button class="btn" type="button">Seguir</button></div></div></section>');
+ var box=sec.querySelector(".opts"),pt=sec.querySelector(".punto");
+ function show(o){pt.hidden=false;pt.querySelector("p").textContent=o[2];}
+ ord.forEach(function(j){
+  var o=list[j],b=el('<button class="opt" type="button"><span>'+esc(o[1])+'</span>'+(PRUEBA?'<em class="tag">'+((q.patron||q.auto)?o[0]:"N"+o[0])+'</em>':'')+'</button>');
+  if(S.a[q.id]===j){b.classList.add("sel");show(o)}
+  b.onclick=function(){S.a[q.id]=j;save();Array.prototype.forEach.call(box.children,function(x){x.classList.remove("sel")});b.classList.add("sel");show(o);pt.scrollIntoView({behavior:"smooth",block:"nearest"})};
+  box.appendChild(b);
+ });
+ pt.querySelector("button").onclick=next;
+ app.appendChild(sec);
+}
+
+/* ---------- Resultado ---------- */
+function calcular(){
+ var f=flow(),c=ctx(),niv=[],grupos={},areas={},det=[],patron=null,auto=null;
+ f.forEach(function(s){
+  if(s.tipo!=="pregunta")return;var j=S.a[s.id];if(j===undefined)return;var o=s.q.o[j];
+  det.push({fase:s.fase,t:txt(s.q.t,c),r:o[1],p:o[2]});
+  if(s.q.patron){patron=o[0];return}
+  if(s.q.auto){auto=o[0];return}
+  niv.push(o[0]);
+  var k=s.q.area?("a:"+s.q.area):(s.q.g?"g:"+s.q.g:null);
+  if(k){var m=s.q.area?areas:grupos,key=k.slice(2);(m[key]=m[key]||[]).push(o[0])}
+ });
+ var avg=niv.length?niv.reduce(function(x,y){return x+y},0)/niv.length:1;
+ var nivel=avg<1.75?1:(avg<2.45?2:3);
+ function pc(arr){var a=arr.reduce(function(x,y){return x+y},0)/arr.length;return Math.round((a-1)/2*100)}
+ var mapa=[];
+ Object.keys(areas).forEach(function(k){mapa.push({n:AREAS[k],v:pc(areas[k]),foco:true})});
+ Object.keys(grupos).forEach(function(k){mapa.push({n:GRUPOS[k],v:pc(grupos[k])})});
+ var peor=mapa.slice().sort(function(x,y){return x.v-y.v})[0];
+ return {avg:avg,nivel:nivel,patron:patron||"gana",auto:auto,mapa:mapa,peor:peor,det:det,c:c};
+}
+
+function domingosCard(nivel){
+ var titulo=nivel===1?"Tu siguiente paso · con bono":"También podés sumarte · con bono";
+ var planes=DOMINGOS.planes.map(function(p){
+  var msg=encodeURIComponent("Hola Rodrigo, tengo el ebook, hice el recorrido Merecer 21 y quiero sumarme a los Domingos del 1% con el plan "+p.nombre.toLowerCase()+" ("+p.precio+(p.bono?" el primer mes, con el bono":"")+").");
+  var dest=p.destacado||(p.ahorro&&!DOMINGOS.planes.some(function(x){return x.destacado}));
+  return '<div class="plan'+(dest?' destacado':'')+'"><span class="pn">'+esc(p.nombre)+'</span><span class="pp">'+(p.antes?'<s>'+esc(p.antes)+'</s> ':'')+esc(p.precio)+' <small>'+esc(p.detalle)+'</small></span>'+(p.bono?'<span class="ahorro">'+esc(p.bono)+'</span>':'')+(p.ahorro?'<span class="ahorro">'+esc(p.ahorro)+'</span>':'')+'<a class="btn'+(dest?'':' ghost')+'" target="_blank" rel="noopener" href="https://wa.me/'+WA+'?text='+msg+'">Quiero el plan '+esc(p.nombre.toLowerCase())+'</a></div>';
+ }).join("");
+ return '<div class="card dom"><span class="pk">'+titulo+'</span><h2>'+esc(DOMINGOS.nombre)+'</h2><p>'+esc(DOMINGOS.texto)+'</p><div class="planes">'+planes+'</div></div>';
+}
+function vResultado(){
+ var R=calcular(),N=NIVELES[R.nivel],P=PATRONES[R.patron],c=R.c;
+ var nom=c.nombre?esc(c.nombre)+", ":"";
+ var mapa=R.mapa.map(function(m){return '<li><span class="mn">'+esc(m.n)+(m.foco?' <i>(tu foco)</i>':'')+'</span><span class="mb"><b style="width:'+Math.max(6,m.v)+'%"></b></span></li>'}).join("");
+ var det=R.det.map(function(d){return '<li><b>'+esc(d.t)+'</b><span>'+esc(d.r)+'</span><em>'+esc(d.p)+'</em></li>'}).join("");
+ var msg=encodeURIComponent("Hola Rodrigo, tengo el ebook e hice el recorrido Merecer 21. Mi resultado: "+N.nombre+" ("+P.nombre+"). Quiero saber más sobre "+N.paso.nombre+".");
+ var sec=el('<section class="res">'+
+  '<div class="card hero"><p class="eyebrow">Tu resultado</p><h1>'+nom+'este es tu punto de partida</h1></div>'+
+  '<div class="card"><span class="pk">Tu nivel de conciencia</span><h2 class="gold">'+esc(N.nombre)+'</h2><div class="niveles" aria-hidden="true">'+[1,2,3].map(function(n){return '<span class="'+(n===R.nivel?"on":"")+'">'+["Tiene la información","Sabe y aplica","Integra"][n-1]+'</span>'}).join("")+'</div><p>'+esc(N.desc)+'</p></div>'+
+  '<div class="card"><span class="pk">Tu patrón</span><h2 class="gold">'+esc(P.nombre)+'</h2><p>'+esc(P.desc)+'</p></div>'+
+  '<div class="card"><span class="pk">Tu mapa de merecimiento</span><p class="sub">Cuanto más llena la barra, más integrado está el merecimiento en esa área.</p><ul class="mapa">'+mapa+'</ul></div>'+
+  '<div class="card uno"><span class="pk">Tu primer 1% para esta semana</span><p class="big">'+esc(P.accion)+'</p>'+(R.peor?'<p>Empezá por el área donde más te cuesta hoy: <b>'+esc(R.peor.n.toLowerCase())+'</b>.</p>':'')+'<p class="sub">Después seguí con el plan de 7 días de tu ebook: una acción de 1% por día.</p></div>'+
+  (R.nivel===1?'':'<div class="card next"><span class="pk">Tu siguiente paso</span><h2>'+esc(N.paso.nombre)+'</h2><p>'+esc(N.paso.texto)+'</p>'+(N.paso.precio?'<p class="precio">'+esc(N.paso.precio)+'</p>':'')+'<div class="row"><a class="btn" target="_blank" rel="noopener" href="https://wa.me/'+WA+'?text='+msg+'">Quiero saber más</a></div></div>')+
+  '<div class="card" id="contacto"><span class="pk">Opcional</span><p>¿Querés que Rodrigo te escriba sobre tu resultado? Dejá tu WhatsApp o tu email.</p><label class="vh" for="cto">WhatsApp o email</label><input id="cto" type="text" autocomplete="email" placeholder="WhatsApp o email"><div class="row"><button class="btn ghost" type="button" id="cto-ok">Enviar</button></div><p class="nota" id="cto-msg" role="status"></p></div>'+
+  domingosCard(R.nivel)+
+  '<details class="card"><summary>Ver todas mis respuestas</summary><ol class="det">'+det+'</ol></details>'+
+  '<p class="nota">Este recorrido es un ejercicio de entrenamiento de la mentalidad. No es un test psicológico ni un diagnóstico. Si estás atravesando una situación de violencia, la Línea 144 atiende en Argentina, gratis, las 24 horas.</p>'+
+  '<div class="row center"><button class="btn ghost" type="button" id="otra">Volver a empezar</button></div>'+
+ '</section>');
+ app.appendChild(sec);
+ registrar(R);
+ document.getElementById("cto-ok").onclick=function(){var v=document.getElementById("cto").value.trim();if(v.length<6){document.getElementById("cto-msg").textContent="Revisá el dato, parece incompleto.";return}enviarContacto(v);document.getElementById("cto-msg").textContent="Listo, gracias. Rodrigo te va a escribir.";this.disabled=true};
+ document.getElementById("otra").onclick=function(){S={a:{},pos:"inicio",id:nuevoId()};clearSave();render()};
+}
+
+/* ---------- Modo prueba ---------- */
+function renderPrueba(f,c){
+ var p=document.getElementById("prueba");
+ p.hidden=!PRUEBA;if(!PRUEBA)return;
+ var qs=f.filter(function(s){return s.tipo==="pregunta"&&/^[RCM]$/.test(s.fase)}).map(function(s){return s.id});
+ var R=calcular();
+ p.innerHTML='<b>Modo creador</b> · perfil: '+esc([c.edad,c.pareja,c.hijos,c.origen,c.fam,c.presencia,c.trabajo].filter(Boolean).join(" / "))+
+  '<br>foco: '+esc(c.foco.join(", ")||"–")+' · preguntas de la fase 3 ('+qs.length+'): '+esc(qs.join(" "))+
+  '<br>promedio actual: '+R.avg.toFixed(2)+' → nivel '+R.nivel+' · patrón: '+R.patron+
+  '<br>registros guardados en este navegador: '+(function(){try{return JSON.parse(localStorage.getItem(REG_LOCAL)||"[]").length}catch(e){return 0}})()+' · envío a planilla: '+(REGISTRO_URL?'activo':'sin configurar')+
+  '<div class="row"><button class="btn ghost sm" type="button" id="azar">Completar al azar hasta el final</button><button class="btn ghost sm" type="button" id="vercsv">Ver registros (CSV)</button></div><textarea id="csvout" hidden readonly rows="8" style="width:100%;margin-top:8px;background:#0e0c09;color:#bdb19c;border:1px solid #3a3127;font:12px monospace"></textarea>';
+ document.getElementById("azar").onclick=azar;
+ document.getElementById("vercsv").onclick=function(){var t=document.getElementById("csvout");t.value=csv();t.hidden=false;t.select()};
+}
+function azar(){
+ var guard=0;
+ while(guard++<200){
+  var f=flow(),i=f.findIndex(function(s){return s.id===S.pos});if(i<0)i=0;var s=f[i],c=ctx();
+  if(s.tipo==="resultado")break;
+  if(s.tipo==="texto")S.a.p_nombre="Prueba";
+  if(s.tipo==="perfil"){var o=opts(s.q,c);S.a[s.q.id]=o[Math.floor(Math.random()*o.length)][0];limpiarRamas()}
+  if(s.tipo==="multi"){var o2=opts(s.q,c).map(function(x){return x[0]}).sort(function(){return Math.random()-.5});S.a[s.q.id]=o2.slice(0,1+Math.floor(Math.random()*2))}
+  if(s.tipo==="pregunta")S.a[s.id]=Math.floor(Math.random()*s.q.o.length);
+  S.pos=f[i+1].id;
+ }
+ save();render();window.scrollTo(0,0);
+}
+
+document.getElementById("atras").onclick=back;
+document.getElementById("modo").onclick=function(){PRUEBA=!PRUEBA;this.setAttribute("aria-pressed",PRUEBA);render()};
+var prev=load();if(prev){S=prev;S.pos="inicio"}if(!S.id)S.id=nuevoId();
+render();
+
+</script>
+<script>try{if(/[?&]creador\b/.test(location.search))document.getElementById("modo").hidden=false}catch(e){}</script>
+</body>
+</html>
