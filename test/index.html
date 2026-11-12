@@ -68,7 +68,7 @@ input[type=text]{font:400 17px var(--sans);min-height:52px;padding:10px 14px;bor
 <main id="app" aria-live="polite"></main>
 <script>
 /* Test RCM · 7 preguntas. Lleva al checkout del ebook y guarda cada test en la planilla de Merecer 21 (origen "test7"). */
-var CHECKOUT="https://metodorcm.impultienda.ar/checkout";
+var CHECKOUT="https://metodorcm.impultienda.ar/";
 var REGISTRO_URL="https://script.google.com/macros/s/AKfycbzP6kPBeia2Mx-qn9pywfrXpaLubPFljLRT_vBaFHwx3OMQSPPVeLM5kmsHUoWMft4D/exec";
 var FASES={R:"Reconocer",C:"Comunicar",M:"Moverte"};
 
@@ -180,7 +180,7 @@ function resultado(){
    '<p>'+esc(puente)+' Tu patrón es <b>'+esc(P.nombre.toLowerCase())+'</b>: el plan de 7 días empieza por ahí.</p>'+
    '<ul class="incl"><li>Ebook con el plan de 7 días: una acción de 1 a 30 segundos por día</li><li>Plan para imprimir, con casillero para marcar “lo hice”</li><li>11 tarjetas del 1% para el celular</li><li>Regalo: el recorrido completo Merecer 21</li></ul>'+
    '<p class="precio"><s>USD 19</s>USD 9</p><p class="sub">En Argentina lo pagás en pesos con Mercado Pago.</p>'+
-   '<a class="btn full" id="comprar" href="'+esc(checkoutUrl())+'">Quiero el plan de 7 días</a>'+
+   '<a class="btn full" id="comprar" href="'+esc(checkoutUrl())+'">Ver el plan de 7 días</a>'+
    '<p class="nota"><b>Garantía:</b> hacé el plan de 7 días. Si lo aplicaste y no te sirvió, te devuelvo tu plata.</p></div>'+
   '<div class="card"><p class="pk">Opcional</p><p>¿Querés que Rodrigo te escriba sobre tu resultado? Dejá tu WhatsApp o tu email.</p><label class="vh" for="cto">WhatsApp o email</label><input id="cto" type="text" autocomplete="email" placeholder="WhatsApp o email"><div class="row"><button class="btn ghost" type="button" id="cto-ok">Enviar</button></div><p class="nota" id="cto-msg" role="status"></p></div>'+
   '<p class="nota">Este test es un ejercicio de entrenamiento de la mentalidad. No es un test psicológico ni un diagnóstico. Si estás atravesando una situación de violencia, la Línea 144 atiende en Argentina, gratis, las 24 horas.</p>'+
