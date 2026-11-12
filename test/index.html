@@ -75,11 +75,11 @@ var FASES={R:"Reconocer",C:"Comunicar",M:"Moverte"};
 var NIVELES={
  1:{nombre:"La que tiene la información",desc:"Sabés mucho de lo que querés cambiar. Pero en el momento, el cuerpo reacciona antes que la cabeza: decís que sí, te callás o pedís perdón. No es poco: ya miraste hacia adentro. Lo que falta es pasar de saber a aplicar, de a 1%."},
  2:{nombre:"La que sabe y aplica",desc:"Ya empezaste a aplicar: a veces te sale y a veces no. Ponés límites, pero después aparece la culpa, o te quedás dándole vueltas. Lo que falta es que deje de costarte y se vuelva tu forma de estar."},
- 3:{nombre:"La que integra",desc:"Ya no lo pensás tanto: lo hacés. Decís que no con calma y elegís desde lo que querés. Lo que sigue es sostenerlo en las áreas donde todavía te cuesta."}
+ 3:{nombre:"La que integra",desc:"Ya no lo pensás tanto: lo hacés. Decís que no con calma y elegís desde lo que querés. Lo que sigue es sostenerlo y aplicarlo en todas las áreas de tu vida, en coherencia y excelencia."}
 };
 var PATRONES={
  da:{nombre:"La que da y no recibe",desc:"Sos generosa con todos, pero cuando algo llega para vos aparece la necesidad de devolverlo enseguida.",accion:"Hoy, cuando alguien te dé algo, respondé solo “gracias” y respirá una vez antes de decir otra cosa."},
- gana:{nombre:"La que se lo tiene que ganar",desc:"Sentís que lo bueno llega recién después de esforzarte lo suficiente. Y lo suficiente nunca termina de llegar.",accion:"Hoy hacé algo agradable para vos sin habértelo ganado: 30 segundos de sol, un café tranquilo, una canción entera."},
+ gana:{nombre:"La que se lo tiene que ganar",desc:"Sentís que lo bueno llega recién después de esforzarte lo suficiente. Y lo suficiente nunca termina de llegar.",accion:"Hoy hacé algo agradable para vos sin habértelo ganado: 30 segundos de sol, un café tranquila, una canción entera, o un momento de respiración consciente y agradecimiento."},
  achica:{nombre:"La que se achica",desc:"Para no incomodar ni quedar expuesta, le bajás el volumen a lo que sos, a lo que sabés y a lo que querés.",accion:"Hoy decí una opinión tuya en una sola frase, sin poner “no sé” ni “capaz” adelante."},
  permiso:{nombre:"La que espera permiso",desc:"Antes de disfrutar o de decidir, esperás que alguien te confirme que está bien.",accion:"Hoy tomá una decisión chica sin consultarla con nadie: qué comer, qué ponerte, a dónde ir."},
  recibe:{nombre:"La que recibe",desc:"Recibir ya no te incomoda: sabés que lo bueno también es para vos.",accion:"Hoy llevá esa misma forma de recibir al vínculo donde todavía te cuesta poner un límite."}
@@ -89,8 +89,8 @@ var PATRONES={
 var PREGUNTAS=[
  {id:"R1",f:"R",patron:true,t:"Cuando algo bueno llega a tu vida, ¿qué es lo primero que sentís?",o:[
   ["da","Ganas de devolverlo o compensarlo enseguida.","Si recibir te deja en deuda, en algún momento aprendiste que el amor se paga. Hoy alcanza con notarlo, sin culpa ni reproche."],
-  ["gana","Que todavía no hice lo suficiente para merecerlo.","El “todavía no” es una meta que se corre siempre un poco más lejos. Lo bueno no se gana: se recibe."],
-  ["achica","Ganas de bajarle el precio para no incomodar a nadie.","Achicarte para que nadie se incomode tiene un costo: te incomodás vos."],
+  ["gana","Que todavía no hice lo suficiente para merecerlo.","El “todavía no” es una vara que te pusiste vos, y se corre cada vez un poco más lejos. Notá cuándo aparece: reconocer lo que ya hiciste y elegir recibirlo es una decisión consciente, no un premio."],
+  ["achica","Ganas de minimizarlo para no incomodar a nadie.","Achicarte para que nadie se incomode tiene un costo: te incomodás vos."],
   ["permiso","Necesidad de que alguien me confirme que está bien disfrutarlo.","Esperar permiso es dejar la llave de tu bienestar en manos de otro. Esa llave es tuya."],
   ["recibe","Gratitud. Lo recibo sin cuentas pendientes.","Recibir con gratitud, sin deber nada a cambio, es merecimiento integrado."]]},
  {id:"R2",f:"R",t:"Cuando querés decir algo y te frenás, ¿lo notás en el cuerpo?",o:[
@@ -99,16 +99,16 @@ var PREGUNTAS=[
   [3,"Lo reconozco enseguida y sé qué me está diciendo.","Leer tu cuerpo en el momento te deja elegir en lugar de reaccionar."]]},
  {id:"R4",f:"R",t:"Cuando algo te molesta, ¿cuánto tardás en darte cuenta?",o:[
   [1,"Mucho. Me doy cuenta días después, o cuando exploto.","Si te das cuenta tarde, es porque aprendiste a no sentir para no molestar. Lo que no se reconoce se acumula hasta que desborda."],
-  [2,"Lo noto en el momento, pero no siempre sé bien qué siento.","Ya lo registrás a tiempo. Preguntate “¿qué siento?” y “¿qué necesito?”: dos preguntas que ordenan."],
+  [2,"Lo noto en el momento, pero no siempre sé bien qué siento.","Ya lo registrás a tiempo. Preguntate “¿qué siento ahora mismo?” y “¿qué me despierta?”: dos preguntas que ordenan."],
   [3,"Lo reconozco enseguida y puedo nombrar qué siento.","Nombrar lo que sentís en el momento es la base de un límite sin reproche."]]},
  {id:"C1",f:"C",t:"Cuando algo te sale mal, ¿cómo te hablás?",o:[
   [1,"Con dureza: “otra vez lo mismo, no aprendo más”.","Esa voz no nació con vos: la aprendiste. Probá hablarte como le hablarías a tu mejor amiga, aunque sea una frase."],
-  [2,"Me corrijo: “estoy en proceso, estoy trabajando esto”.","Fijate si “estoy en proceso” no se volvió una forma de quedarte en el camino."],
-  [3,"“Me equivoqué. ¿Qué elijo ahora?”","Te hablás con respeto y vas directo a la elección."]]},
+  [2,"Me corrijo: “estoy en proceso, estoy trabajando esto”.","Fijate si “estoy en proceso” no es una manera de evitar responsabilidad y de justificarte en el camino."],
+  [3,"“Me equivoqué. ¿Qué es lo mejor que puedo hacer con lo que tengo disponible?”","Te hablás con respeto y tomás acción."]]},
  {id:"C2",f:"C",t:"Te piden algo que no querés hacer. ¿Qué respondés?",o:[
   [1,"Digo que sí, y después me arrepiento y me enojo conmigo.","Cada sí que no sentís te aleja un poco de vos. Ese enojo de después es información: te muestra dónde está tu límite."],
-  [2,"A veces digo que no, y me quedo un rato dándole vueltas.","Ya ponés límites. Las vueltas son la culpa acomodándose; con práctica se acortan."],
-  [3,"Digo que no con calma, sin explicar de más.","Un no tranquilo cuida el vínculo más que un sí con enojo."]]},
+  [2,"A veces digo que no, y me quedo un rato dándole vueltas.","Ya ponés límites. Las vueltas son la culpa latente: con práctica disminuyen, se acortan y aparece nueva evidencia."],
+  [3,"Digo que no con calma, sin explicar de más.","Un “no” tranquilo cuida el vínculo más que un sí con enojo o por compromiso."]]},
  {id:"C3",f:"C",t:"Alguien dice algo con lo que no estás de acuerdo. ¿Qué decís?",o:[
   [1,"Nada. Me callo para no generar conflicto.","Callarte te protege de quedar expuesta, pero te deja afuera de tu propia vida. Tu opinión también merece lugar."],
   [2,"Lo digo, pero lo suavizo tanto que casi no se entiende.","Ya hablás. El próximo 1% es decir una sola frase clara, sin almohadones."],
@@ -178,7 +178,7 @@ function resultado(){
   '<div class="card g"><p class="pk">Tu primer 1% para hoy</p><p class="big">'+esc(P.accion)+'</p></div>'+
   '<div class="card offer"><p class="pk">Tu siguiente paso</p><h2>Decí que no sin sentirte mala persona</h2>'+
    '<p>'+esc(puente)+' Tu patrón es <b>'+esc(P.nombre.toLowerCase())+'</b>: el plan de 7 días empieza por ahí.</p>'+
-   '<ul class="incl"><li>Ebook con el plan de 7 días: una acción de 1 a 30 segundos por día</li><li>Plan para imprimir, con casillero para marcar “lo hice”</li><li>8 tarjetas del 1% para el celular</li><li>Regalo: el recorrido completo Merecer 21</li></ul>'+
+   '<ul class="incl"><li>Ebook con el plan de 7 días: una acción de 1 a 30 segundos por día</li><li>Plan para imprimir, con casillero para marcar “lo hice”</li><li>11 tarjetas del 1% para el celular</li><li>Regalo: el recorrido completo Merecer 21</li></ul>'+
    '<p class="precio"><s>USD 19</s>USD 9</p><p class="sub">En Argentina lo pagás en pesos con Mercado Pago.</p>'+
    '<a class="btn full" id="comprar" href="'+esc(checkoutUrl())+'">Quiero el plan de 7 días</a>'+
    '<p class="nota"><b>Garantía:</b> hacé el plan de 7 días. Si lo aplicaste y no te sirvió, te devuelvo tu plata.</p></div>'+
