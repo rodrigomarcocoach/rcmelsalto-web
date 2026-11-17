@@ -137,6 +137,7 @@ summary:after{color:var(--orange)}
 .rcm .c:hover,.pains li:hover{border-color:var(--orange)}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 </style>
+<!-- Meta Pixel --><script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","959464557002976");fbq("track","PageView");</script><noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=959464557002976&ev=PageView&noscript=1" alt=""></noscript>
 </head>
 <body>
 <header class="top">
@@ -311,7 +312,7 @@ summary:after{color:var(--orange)}
 (function(){var q=location.search;if(q){document.querySelectorAll('a[href^="/test/"],a[href^="https://metodorcm.impultienda.ar"]').forEach(function(a){a.href=a.getAttribute('href')+(a.getAttribute('href').indexOf('?')<0?q:'&'+q.slice(1))})}
  var bar=document.getElementById('mbar'),hero=document.querySelector('.hero');
  if('IntersectionObserver' in window){new IntersectionObserver(function(e){bar.classList.toggle('show',!e[0].isIntersecting)}).observe(hero)}else{bar.classList.add('show')}
- /* Eventos de conversión: listos para el pixel de Meta cuando se cargue (fbq) */
+ /* Eventos de conversión del pixel de Meta (fbq) */
  document.addEventListener('click',function(ev){var a=ev.target.closest('[data-ev]');if(!a)return;try{if(window.fbq)fbq('trackCustom','Clic_'+a.getAttribute('data-ev'))}catch(e){}});
 })();
 </script>
