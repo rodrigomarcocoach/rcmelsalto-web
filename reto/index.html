@@ -1040,7 +1040,7 @@ function renderLogin(){
       '<div><label class="eyebrow" for="mailIn">Tu email</label><input type="text" inputmode="email" id="mailIn" value="'+esc(loginEmail)+'" autocomplete="email" style="margin-top:6px"></div>'+
       '<div class="btns"><button type="button" class="btn" id="sendCode">📧 Mandame el código</button></div>';
   }else{
-    h+='<p>Te mandamos un código a <b>'+esc(loginEmail)+'</b>. Mirá también en Spam o Promociones.</p>'+
+    h+='<p>📧 Te mandamos un email a <b>'+esc(loginEmail)+'</b>.</p><div class="note">Abrilo <b>en este mismo teléfono</b> y tocá <b>“Sign in”</b>. Te trae de vuelta a la app, ya adentro.</div><p class="mute">Si no lo ves, mirá en Spam o Promociones. Si el email trae un código de números, escribilo acá:</p>'+
       '<div><label class="eyebrow" for="codeOtp">Código</label><input type="text" inputmode="numeric" autocomplete="one-time-code" id="codeOtp" maxlength="10" style="margin-top:6px;font-size:1.6rem;letter-spacing:.3em;text-align:center"></div>'+
       '<div class="btns"><button type="button" class="btn" id="verifyCode">✅ Entrar</button><button type="button" class="btn ghost" id="otherEmail">Cambiar email</button></div>';
   }
@@ -1051,7 +1051,7 @@ async function sendCode(){
   if(!loginNombre){setStatus("Escribí tu nombre.");return}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginEmail)){setStatus("Revisá tu email.");return}
   $("sendCode").disabled=true; setStatus("Enviando...");
-  const {error}=await SB.auth.signInWithOtp({email:loginEmail,options:{shouldCreateUser:true,data:{nombre:loginNombre}}});
+  const {error}=await SB.auth.signInWithOtp({email:loginEmail,options:{shouldCreateUser:true,data:{nombre:loginNombre},emailRedirectTo:location.origin+location.pathname}});
   if(error){setStatus("No se pudo enviar. Probá de nuevo en un minuto.");$("sendCode").disabled=false;return}
   try{localStorage.setItem(KEY+"-nombre",loginNombre)}catch(e){}
   loginStep="code"; setStatus(""); renderLogin(); setTimeout(()=>$("codeOtp")&&$("codeOtp").focus(),50);
