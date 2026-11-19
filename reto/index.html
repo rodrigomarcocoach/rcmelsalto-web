@@ -162,6 +162,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
 <button type="button" class="sos" id="sosBtn">🛟 Estoy trabado/a</button>
 <div class="overlay" id="overlay" hidden role="dialog" aria-modal="true" aria-label="Destrabar"><div class="card" id="dtCard"></div></div>
 <canvas id="confetti" hidden></canvas>
+<div id="toast" hidden role="alert" style="position:fixed;left:16px;right:16px;top:max(14px,env(safe-area-inset-top,0px));z-index:50;background:#1f180c;border:2px solid var(--gold);color:var(--fg);padding:14px 16px;border-radius:10px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.7)"></div>
 
 <script>
 /* ---------- Contenido ---------- */
@@ -258,7 +259,8 @@ function doneCount(o){let c=0;for(let i=1;i<=21;i++) if(o.days[i]&&o.days[i].don
 function answersCount(o){let c=0;for(let i=1;i<=21;i++) if(o.days[i]&&o.days[i].answer&&o.days[i].answer.trim()) c++;return c}
 function retomados(o){let c=0;for(let i=1;i<=21;i++) if(o.days[i]&&o.days[i].skipped) c++;return c}
 function daysSince(s){if(!s) return 0;const a=parse(s),b=new Date();b.setHours(0,0,0,0);return Math.round((b-a)/86400000)}
-function setStatus(t){$("status").textContent=t}
+let toastT=null;
+function setStatus(t){$("status").textContent=t;const el=$("toast");if(!el)return;if(!t||/^(✅ Guardado\.|Guardando\.\.\.|Guardado en este dispositivo\.)$/.test(t)){return}el.textContent=t;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{el.hidden=true},6000)}
 function cierreOpen(){return !!(state.days[21]&&state.days[21].done)}
 function n2Conds(){return [
   {ok:cierreOpen(),t:"Marcar el día 21 como hecho."},
