@@ -959,6 +959,9 @@ document.addEventListener("click",e=>{
   if(t.id==="otherEmail"){loginStep="email";renderLogin();return}
   if(t.id==="logout"){SB&&SB.auth.signOut();try{localStorage.removeItem(KEY)}catch(e){}location.reload();return}
   if(t.id==="installBtn"){doInstall();return}
+  if(t.id==="goVinc"){loginStep="vinc";renderLogin();setTimeout(()=>$("vincIn")&&$("vincIn").focus(),50);return}
+  if(t.id==="doVinc"){doVinc();return}
+  if(t.id==="vincBtn"){showVinculo();return}
   if(t.id==="shareBtn"){const txt=backupText();if(navigator.share){navigator.share({text:txt}).catch(()=>$("copyBtn").click())}else{$("copyBtn").click()}return}
   if(t.id==="copyBtn"){const txt=backupText();(navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>setStatus("Copiado. Pegalo en Notas o WhatsApp.")).catch(()=>{showBk(txt,false);setStatus("Mantené apretado el texto, elegí Copiar y pegalo en Notas.")});return}
   if(t.id==="restoreBtn"){showBk("",true);$("bk").placeholder="Pegá acá el respaldo completo y tocá Restaurar.";$("bk").focus();return}
@@ -1038,7 +1041,13 @@ function renderLogin(){
     h+='<p>Es gratis. Tu reto queda guardado en tu cuenta.</p>'+
       '<div><label class="eyebrow" for="nomIn">Tu nombre</label><input type="text" id="nomIn" value="'+esc(loginNombre)+'" autocomplete="given-name" style="margin-top:6px"></div>'+
       '<div><label class="eyebrow" for="mailIn">Tu email</label><input type="text" inputmode="email" id="mailIn" value="'+esc(loginEmail)+'" autocomplete="email" style="margin-top:6px"></div>'+
-      '<div class="btns"><button type="button" class="btn" id="sendCode">📧 Mandame el código</button></div>';
+      '<label style="display:flex;gap:10px;align-items:center;cursor:pointer"><input type="checkbox" id="keepIn"'+(keepSession()?" checked":"")+' style="width:22px;height:22px;accent-color:var(--gold)"> Mantener mi sesión abierta en este teléfono</label>'+
+      '<div class="btns"><button type="button" class="btn" id="sendCode">📧 Mandame el acceso</button></div>'+
+      '<div class="note">📲 <b>¿Ya entraste en Safari y ahora abrís la app instalada?</b><br>Tocá acá y escribí tu código de vinculación.<div class="btns" style="margin-top:10px"><button type="button" class="btn ghost" id="goVinc">🔗 Tengo un código</button></div></div>';
+  }else if(loginStep==="vinc"){
+    h+='<p>Escribí el código de 6 letras y números que te mostró Safari.</p>'+
+      '<div><label class="eyebrow" for="vincIn">Código de vinculación</label><input type="text" id="vincIn" maxlength="7" autocapitalize="characters" autocomplete="off" style="margin-top:6px;font-size:1.6rem;letter-spacing:.3em;text-align:center;text-transform:uppercase"></div>'+
+      '<div class="btns"><button type="button" class="btn" id="doVinc">✅ Entrar</button><button type="button" class="btn ghost" id="otherEmail">Volver</button></div>';
   }else{
     h+='<p>📧 Te mandamos un email a <b>'+esc(loginEmail)+'</b>.</p><div class="note">Abrilo <b>en este mismo teléfono</b> y tocá <b>“Sign in”</b>. Te trae de vuelta a la app, ya adentro.</div><p class="mute">Si no lo ves, mirá en Spam o Promociones. Si el email trae un código de números, escribilo acá:</p>'+
       '<div><label class="eyebrow" for="codeOtp">Código</label><input type="text" inputmode="numeric" autocomplete="one-time-code" id="codeOtp" maxlength="10" style="margin-top:6px;font-size:1.6rem;letter-spacing:.3em;text-align:center"></div>'+
@@ -1048,6 +1057,7 @@ function renderLogin(){
 }
 async function sendCode(){
   loginNombre=($("nomIn").value||"").trim(); loginEmail=($("mailIn").value||"").trim().toLowerCase();
+  setKeep(!!($("keepIn")&&$("keepIn").checked));
   if(!loginNombre){setStatus("Escribí tu nombre.");return}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginEmail)){setStatus("Revisá tu email.");return}
   $("sendCode").disabled=true; setStatus("Enviando...");
@@ -1075,7 +1085,33 @@ async function afterLogin(session){
   await checkCompra(false);
   sel.n1=todayIdx(state);
   showApp(true); render();
-  $("acct").innerHTML='<span class="mute" style="font-size:.9rem">'+esc(NOMBRE)+' · '+esc(EMAIL)+'</span><button type="button" class="mini" id="logout">Salir</button>'+(DEFERRED&&!isStandalone()?'<button type="button" class="mini" id="installBtn">📲 Instalar app</button>':'');
+  $("acct").innerHTML='<span class="mute" style="font-size:.9rem">'+esc(NOMBRE)+' · '+esc(EMAIL)+'</span><button type="button" class="mini" id="logout">Salir</button>'+(DEFERRED&&!isStandalone()?'<button type="button" class="mini" id="installBtn">📲 Instalar app</button>':'')+(!isStandalone()?'<button type="button" class="mini" id="vincBtn">🔗 Código para la app instalada</button>':'');
+}
+function keepSession(){try{return localStorage.getItem(KEY+"-keep")!=="0"}catch(e){return true}}
+function setKeep(v){const before=keepSession();try{localStorage.setItem(KEY+"-keep",v?"1":"0")}catch(e){} if(before!==v&&SB) initSB();}
+function initSB(){SB=window.supabase.createClient(CONFIG.supabaseUrl,CONFIG.supabaseKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storage:keepSession()?window.localStorage:window.sessionStorage}})}
+async function doVinc(){
+  const code=($("vincIn").value||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+  if(code.length!==6){setStatus("El código tiene 6 letras y números.");return}
+  setStatus("Entrando...");
+  try{
+    const r=await fetch(CONFIG.supabaseUrl+"/functions/v1/vincular",{method:"POST",headers:{"Content-Type":"application/json","apikey":CONFIG.supabaseKey},body:JSON.stringify({code})});
+    const j=await r.json();
+    if(!r.ok||!j.token_hash){setStatus("Ese código no sirve o venció. Pedí uno nuevo en Safari.");return}
+    setKeep(true);
+    const {data,error}=await SB.auth.verifyOtp({token_hash:j.token_hash,type:"magiclink"});
+    if(error||!data.session){setStatus("No se pudo entrar. Probá con un código nuevo.");return}
+    setStatus(""); await afterLogin(data.session);
+  }catch(e){setStatus("Sin conexión. Probá de nuevo.")}
+}
+async function showVinculo(){
+  const {data,error}=await SB.rpc("crear_vinculo");
+  if(error||!data){setStatus("No se pudo crear el código. Probá de nuevo.");return}
+  dt={vinc:true}; $("overlay").hidden=false;
+  $("dtCard").innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><p class="eyebrow">📲 Pasar a la app instalada</p><button type="button" class="btn ghost" id="sugClose" style="padding:6px 12px">Cerrar</button></div>'+
+    '<p>Tu código (vence en 10 minutos):</p><p class="count" style="letter-spacing:.2em">'+esc(data)+'</p>'+
+    '<div style="display:grid;gap:8px"><span>1. Abrí la app del <b>1%</b> en tu pantalla de inicio.</span><span>2. Tocá <b>“🔗 Tengo un código”</b>.</span><span>3. Escribí este código y tocá <b>Entrar</b>.</span></div>'+
+    '<p class="mute">Si todavía no la instalaste: en Safari tocá Compartir ⬆️ → “Agregar a inicio”.</p>';
 }
 async function checkCompra(manual){
   if(!SB||!SESSION) return;
@@ -1109,7 +1145,7 @@ loadLocal();
 (async()=>{
   try{TTS=null}catch(e){}
   if(!window.supabase||CONFIG.supabaseUrl.indexOf("__")===0){ showApp(true); render(); setStatus("Modo sin servidor: se guarda en este dispositivo."); return }
-  SB=window.supabase.createClient(CONFIG.supabaseUrl,CONFIG.supabaseKey,{auth:{persistSession:true,autoRefreshToken:true}});
+  initSB();
   const {data}=await SB.auth.getSession();
   if(data&&data.session) await afterLogin(data.session); else renderLogin();
 })();
