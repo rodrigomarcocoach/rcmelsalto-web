@@ -103,9 +103,19 @@ var PATRONES={
  gana:{nombre:"La que siente que nunca alcanza",desc:"Sentís que lo bueno llega recién después de esforzarte lo suficiente, y lo suficiente nunca termina de llegar. Como si tuvieras que ser perfecta para que te acepten, o sacarte un 10 para merecer un descanso.",accion:"Hoy hacé algo agradable para vos sin habértelo ganado: 30 segundos de sol, un café tranquila, una canción entera, o un momento de respiración consciente y agradecimiento."},
  achica:{nombre:"La que se achica",desc:"Para no incomodar ni quedar expuesta, le bajás el volumen a lo que sos, a lo que sabés y a lo que querés. A veces hasta te volvés invisible.",accion:"Hoy decí una opinión tuya en una sola frase, sin poner “no sé” ni “capaz” adelante."},
  permiso:{nombre:"La que espera permiso",desc:"Antes de disfrutar o de decidir, esperás que alguien te confirme que está bien.",accion:"Hoy tomá una decisión chica sin consultarla con nadie: qué comer, qué ponerte, a dónde ir."},
- recibe:{nombre:"La que recibe",desc:"Recibir ya no te incomoda: sabés que lo bueno también es para vos.",accion:"Hoy llevá esa misma forma de recibir al vínculo donde todavía te cuesta poner un límite."}
+ recibe:{nombre:"La que sabe recibir",desc:"Cuando algo bueno llega, lo tomás sin culpa y sin sentir que tenés que devolverlo. Esa es tu base.",accion:"Hoy pedí algo que necesitás antes de llegar al límite."}
 };
 
+/* Tu punto: sale de la respuesta más baja (en empate, la más cercana al final). */
+var PUNTOS={
+ V1:{t:"nombrar a tiempo lo que no te cierra en un vínculo",accion:"Hoy, si algo no te cierra en una conversación, decilo en una frase: “Esto no me cierra”. Sin explicar más.",porque:"Lo que nombrás a tiempo no se acumula ni te obliga a explotar después."},
+ R4:{t:"darte cuenta a tiempo de lo que te molesta",accion:"Hoy, cuando algo te moleste, frená 3 segundos y nombrá en silencio qué sentís: “esto es bronca”, “esto es cansancio”.",porque:"Lo que reconocés en el momento lo podés elegir. Lo que no, te elige a vos."},
+ C1:{t:"hablarte con amabilidad cuando algo te sale mal",accion:"Hoy, cuando algo te salga mal, cambiá el reproche por una pregunta: “¿Qué es lo mejor que puedo hacer ahora?”",porque:"La forma en que te hablás es el primer límite que ponés: el que te ponés a vos."},
+ C2:{t:"decir que no sin quedarte dándole vueltas",accion:"Hoy, ante un pedido que no querés, respondé “Dejame ver y te confirmo” y date un minuto antes de contestar.",porque:"Ese minuto entre el pedido y tu respuesta es el espacio donde aparece tu elección."},
+ C3:{t:"decir lo que pensás sin suavizarlo",accion:"Hoy decí una opinión tuya en una sola frase, sin suavizarla.",porque:"Una frase clara ocupa tu lugar sin tener que pelear por él."},
+ M1:{t:"llevar a la acción lo que ya sabés",accion:"Hoy elegí una idea que te inspiró y hacé la parte más chica: menos de 30 segundos.",porque:"Lo que hacés hoy, aunque sea chico, vale más que todo lo que guardás para después."},
+ alto:{t:"sostenerlo cuando crecés o estás cansada",accion:"Hoy pedí algo que necesitás antes de llegar al límite.",porque:"Sostenerse no es hacerlo todo sola: también es pedir a tiempo."}
+};
 /* Cada opción: [nivel o patrón, texto, punto de conciencia] */
 var PREGUNTAS=[
  {id:"R1",f:"R",patron:true,t:"Cuando algo bueno llega a tu vida, ¿qué es lo primero que sentís?",o:[
@@ -179,19 +189,20 @@ function punto(slot,o,i){
 }
 
 function calcular(){
- var sum=0,n=0,patron="gana";
- PREGUNTAS.forEach(function(q){var j=S.a[q.id];if(j===undefined)return;var v=q.o[j][0];if(q.patron)patron=v;else{sum+=v;n++}});
- var avg=n?sum/n:1;var nivel=avg<1.67?1:avg<2.34?2:3;return {avg:avg,nivel:nivel,patron:patron};
+ var sum=0,n=0,patron="gana",min=4,punto="alto";
+ PREGUNTAS.forEach(function(q){var j=S.a[q.id];if(j===undefined)return;var v=q.o[j][0];if(q.patron)patron=v;else{sum+=v;n++;if(v<3&&v<=min){min=v;punto=q.id}}});
+ var avg=n?sum/n:1;var nivel=avg<1.67?1:avg<2.34?2:3;return {avg:avg,nivel:nivel,patron:patron,punto:punto};
 }
 function registrar(R,extra){
- var row={id:S.id,origen:"test7",nombre:S.n,fecha:new Date().toISOString(),duracion_min:Math.round((Date.now()-S.t0)/60000),nivel:R.nivel+" · "+NIVELES[R.nivel].nombre,promedio:R.avg.toFixed(2),patron:PATRONES[R.patron].nombre,utm:location.search||""};
+ var row={id:S.id,origen:"test7",nombre:S.n,fecha:new Date().toISOString(),duracion_min:Math.round((Date.now()-S.t0)/60000),nivel:R.nivel+" · "+NIVELES[R.nivel].nombre,promedio:R.avg.toFixed(2),patron:PATRONES[R.patron].nombre,punto:PUNTOS[R.punto].t,utm:location.search||""};
  PREGUNTAS.forEach(function(q,k){var j=S.a[q.id];row["T"+(k+1)]=j===undefined?"":q.id+" | "+(q.patron?q.o[j][0]:"N"+q.o[j][0])+" | "+q.o[j][1]});
  if(extra)for(var k in extra)row[k]=extra[k];
  try{fetch(REGISTRO_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(extra&&extra.contacto?{id:S.id,contacto:extra.contacto}:row)}).catch(function(){})}catch(e){}
 }
 
 function resultado(){
- var R=calcular(),N=NIVELES[R.nivel],P=PATRONES[R.patron];
+ var R=calcular(),N=NIVELES[R.nivel],P=PATRONES[R.patron],U=PUNTOS[R.punto];
+ var enlace=R.patron==="recibe"?"Tu desafío no está en recibir: está en ":"Donde más se nota hoy es en ";
  hdr("Tu resultado","Test completo",100);
  if(!S.enviado){registrar(R);S.enviado=true;try{if(window.fbq)fbq("trackCustom","TestCompleto",{nivel:R.nivel,patron:R.patron})}catch(e){}}
  var niv=[1,2,3].map(function(n){return '<i class="'+(n<=R.nivel?"on":"")+'"></i>'}).join("");
@@ -199,10 +210,10 @@ function resultado(){
  var sec=el('<section style="display:flex;flex-direction:column;gap:16px">'+
   '<div class="card hero"><p class="pk">Tu resultado</p><h1>'+(S.n?esc(S.n)+', este es tu punto de partida':'Este es tu punto de partida')+'</h1></div>'+
   '<div class="card"><p class="pk">Lo que te pasa hoy</p><h2 class="gold">'+esc(N.frase)+'</h2><div class="camino" aria-hidden="true">'+niv+'</div><p>'+esc(N.desc)+'</p><p class="big" style="font-size:21px">'+esc(N.pasar)+'</p></div>'+
-  '<div class="card"><p class="pk">Tu patrón</p><h2 class="gold">'+esc(P.nombre)+'</h2><p>'+esc(P.desc)+'</p></div>'+
-  '<div class="card g"><p class="pk">Tu primer 1% para hoy</p><p class="big">'+esc(P.accion)+'</p></div>'+
+  '<div class="card"><p class="pk">Tu forma de recibir</p><h2 class="gold">'+esc(P.nombre)+'</h2><p>'+esc(P.desc)+'</p><p>'+esc(enlace)+'<b class="gold">'+esc(U.t)+'</b>.</p></div>'+
+  '<div class="card g"><p class="pk">Tu primer 1% para hoy</p><p class="big">'+esc(U.accion)+'</p><p class="sub"><b>Por qué este 1%:</b> '+esc(U.porque)+'</p></div>'+
   '<div class="card offer"><p class="pk">Tu siguiente paso</p><h2>Decí que no sin sentirte mala persona</h2>'+
-   '<p>'+esc(puente)+' Tu patrón es <b>'+esc(P.nombre.toLowerCase())+'</b>: el plan de 7 días empieza por ahí.</p>'+
+   '<p>'+esc(puente)+' Tu punto es <b>'+esc(U.t)+'</b>: el plan de 7 días te ayuda a practicarlo un día a la vez.</p>'+
    '<ul class="incl"><li>Ebook con el plan de 7 días: una acción de 1 a 30 segundos por día</li><li>Plan para imprimir, con casillero para marcar “lo hice”</li><li>11 tarjetas del 1% para el celular</li><li>Regalo: el recorrido completo Merecer 21</li></ul>'+
    '<p class="precio"><s>USD 19</s>USD 9</p><p class="sub">En Argentina lo pagás en pesos con Mercado Pago.</p>'+
    '<a class="btn full" id="comprar" onclick=\'try{if(window.fbq)fbq(\"trackCustom\",\"Clic_ver_plan\")}catch(e){}\' href="'+esc(checkoutUrl())+'">Ver el plan de 7 días</a>'+
