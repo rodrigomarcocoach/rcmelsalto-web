@@ -64,6 +64,14 @@ p{margin:0}.lead{font-size:18px}.sub{color:var(--muted);font-size:15px}
 .incl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .incl li{display:flex;gap:10px}.incl li:before{content:"✓";color:var(--gold2);font-weight:700}
 input[type=text]{font:400 17px var(--sans);min-height:52px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--text);width:100%}
+.nombre{display:flex;flex-direction:column;gap:6px;padding:4px 0 2px}
+.nombre label{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.nombre input{font:italic 600 28px/1.2 var(--serif);color:var(--gold2);background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:4px 0 8px;width:100%;min-height:0;outline:none;transition:border-color .2s}
+.nombre input:focus{border-bottom-color:var(--gold)}
+.nombre input::placeholder{color:#6f6450;font-style:italic}
+#saludo{font-family:var(--serif);font-size:20px;color:var(--gold2);min-height:24px}
+.firma{font-family:var(--serif);font-style:italic;color:var(--gold2);font-size:22px}
+.camino{display:flex;gap:8px;align-items:center}.camino i{flex:1;height:6px;border-radius:99px;background:var(--line)}.camino i.on{background:var(--gold)}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -86,14 +94,14 @@ var REGISTRO_URL="https://script.google.com/macros/s/AKfycbzP6kPBeia2Mx-qn9pywfr
 var FASES={R:"Reconocer",C:"Comunicar",M:"Moverte"};
 
 var NIVELES={
- 1:{nombre:"La que tiene la información",desc:"Sabés mucho de lo que querés cambiar. Pero en el momento, el cuerpo reacciona antes que la cabeza: decís que sí, te callás o pedís perdón. No es poco: ya miraste hacia adentro. Lo que falta es pasar de saber a aplicar, de a 1%."},
- 2:{nombre:"La que sabe y aplica",desc:"Ya empezaste a aplicar: a veces te sale y a veces no. Ponés límites, pero después aparece la culpa, o te quedás dándole vueltas. Lo que falta es que deje de costarte y se vuelva tu forma de estar."},
- 3:{nombre:"La que integra",desc:"Ya no lo pensás tanto: lo hacés. Decís que no con calma y elegís desde lo que querés. Lo que sigue es sostenerlo y aplicarlo en todas las áreas de tu vida, en coherencia y excelencia."}
+ 1:{nombre:"La que tiene la información",frase:"Sabés lo que te pasa. Todavía te gana el momento.",desc:"Sabés mucho de lo que querés cambiar. Pero en el momento, el cuerpo reacciona antes que la cabeza: decís que sí, te callás o pedís perdón. Muchas veces sentís que vas un paso atrás, o preferís el perfil bajo para no quedar expuesta. No es poco: ya miraste hacia adentro.",pasar:"Vas a pasar de sentir que si te mostrás perdés el control, a decir lo que sentís sin culpa y aplicarlo un 1% cada día."},
+ 2:{nombre:"La que sabe y aplica",frase:"Ya lo estás haciendo. Todavía te cuesta sostenerlo.",desc:"Ya empezaste: a veces te sale y a veces no. Ponés límites, pero después aparece la culpa, o te quedás dándole vueltas. Lo que falta es que deje de costarte y se vuelva tu forma de estar.",pasar:"Vas a pasar de hacerlo con esfuerzo y quedarte dándole vueltas, a sostenerlo con calma, sin tener que explicarte."},
+ 3:{nombre:"La que integra",frase:"Ya lo hacés. Ahora es sostenerlo en todas las áreas.",desc:"Ya no lo pensás tanto: lo hacés. Decís que no con calma y elegís desde lo que querés. Lo que sigue es sostenerlo cuando crecés, cuando estás cansada y con la gente que más querés.",pasar:"Vas a pasar de sostenerlo a vivirlo: libertad emocional y conexión auténtica en cada vínculo."}
 };
 var PATRONES={
  da:{nombre:"La que da y no recibe",desc:"Sos generosa con todos, pero cuando algo llega para vos aparece la necesidad de devolverlo enseguida.",accion:"Hoy, cuando alguien te dé algo, respondé solo “gracias” y respirá una vez antes de decir otra cosa."},
- gana:{nombre:"La que se lo tiene que ganar",desc:"Sentís que lo bueno llega recién después de esforzarte lo suficiente. Y lo suficiente nunca termina de llegar.",accion:"Hoy hacé algo agradable para vos sin habértelo ganado: 30 segundos de sol, un café tranquila, una canción entera, o un momento de respiración consciente y agradecimiento."},
- achica:{nombre:"La que se achica",desc:"Para no incomodar ni quedar expuesta, le bajás el volumen a lo que sos, a lo que sabés y a lo que querés.",accion:"Hoy decí una opinión tuya en una sola frase, sin poner “no sé” ni “capaz” adelante."},
+ gana:{nombre:"La que siente que nunca alcanza",desc:"Sentís que lo bueno llega recién después de esforzarte lo suficiente, y lo suficiente nunca termina de llegar. Como si tuvieras que ser perfecta para que te acepten, o sacarte un 10 para merecer un descanso.",accion:"Hoy hacé algo agradable para vos sin habértelo ganado: 30 segundos de sol, un café tranquila, una canción entera, o un momento de respiración consciente y agradecimiento."},
+ achica:{nombre:"La que se achica",desc:"Para no incomodar ni quedar expuesta, le bajás el volumen a lo que sos, a lo que sabés y a lo que querés. A veces hasta te volvés invisible.",accion:"Hoy decí una opinión tuya en una sola frase, sin poner “no sé” ni “capaz” adelante."},
  permiso:{nombre:"La que espera permiso",desc:"Antes de disfrutar o de decidir, esperás que alguien te confirme que está bien.",accion:"Hoy tomá una decisión chica sin consultarla con nadie: qué comer, qué ponerte, a dónde ir."},
  recibe:{nombre:"La que recibe",desc:"Recibir ya no te incomoda: sabés que lo bueno también es para vos.",accion:"Hoy llevá esa misma forma de recibir al vínculo donde todavía te cuesta poner un límite."}
 };
@@ -106,24 +114,24 @@ var PREGUNTAS=[
   ["achica","Ganas de minimizarlo para no incomodar a nadie.","Achicarte para que nadie se incomode tiene un costo: te incomodás vos."],
   ["permiso","Necesidad de que alguien me confirme que está bien disfrutarlo.","Esperar permiso es dejar la llave de tu bienestar en manos de otro. Esa llave es tuya."],
   ["recibe","Gratitud. Lo recibo sin cuentas pendientes.","Recibir con gratitud, sin deber nada a cambio, es merecimiento integrado."]]},
- {id:"R2",f:"R",t:"Cuando querés decir algo y te frenás, ¿lo notás en el cuerpo?",o:[
-  [1,"No me doy cuenta en el momento. Lo noto después, cuando ya pasó.","El cuerpo avisa antes que la mente: un nudo, calor, la garganta cerrada. Notarlo, aunque sea después, ya es reconocer."],
-  [2,"Sí, siento algo (garganta, pecho, panza), aunque no siempre sé qué es.","Ya escuchás la señal. El próximo paso es ponerle nombre: nombrarlo le baja el volumen."],
-  [3,"Lo reconozco enseguida y sé qué me está diciendo.","Leer tu cuerpo en el momento te deja elegir en lugar de reaccionar."]]},
+ {id:"V1",f:"R",t:"Al principio de un vínculo (pareja, amistad o trabajo), ¿qué hacés con lo que no te cierra?",o:[
+  [1,"Lo justifico. Seguro es algo mío.","Tiene sentido: justificar fue tu manera de darle una oportunidad al vínculo. Lo que notás al principio casi siempre vuelve después. Escucharlo también es cuidarte."],
+  [2,"Lo noto, pero espero a ver qué pasa.","Ya ves la señal. Esperar a tenerlo todo claro antes de decir algo es una forma de control. Nombrarlo a tiempo te da más seguridad que esperar."],
+  [3,"Lo digo con calma y elijo desde ahí.","Nombrar lo que no te cierra desde el principio es elegir desde tu valor, no desde el miedo a perder."]]},
  {id:"R4",f:"R",t:"Cuando algo te molesta, ¿cuánto tardás en darte cuenta?",o:[
   [1,"Mucho. Me doy cuenta días después, o cuando exploto.","Si te das cuenta tarde, es porque aprendiste a no sentir para no molestar. Lo que no se reconoce se acumula hasta que desborda."],
   [2,"Lo noto en el momento, pero no siempre sé bien qué siento.","Ya lo registrás a tiempo. Preguntate “¿qué siento ahora mismo?” y “¿qué me despierta?”: dos preguntas que ordenan."],
   [3,"Lo reconozco enseguida y puedo nombrar qué siento.","Nombrar lo que sentís en el momento es la base de un límite sin reproche."]]},
  {id:"C1",f:"C",t:"Cuando algo te sale mal, ¿cómo te hablás?",o:[
   [1,"Con dureza: “otra vez lo mismo, no aprendo más”.","Esa voz no nació con vos: la aprendiste. Probá hablarte como le hablarías a tu mejor amiga, aunque sea una frase."],
-  [2,"Me corrijo: “estoy en proceso, estoy trabajando esto”.","Fijate si “estoy en proceso” no es una manera de evitar responsabilidad y de justificarte en el camino."],
+  [2,"Me corrijo: “estoy en proceso, estoy trabajando esto”.","Tiene sentido que te des tiempo: cambiar lleva práctica. La pregunta es qué hacés hoy con lo que ya sabés. El proceso avanza cuando le ponés una acción."],
   [3,"“Me equivoqué. ¿Qué es lo mejor que puedo hacer con lo que tengo disponible?”","Te hablás con respeto y tomás acción."]]},
  {id:"C2",f:"C",t:"Te piden algo que no querés hacer. ¿Qué respondés?",o:[
   [1,"Digo que sí, y después me arrepiento y me enojo conmigo.","Cada sí que no sentís te aleja un poco de vos. Ese enojo de después es información: te muestra dónde está tu límite."],
   [2,"A veces digo que no, y me quedo un rato dándole vueltas.","Ya ponés límites. Las vueltas son la culpa latente: con práctica disminuyen, se acortan y aparece nueva evidencia."],
   [3,"Digo que no con calma, sin explicar de más.","Un “no” tranquilo cuida el vínculo más que un sí con enojo o por compromiso."]]},
  {id:"C3",f:"C",t:"Alguien dice algo con lo que no estás de acuerdo. ¿Qué decís?",o:[
-  [1,"Nada. Me callo para no generar conflicto.","Callarte te protege de quedar expuesta, pero te deja afuera de tu propia vida. Tu opinión también merece lugar."],
+  [1,"Nada. Prefiero el perfil bajo antes que generar un conflicto.","Tiene sentido: callarte te cuidó muchas veces de quedar expuesta. Hoy podés elegir otra forma de cuidarte: decir una sola frase tuya. Tu opinión también tiene lugar."],
   [2,"Lo digo, pero lo suavizo tanto que casi no se entiende.","Ya hablás. El próximo 1% es decir una sola frase clara, sin almohadones."],
   [3,"Lo digo con respeto, aunque el otro no esté de acuerdo.","No necesitás que te den la razón para sostener lo que pensás."]]},
  {id:"M1",f:"M",t:"Leés o escuchás algo que te inspira. ¿Qué hacés después?",o:[
@@ -132,7 +140,7 @@ var PREGUNTAS=[
   [3,"Elijo una sola acción chica y la hago ese mismo día.","Convertir la inspiración en acción el mismo día es integrar."]]}
 ];
 
-var S={i:-1,a:{},id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),t0:Date.now()};
+var S={n:"",i:-1,a:{},id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),t0:Date.now()};
 var app=document.getElementById("app"),fill=document.getElementById("fill"),atras=document.getElementById("atras");
 function esc(s){return String(s).replace(/[&<>"]/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]})}
 function el(h){var d=document.createElement("div");d.innerHTML=h.trim();return d.firstChild}
@@ -143,13 +151,17 @@ atras.onclick=function(){if(S.i>0)go(S.i-1);else go(-1)};
 
 function inicio(){
  hdr("Test RCM","7 preguntas · 3 minutos",0);
- var s=el('<section class="card hero"><p class="pk">Gratis · 3 minutos</p><h1>¿Ponés un límite y te sentís <span class="gold">mala persona</span>?</h1><p class="lead">7 preguntas para ver desde dónde partís. Al final te llevás tu nivel, tu patrón y tu primer 1%: una acción de menos de 30 segundos para hoy.</p><ul class="mini"><li>Reconocer, Comunicar y Moverte.</li><li>Respondé lo que te pasa, no lo que te gustaría.</li></ul><div><button class="btn full" type="button">Empezar el test</button></div><p class="nota">No es un test psicológico ni un diagnóstico. Es un ejercicio de entrenamiento de la mentalidad del Método RCM, de Rodrigo Marco.</p></section>');
+ var s=el('<section class="card hero"><p class="pk">Gratis · 3 minutos</p><h1>¿Ponés un límite y te sentís <span class="gold">mala persona</span>?</h1><p class="lead">7 preguntas para ver desde dónde partís. Al final te llevás lo que te pasa con nombre propio, tu patrón y tu primer 1%: una acción de menos de 30 segundos para hoy.</p><div class="nombre"><label for="nom">¿Cómo te llamás?</label><input id="nom" type="text" autocomplete="given-name" maxlength="24" placeholder="Tu nombre" value="'+esc(S.n)+'"><p id="saludo" aria-live="polite"></p></div><p class="sub">Respondé lo que te pasa, no lo que te gustaría.</p><div><button class="btn full" type="button">Empezar el test</button></div><p class="nota">No es un test psicológico ni un diagnóstico. Es un ejercicio de entrenamiento de la mentalidad del Método RCM, de Rodrigo Marco.</p></section>');
+ var inp=s.querySelector("#nom"),sal=s.querySelector("#saludo");
+ function upd(){var v=inp.value.trim().replace(/\s+/g," ");v=v.charAt(0).toUpperCase()+v.slice(1);S.n=v;sal.textContent=v?"Hola, "+v+". Este momento es para vos.":""}
+ inp.oninput=upd;upd();
+ inp.onkeydown=function(e){if(e.key==="Enter")go(0)};
  s.querySelector("button").onclick=function(){go(0)};app.appendChild(s);
 }
 
 function pregunta(i){
- var q=PREGUNTAS[i];hdr(FASES[q.f],"Pregunta "+(i+1)+" de "+PREGUNTAS.length,Math.round(i/PREGUNTAS.length*100));
- var s=el('<section class="card"><p class="pk">'+FASES[q.f]+'</p><h2>'+esc(q.t)+'</h2><div class="opts" role="radiogroup"></div><div class="slot"></div></section>');
+ var q=PREGUNTAS[i];hdr(S.n||"Test RCM","Pregunta "+(i+1)+" de "+PREGUNTAS.length,Math.round(i/PREGUNTAS.length*100));
+ var s=el('<section class="card"><h2>'+esc(q.t)+'</h2><div class="opts" role="radiogroup"></div><div class="slot"></div></section>');
  var box=s.querySelector(".opts"),slot=s.querySelector(".slot");
  q.o.forEach(function(o,j){
   var b=el('<button class="opt" type="button" role="radio" aria-checked="false">'+esc(o[1])+'</button>');
@@ -172,7 +184,7 @@ function calcular(){
  var avg=n?sum/n:1;var nivel=avg<1.67?1:avg<2.34?2:3;return {avg:avg,nivel:nivel,patron:patron};
 }
 function registrar(R,extra){
- var row={id:S.id,origen:"test7",fecha:new Date().toISOString(),duracion_min:Math.round((Date.now()-S.t0)/60000),nivel:R.nivel+" · "+NIVELES[R.nivel].nombre,promedio:R.avg.toFixed(2),patron:PATRONES[R.patron].nombre,utm:location.search||""};
+ var row={id:S.id,origen:"test7",nombre:S.n,fecha:new Date().toISOString(),duracion_min:Math.round((Date.now()-S.t0)/60000),nivel:R.nivel+" · "+NIVELES[R.nivel].nombre,promedio:R.avg.toFixed(2),patron:PATRONES[R.patron].nombre,utm:location.search||""};
  PREGUNTAS.forEach(function(q,k){var j=S.a[q.id];row["T"+(k+1)]=j===undefined?"":q.id+" | "+(q.patron?q.o[j][0]:"N"+q.o[j][0])+" | "+q.o[j][1]});
  if(extra)for(var k in extra)row[k]=extra[k];
  try{fetch(REGISTRO_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(extra&&extra.contacto?{id:S.id,contacto:extra.contacto}:row)}).catch(function(){})}catch(e){}
@@ -182,11 +194,11 @@ function resultado(){
  var R=calcular(),N=NIVELES[R.nivel],P=PATRONES[R.patron];
  hdr("Tu resultado","Test completo",100);
  if(!S.enviado){registrar(R);S.enviado=true;try{if(window.fbq)fbq("trackCustom","TestCompleto",{nivel:R.nivel,patron:R.patron})}catch(e){}}
- var niv=[1,2,3].map(function(n){return '<span class="'+(n===R.nivel?"on":"")+'">'+["Tiene la información","Sabe y aplica","Integra"][n-1]+'</span>'}).join("");
+ var niv=[1,2,3].map(function(n){return '<i class="'+(n<=R.nivel?"on":"")+'"></i>'}).join("");
  var puente=R.nivel===3?"Ya lo hacés. El plan de 7 días te ayuda a sostenerlo justo donde todavía te cuesta.":"No te falta información. Te falta un plan chico para aplicarla, un día a la vez.";
  var sec=el('<section style="display:flex;flex-direction:column;gap:16px">'+
-  '<div class="card hero"><p class="pk">Tu resultado</p><h1>Este es tu punto de partida</h1></div>'+
-  '<div class="card"><p class="pk">Tu nivel</p><h2 class="gold">'+esc(N.nombre)+'</h2><div class="niveles" aria-hidden="true">'+niv+'</div><p>'+esc(N.desc)+'</p></div>'+
+  '<div class="card hero"><p class="pk">Tu resultado</p><h1>'+(S.n?esc(S.n)+', este es tu punto de partida':'Este es tu punto de partida')+'</h1></div>'+
+  '<div class="card"><p class="pk">Lo que te pasa hoy</p><h2 class="gold">'+esc(N.frase)+'</h2><div class="camino" aria-hidden="true">'+niv+'</div><p>'+esc(N.desc)+'</p><p class="big" style="font-size:21px">'+esc(N.pasar)+'</p></div>'+
   '<div class="card"><p class="pk">Tu patrón</p><h2 class="gold">'+esc(P.nombre)+'</h2><p>'+esc(P.desc)+'</p></div>'+
   '<div class="card g"><p class="pk">Tu primer 1% para hoy</p><p class="big">'+esc(P.accion)+'</p></div>'+
   '<div class="card offer"><p class="pk">Tu siguiente paso</p><h2>Decí que no sin sentirte mala persona</h2>'+
@@ -196,11 +208,11 @@ function resultado(){
    '<a class="btn full" id="comprar" onclick=\'try{if(window.fbq)fbq(\"trackCustom\",\"Clic_ver_plan\")}catch(e){}\' href="'+esc(checkoutUrl())+'">Ver el plan de 7 días</a>'+
    '<p class="nota"><b>Garantía:</b> hacé el plan de 7 días. Si lo aplicaste y no te sirvió, te devuelvo tu plata.</p></div>'+
   '<div class="card"><p class="pk">Opcional</p><p>¿Querés que Rodrigo te escriba sobre tu resultado? Dejá tu WhatsApp o tu email.</p><label class="vh" for="cto">WhatsApp o email</label><input id="cto" type="text" autocomplete="email" placeholder="WhatsApp o email"><div class="row"><button class="btn ghost" type="button" id="cto-ok">Enviar</button></div><p class="nota" id="cto-msg" role="status"></p></div>'+
-  '<p class="nota">Este test es un ejercicio de entrenamiento de la mentalidad. No es un test psicológico ni un diagnóstico. Si estás atravesando una situación de violencia, la Línea 144 atiende en Argentina, gratis, las 24 horas. <a href=\"/privacidad/\" style=\"color:var(--gold2)\">Privacidad</a>.</p>'+
+  '<div class="card g"><p>'+(S.n?esc(S.n)+', r':'R')+'espondiste con honestidad, y eso no es poco. Mirarte así, sin culpa ni reproche, ya es empezar a elegirte.</p><p class="firma">Rodrigo</p></div>'+'<p class="nota">Este test es un ejercicio de entrenamiento de la mentalidad. No es un test psicológico ni un diagnóstico. Si estás atravesando una situación de violencia, la Línea 144 atiende en Argentina, gratis, las 24 horas. <a href=\"/privacidad/\" style=\"color:var(--gold2)\">Privacidad</a>.</p>'+
   '<div class="row" style="justify-content:center"><button class="btn ghost" type="button" id="otra">Volver a empezar</button></div></section>');
  app.appendChild(sec);
  document.getElementById("cto-ok").onclick=function(){var v=document.getElementById("cto").value.trim();var m=document.getElementById("cto-msg");if(v.length<5){m.textContent="Escribí tu WhatsApp o tu email.";return}registrar(R,{contacto:v});m.textContent="Listo. Rodrigo te va a escribir.";this.disabled=true};
- document.getElementById("otra").onclick=function(){S={i:-1,a:{},id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),t0:Date.now()};go(-1)};
+ document.getElementById("otra").onclick=function(){S={n:S.n,i:-1,a:{},id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),t0:Date.now()};go(-1)};
 }
 go(-1);
 </script>
