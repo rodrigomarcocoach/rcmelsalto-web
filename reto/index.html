@@ -218,7 +218,8 @@ const CONFIG={
   supabaseKey:"sb_publishable_r92f938vOni-B0eERSkS8g_026vTMXJ",
   checkoutN2:"https://nivel-2-venta-conciente.impultienda.ar/checkout?p=8340d56c-bb93-40f0-b730-bf95d631a978"
 };
-let SB=null, SESSION=null, EMAIL="", loginStep="email", loginEmail="", loginNombre="";
+let SB=null, SESSION=null, EMAIL="", loginStep="email", loginEmail="", loginNombre="", REAL_ADMIN=false, PREVIEW=false, SYNC_AT="";
+try{PREVIEW=sessionStorage.getItem("reto-preview")==="1"}catch(e){}
 const CHECK=[{k:"confianza",ico:"💪",q:"¿Cuánta confianza sentís al ofrecer?",c:"Confianza"},{k:"calma",ico:"🧘",q:"¿Cuánta calma sentís ante un no o un silencio?",c:"Calma"},{k:"constancia",ico:"📅",q:"¿Qué tan seguido le escribís a alguien?",c:"Constancia"}];
 const EMO=["😟","🙁","😐","🙂","😄"];
 const IAS=[{n:"💬 ChatGPT",d:"te ayuda a pensarlo",u:q=>"https://chatgpt.com/?q="+encodeURIComponent(q),k:"coach"},{n:"📊 Perplexity",d:"datos y fuentes",u:q=>"https://www.perplexity.ai/search?q="+encodeURIComponent(q),k:"datos"},{n:"✨ Gemini",d:"copiá y pegá",u:()=>"https://gemini.google.com",k:"coach",copy:true}];
@@ -268,7 +269,7 @@ function n2Conds(){return [
   {ok:!!(state.cierre&&state.cierre.resumen),t:"Ver tu resumen y tu plan en “Mi cierre”."}
 ]}
 function n2Ready(){return n2Conds().every(c=>c.ok)}
-function n2Open(){return ADMIN||!!state.unlocked.n2}
+function n2Open(){return ADMIN||(!PREVIEW&&!!state.unlocked.n2)}
 
 /* ---------- Guardado ---------- */
 function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open("reto-vc",1);r.onupgradeneeded=()=>r.result.createObjectStore("s");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
@@ -293,7 +294,8 @@ function save(){
   timer=setTimeout(()=>{
     timer=null;
     if(!SB||!SESSION){setStatus("Guardado en este dispositivo.");return}
-    SB.from("participantes").upsert({user_id:SESSION.user.id,email:EMAIL,nombre:NOMBRE,state:JSON.parse(JSON.stringify(state)),updated_at:new Date().toISOString()}).then(({error})=>setStatus(error?"Guardado en este dispositivo. Sin conexión con el servidor.":"✅ Guardado."));
+    const now=new Date().toISOString();
+    SB.from("participantes").upsert({user_id:SESSION.user.id,email:EMAIL,nombre:NOMBRE,state:JSON.parse(JSON.stringify(state)),updated_at:now}).then(({error})=>{if(!error)SYNC_AT=now;setStatus(error?"Guardado en este dispositivo. Sin conexión con el servidor.":"✅ Guardado.")});
   },600);
 }
 
@@ -308,6 +310,7 @@ function renderTabs(){
   $("tabs").innerHTML=h;
 }
 function renderBanner(){
+  if(PREVIEW){$("banner").innerHTML='<div class="banner"><span>👀 Estás viendo la app <b>como un participante</b>: el Nivel 2 tiene candado y aparece la compra.</span><button type="button" class="btn" id="previewOff">👑 Volver a creador</button></div>';return}
   const o=(view==="n2")?state.n2:state;
   const gap=daysSince(state.ultimo);
   const fin=o===state?cierreOpen():!!(o.days[21]&&o.days[21].done);
@@ -382,7 +385,7 @@ function unlockBox(){
   return h;
 }
 function renderN2Locked(){
-  let h='<div><p class="eyebrow">Nivel 2 · Conversaciones conscientes</p><h2 style="margin-top:8px">🔒 Todavía bloqueado</h2></div>';
+  let h='<div><p class="eyebrow">Nivel 2 · Afinar tu hábito</p><h2 style="margin-top:8px">🔒 Todavía bloqueado</h2></div>';
   h+='<p>Para abrir el nivel 2:</p>'+unlockBox();
   const falt=[];for(let i=1;i<=21;i++) if(!(state.days[i]&&state.days[i].done)) falt.push(i);
   if(!n2Conds()[1].ok&&falt.length) h+='<div class="block"><p class="k">Días que podés completar</p><div class="chips">'+falt.map(i=>'<button type="button" class="dot" style="width:44px" data-goto="'+i+'">'+i+'</button>').join("")+'</div></div>';
@@ -792,7 +795,7 @@ function renderCierre(){
     if(r.frase) h+='<p class="note" style="font-size:1.15rem">'+esc(r.frase)+'</p>';
     h+='<div class="btns"><button type="button" class="btn ghost" id="resBtn">Rehacer resumen</button><button type="button" class="btn ghost" data-again="n1">🔁 Hacer el reto otra vez</button></div>';
   }
-  h+='<div class="block"><p class="k">Nivel 2 · Conversaciones conscientes</p>';
+  h+='<div class="block"><p class="k">Nivel 2 · Afinar tu hábito</p>';
   if(n2Open()) h+='<p>🔓 ¡Nivel 2 desbloqueado! Un camino nuevo, armado con tus trabas reales, para llevar tu hábito a la excelencia.</p><div class="btns"><button type="button" class="btn" data-v="n2">Ir al nivel 2</button></div>';
   else h+=unlockBox();
   h+='</div>';
@@ -961,6 +964,7 @@ document.addEventListener("click",e=>{
   if(t.id==="otherEmail"){loginStep="email";renderLogin();return}
   if(t.id==="logout"){SB&&SB.auth.signOut();try{localStorage.removeItem(KEY)}catch(e){}location.reload();return}
   if(t.id==="installBtn"){doInstall();return}
+  if(t.id==="previewBtn"||t.id==="previewOff"){PREVIEW=!PREVIEW;try{sessionStorage.setItem("reto-preview",PREVIEW?"1":"0")}catch(e){}ADMIN=REAL_ADMIN&&!PREVIEW;if(view==="admin")view="n1";if(PREVIEW)view="n2";render();if($("previewBtn"))$("previewBtn").textContent=PREVIEW?'👑 Volver a creador':'👀 Ver como participante';scrollTo(0,0);return}
   if(t.id==="goVinc"){loginStep="vinc";renderLogin();setTimeout(()=>$("vincIn")&&$("vincIn").focus(),50);return}
   if(t.id==="doVinc"){doVinc();return}
   if(t.id==="vincBtn"){showVinculo();return}
@@ -1079,15 +1083,18 @@ async function verifyCode(){
 async function afterLogin(session){
   SESSION=session; EMAIL=(session.user.email||"").toLowerCase();
   let nombreLocal=""; try{nombreLocal=localStorage.getItem(KEY+"-nombre")||""}catch(e){}
-  const {data:row}=await SB.from("participantes").select("nombre,state").eq("user_id",session.user.id).maybeSingle();
+  const {data:row}=await SB.from("participantes").select("nombre,state,updated_at").eq("user_id",session.user.id).maybeSingle();
+  if(row) SYNC_AT=row.updated_at||"";
   NOMBRE=(row&&row.nombre)||(session.user.user_metadata&&session.user.user_metadata.nombre)||nombreLocal||EMAIL.split("@")[0];
   if(row&&row.state) state=norm(row.state);
   else { await SB.from("participantes").upsert({user_id:session.user.id,email:EMAIL,nombre:NOMBRE,state:JSON.parse(JSON.stringify(state)),updated_at:new Date().toISOString()}); }
-  try{const {data:adm}=await SB.rpc("soy_admin"); ADMIN=!!adm}catch(e){ADMIN=false}
+  try{const {data:adm}=await SB.rpc("soy_admin"); REAL_ADMIN=!!adm}catch(e){REAL_ADMIN=false}
+  if(!REAL_ADMIN) PREVIEW=false;
+  ADMIN=REAL_ADMIN&&!PREVIEW;
   await checkCompra(false);
   sel.n1=todayIdx(state);
   showApp(true); render();
-  $("acct").innerHTML='<span class="mute" style="font-size:.9rem">'+esc(NOMBRE)+' · '+esc(EMAIL)+'</span><button type="button" class="mini" id="logout">Salir</button>'+(DEFERRED&&!isStandalone()?'<button type="button" class="mini" id="installBtn">📲 Instalar app</button>':'')+(!isStandalone()?'<button type="button" class="mini" id="vincBtn">🔗 Código para la app instalada</button>':'');
+  $("acct").innerHTML='<span class="mute" style="font-size:.9rem">'+esc(NOMBRE)+' · '+esc(EMAIL)+'</span><button type="button" class="mini" id="logout">Salir</button>'+(DEFERRED&&!isStandalone()?'<button type="button" class="mini" id="installBtn">📲 Instalar app</button>':'')+(!isStandalone()?'<button type="button" class="mini" id="vincBtn">🔗 Código para la app instalada</button>':'')+(REAL_ADMIN?'<button type="button" class="mini" id="previewBtn">'+(PREVIEW?'👑 Volver a creador':'👀 Ver como participante')+'</button>':'');
 }
 function keepSession(){try{return localStorage.getItem(KEY+"-keep")!=="0"}catch(e){return true}}
 function setKeep(v){const before=keepSession();try{localStorage.setItem(KEY+"-keep",v?"1":"0")}catch(e){} if(before!==v&&SB) initSB();}
@@ -1117,12 +1124,17 @@ async function showVinculo(){
 }
 async function checkCompra(manual){
   if(!SB||!SESSION) return;
+  if(PREVIEW){ if(manual) setStatus("👀 Vista de participante: acá vería si su pago ya entró."); return }
   const {data}=await SB.from("compras").select("producto,estado").eq("email",EMAIL).eq("producto","n2").eq("estado","aprobada").limit(1);
   if(data&&data.length){
     if(!state.unlocked.n2){state.unlocked.n2=ymd(new Date());save();if(manual||view==="n2"){view="n2";render();scrollTo(0,0);confetti();playWin();setStatus("🔓 ¡Nivel 2 desbloqueado! Es tuyo para siempre.")}}
   }else if(manual) setStatus("Todavía no vemos tu pago. Si recién pagaste, esperá 1 minuto y tocá de nuevo. Pagá con "+EMAIL+".");
 }
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&SESSION&&!state.unlocked.n2&&n2Ready()) checkCompra(false)});
+document.addEventListener("visibilitychange",async()=>{
+  if(document.hidden||!SESSION||!SB) return;
+  if(!timer){try{const {data:row}=await SB.from("participantes").select("state,updated_at").eq("user_id",SESSION.user.id).maybeSingle();if(row&&row.updated_at&&new Date(row.updated_at)>new Date(SYNC_AT||0)){state=norm(row.state);SYNC_AT=row.updated_at;try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}render();setStatus("🔄 Actualizado con tus últimos datos.")}}catch(e){}}
+  if(!state.unlocked.n2&&n2Ready()) checkCompra(false);
+});
 /* Sugerencias de mejora */
 function openSug(){
   dt={sug:true}; $("overlay").hidden=false;
