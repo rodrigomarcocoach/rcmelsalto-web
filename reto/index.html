@@ -1125,7 +1125,9 @@ async function showVinculo(){
 async function checkCompra(manual){
   if(!SB||!SESSION) return;
   if(PREVIEW){ if(manual) setStatus("👀 Vista de participante: acá vería si su pago ya entró."); return }
-  const {data}=await SB.from("compras").select("producto,estado").eq("email",EMAIL).eq("producto","n2").eq("estado","aprobada").limit(1);
+  const {data}=await SB.from("compras").select("producto,estado").eq("email",EMAIL).in("producto",["n2","n3"]).eq("estado","aprobada");
+  /* Comprar un nivel abre también todos los anteriores: Nivel 3 incluye el Nivel 2. */
+  if(data&&data.some(c=>c.producto==="n3")&&!state.unlocked.n3){state.unlocked.n3=ymd(new Date());if(!state.unlocked.n2)state.unlocked.n2=state.unlocked.n3;save()}
   if(data&&data.length){
     if(!state.unlocked.n2){state.unlocked.n2=ymd(new Date());save();if(manual||view==="n2"){view="n2";render();scrollTo(0,0);confetti();playWin();setStatus("🔓 ¡Nivel 2 desbloqueado!")}}
   }else if(manual) setStatus("Todavía no vemos tu pago. Si recién pagaste, esperá 1 minuto y tocá de nuevo. Pagá con "+EMAIL+".");
