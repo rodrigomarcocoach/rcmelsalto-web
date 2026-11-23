@@ -218,6 +218,17 @@ const CONFIG={
   supabaseKey:"sb_publishable_r92f938vOni-B0eERSkS8g_026vTMXJ",
   checkoutN2:"https://nivel-2-venta-conciente.impultienda.ar/checkout?p=8340d56c-bb93-40f0-b730-bf95d631a978"
 };
+const ESCALERA={
+  wa:"5492915724766",
+  domingos:{activo:false,mes:{precio:"$65.000",link:"https://domingos-del-1.impultienda.ar/o/domingos-1-mes"},tri:{precio:"$120.000",link:"https://domingos-del-1.impultienda.ar/o/domingos-3-meses"}},
+  mentoria:{precio:"$230.000"}, encuentro:{precio:"$80.000"}
+};
+const REGALOS=[
+  {ico:"🎁",t:"Tu historia de venta",mini:"Escribí 1 venta que te salió bien.",medio:"Contala en 3 frases: qué ofreciste, cómo y qué pasó.",pro:"Grabala en un audio y mandásela a alguien a quien le sirva."},
+  {ico:"🎁",t:"Pedí una recomendación",mini:"Escribí el nombre de 1 cliente que quedó contento.",medio:"Pedile que te recomiende con 1 persona.",pro:"Pedíselo a 2 clientes hoy."},
+  {ico:"🎁",t:"Tu oferta en voz alta",mini:"Decí tu oferta en voz alta 1 vez.",medio:"Grabala en 30 segundos.",pro:"Publicala en una historia."}
+];
+let REGALOS_N=0, MI_REF="";
 let SB=null, SESSION=null, EMAIL="", loginStep="email", loginEmail="", loginNombre="", REAL_ADMIN=false, PREVIEW=false, SYNC_AT="";
 try{PREVIEW=sessionStorage.getItem("reto-preview")==="1"}catch(e){}
 const CHECK=[{k:"confianza",ico:"💪",q:"¿Cuánta confianza sentís al ofrecer?",c:"Confianza"},{k:"calma",ico:"🧘",q:"¿Cuánta calma sentís ante un no o un silencio?",c:"Calma"},{k:"constancia",ico:"📅",q:"¿Qué tan seguido le escribís a alguien?",c:"Constancia"}];
@@ -303,6 +314,7 @@ function save(){
 function renderTabs(){
   let h='<button type="button" class="tab'+(view==="n1"?" on":"")+'" data-v="n1">📅 Nivel 1</button>';
   if(state.start) h+='<button type="button" class="tab'+(view==="avance"?" on":"")+'" data-v="avance">📈 Mi avance</button>';
+  if(SESSION) h+='<button type="button" class="tab'+(view==="camino"?" on":"")+'" data-v="camino">🪜 Mi camino</button>';
   if(cierreOpen()||(state.cierre&&state.cierre.resumen)) h+='<button type="button" class="tab'+(view==="cierre"?" on":"")+'" data-v="cierre">🎉 Mi cierre</button>';
   if(state.cierre&&state.cierre.resumen) h+='<button type="button" class="tab'+(view==="plan"?" on":"")+'" data-v="plan">🧭 Mi plan</button>';
   h+='<button type="button" class="tab'+(view==="n2"?" on":"")+(n2Open()?"":" lock")+'" data-v="n2">'+(n2Open()?"":"🔒 ")+'Nivel 2</button>';
@@ -425,6 +437,46 @@ function needAccion(){
   let miss=0; if(state.plan&&state.plan.start){for(let i=1;i<planDay();i++) if(!state.plan.hechos[i]) miss++}
   return P.modo||tr>=2||miss>=2;
 }
+function waLink(txt){return "https://wa.me/"+ESCALERA.wa+"?text="+encodeURIComponent(txt)}
+function refLink(){return "https://rcmelsalto.com/reto/?ref="+MI_REF}
+function paso(n,ico,titulo,estado,desc,cta){
+  return '<div class="week" style="'+(estado==="ok"?"border-color:var(--gold)":"")+'"><b>'+n+' · '+ico+' '+esc(titulo)+'</b><span>'+desc+'</span>'+(cta?'<div class="btns" style="margin-top:6px">'+cta+'</div>':'')+'</div>';
+}
+function renderCamino(){
+  const n1fin=cierreOpen(), n2ok=n2Open(), n2fin=!!(state.n2.days&&state.n2.days[21]&&state.n2.days[21].done), dom=ESCALERA.domingos;
+  let h='<div><p class="eyebrow">Tu escalera de crecimiento</p><h2 style="margin-top:8px">🪜 Mi camino</h2></div><p>Cada paso te lleva un 1% más lejos. Avanzás a tu ritmo.</p><div style="display:grid;gap:10px">';
+  h+=paso(1,"📅","Reto · Nivel 1","ok", n1fin?"✅ Terminado. ¡Bien ahí!":"En camino: día "+todayIdx(state)+" de 21.", n1fin?'':'<button type="button" class="btn ghost" data-v="n1">Seguir con el reto</button>');
+  h+=paso(2,"🔓","Nivel 2 · Afinar tu hábito",n2ok?"ok":"", n2ok?"✅ Abierto: 21 misiones armadas con tus trabas.":(n1fin?"Se abre por USD 17.":"Se habilita cuando terminás el Nivel 1."), n2ok?'<button type="button" class="btn ghost" data-v="n2">Ir al Nivel 2</button>':(n1fin?'<button type="button" class="btn" data-v="n2">Ver cómo abrirlo</button>':''));
+  h+=paso(3,"🔒","Nivel 3","", n2fin?"Muy pronto. Te avisamos cuando esté listo.":"Se habilita cuando terminás el Nivel 2.","");
+  h+=paso(4,"☀️","Domingos del 1% · comunidad","", "Encuentros de los domingos y todas las clases grabadas. 1 mes "+dom.mes.precio+" · 3 meses "+dom.tri.precio+".", dom.activo?'<a class="btn" href="'+dom.mes.link+'" target="_blank" rel="noopener" style="text-decoration:none">1 mes</a><a class="btn ghost" href="'+dom.tri.link+'" target="_blank" rel="noopener" style="text-decoration:none">3 meses</a>':'<a class="btn ghost" href="'+esc(waLink("Hola Rodrigo, quiero sumarme a Domingos del 1%."))+'" target="_blank" rel="noopener" style="text-decoration:none">💬 Quiero sumarme</a>');
+  h+=paso(5,"🎓","Mentoría 1 a 1","", "4 encuentros con Rodrigo, a tu medida. "+ESCALERA.mentoria.precio+". También hay un encuentro suelto de "+ESCALERA.encuentro.precio+".", '<a class="btn ghost" href="'+esc(waLink("Hola Rodrigo, quiero saber más de la mentoría 1 a 1."))+'" target="_blank" rel="noopener" style="text-decoration:none">💬 Hablar con Rodrigo</a>');
+  h+='</div>';
+  /* Referidos */
+  h+='<div class="block"><p class="k">🎁 Invitá y ganá</p><p>Invitá a alguien a hacer el reto con vos. <b>Cuando arranca su día 1, se te abre una misión de regalo.</b></p>';
+  if(MI_REF){
+    const msg="Estoy haciendo el Reto de 21 días de Venta Consciente y me está sirviendo. ¿Lo hacés conmigo? Es gratis: "+refLink();
+    h+='<div class="tools"><a class="mini" href="https://wa.me/?text='+encodeURIComponent(msg)+'" target="_blank" rel="noopener">💬 Invitar por WhatsApp</a><button type="button" class="mini" id="copyRef">📋 Copiar mi link</button></div>';
+  }
+  h+='<p class="mute">Personas que ya arrancaron por tu invitación: <b style="color:var(--gold2)">'+REGALOS_N+'</b></p>';
+  REGALOS.forEach((g,i)=>{
+    const abierto=i<REGALOS_N, hecho=state.regalos&&state.regalos[i];
+    h+='<div class="week" style="'+(abierto?"":"opacity:.55")+'"><b>'+(abierto?g.ico:"🔒")+' Misión regalo '+(i+1)+' · '+esc(g.t)+'</b>'+(abierto?'<span>🌱 Mini: '+esc(g.mini)+'</span><span>🔥 Medio: '+esc(g.medio)+'</span><span>🏆 Pro: '+esc(g.pro)+'</span><div class="btns"><button type="button" class="btn'+(hecho?" on":" ghost")+'" data-regalo="'+i+'">'+(hecho?"✅ Hecha":"✅ La hice")+'</button></div>':'<span>Se abre con tu invitación número '+(i+1)+'.</span>')+'</div>';
+  });
+  h+='</div>';
+  $("cierre").innerHTML=h;
+}
+async function enviarTestimonio(){
+  const v=($("testiTxt").value||"").trim(); if(v.length<5){setStatus("Escribí unas palabras.");return}
+  if(SB&&SESSION){const {error}=await SB.from("testimonios").insert({user_id:SESSION.user.id,nombre:NOMBRE,texto:v,permiso:!!$("testiOk").checked});if(error){setStatus("No se pudo enviar. Probá de nuevo.");return}}
+  state.testimonio=true; save(); renderCierre(); setStatus("🙌 ¡Gracias por tu testimonio!");
+}
+async function cargarRegalos(){ if(!SB||!SESSION) return; try{const {data}=await SB.rpc("mis_regalos"); REGALOS_N=Math.min(REGALOS.length,data||0); if(view==="camino") renderCamino()}catch(e){} }
+async function registrarRef(){
+  let ref=""; try{ref=localStorage.getItem("reto-ref")||""}catch(e){}
+  if(!ref||!SB||!SESSION) return;
+  try{await SB.rpc("registrar_referido",{cod:ref})}catch(e){}
+  try{localStorage.removeItem("reto-ref")}catch(e){}
+}
 function renderPlan(){
   const P=planData(); let h='<div><p class="eyebrow">4 semanas · 28 días</p><h2 style="margin-top:8px">🧭 Mi plan</h2></div>';
   if(!P){$("cierre").innerHTML=h+'<p>Primero mirá tu resumen en “Mi cierre”.</p>';return}
@@ -451,6 +503,7 @@ function renderPlan(){
     }
     h+='</div>';
   }
+  if(n>=22) h+='<div class="practice"><p class="k" style="color:var(--gold)">☀️ Para no hacerlo solo/a</p><p style="color:var(--fg)">En <b>Domingos del 1%</b> seguís con la comunidad cada semana y tenés todas las clases grabadas.</p><div class="btns"><button type="button" class="btn" data-v="camino">Ver Domingos del 1%</button></div></div>';
   h+='<div class="block"><p class="k">⏰ Recordatorios de cada semana</p><p class="mute" style="font-size:.95rem">1. Elegí la hora. 2. Tocá ⏰. 3. Tocá Guardar en tu calendario.</p>'+planCards(null,true)+'</div>';
   $("cierre").innerHTML=h;
 }
@@ -474,6 +527,7 @@ function render(){
   $("backup").hidden=!(state.start&&(view==="n1"||view==="n2"||view==="avance"));
   if(0)$("betaNote").textContent="Versión beta del equipo. "+(dbDoc?"Tus respuestas se guardan en tu cuenta.":"Tus respuestas se guardan solo en este dispositivo.")+" Si algo no funciona o querés contarnos cómo te fue, escribile a Rodrigo por WhatsApp: +54 9 2915 724766.";
   if(view==="admin"){ $("startPanel").hidden=true;$("app").hidden=true;$("dayCard").hidden=true;$("cierre").hidden=true; renderAdmin(); return }
+  if(view==="camino"){ $("startPanel").hidden=true;$("app").hidden=true;$("dayCard").hidden=true;$("cierre").hidden=false; renderCamino(); return }
   if(view==="plan"){ $("startPanel").hidden=true;$("app").hidden=true;$("dayCard").hidden=true;$("cierre").hidden=false; renderPlan(); return }
   if(view==="avance"){ $("startPanel").hidden=true;$("app").hidden=true;$("dayCard").hidden=true;$("cierre").hidden=false; renderAvance(); return }
   if(view==="cierre"){ $("startPanel").hidden=true;$("app").hidden=true;$("dayCard").hidden=true;$("cierre").hidden=false; renderCierre(); return }
@@ -795,6 +849,12 @@ function renderCierre(){
     if(r.frase) h+='<p class="note" style="font-size:1.15rem">'+esc(r.frase)+'</p>';
     h+='<div class="btns"><button type="button" class="btn ghost" id="resBtn">Rehacer resumen</button><button type="button" class="btn ghost" data-again="n1">🔁 Hacer el reto otra vez</button></div>';
   }
+  if(r){
+    h+='<div class="block"><p class="k">💬 Tu testimonio</p>';
+    if(state.testimonio) h+='<p>🙌 ¡Gracias! Tu testimonio le llegó a Rodrigo.</p>';
+    else h+='<p>¿Qué te dejó el reto? Dos o tres frases alcanzan. Le sirve a otras personas que están dudando.</p><textarea id="testiTxt" placeholder="Por ejemplo: antes postergaba ofrecer y ahora..."></textarea><label style="display:flex;gap:10px;align-items:center;cursor:pointer"><input type="checkbox" id="testiOk" checked style="width:22px;height:22px;accent-color:var(--gold)"> Rodrigo puede compartirlo con mi nombre</label><div class="btns"><button type="button" class="btn" id="testiSend">Enviar testimonio</button></div>';
+    h+='</div>';
+  }
   h+='<div class="block"><p class="k">Nivel 2 · Afinar tu hábito</p>';
   if(n2Open()) h+='<p>🔓 ¡Nivel 2 desbloqueado! Un camino nuevo, armado con tus trabas reales, para llevar tu hábito a la excelencia.</p><div class="btns"><button type="button" class="btn" data-v="n2">Ir al nivel 2</button></div>';
   else h+=unlockBox();
@@ -845,6 +905,7 @@ function renderDt(){
       h+='<div class="practice"><p class="k" style="color:var(--gold)">Tu paso de 30 segundos</p><p>'+esc(r.paso)+'</p><div class="btns"><button type="button" class="btn" id="dtNow">Lo hago ahora</button></div></div>';
       if(r.frase) h+='<p class="note">'+esc(r.frase)+'</p>';
       h+='<div class="tools"><button type="button" class="mini" data-say="dt">🔊 Escuchar</button></div>'+iaLinks("dt");
+      if(state.destrabes.length>=2) h+='<div class="note">🤝 Ya pediste ayuda varias veces. Si querés destrabarlo conmigo, en vivo: <b>encuentro suelto · '+ESCALERA.encuentro.precio+'</b>. <a href="'+esc(waLink("Hola Rodrigo, me trabo seguido y quiero un encuentro suelto."))+'" target="_blank" rel="noopener" style="color:var(--gold2)">Hablar con Rodrigo</a></div>';
       if(r.dia) h+='<p class="mute">Te puede ayudar repasar el <button type="button" data-goto="'+r.dia+'" style="background:none;border:0;color:var(--gold2);text-decoration:underline;font:inherit;cursor:pointer;padding:0">día '+r.dia+': '+esc(DAYS[r.dia-1].t)+'</button>.</p>';
     }
   }else if(dt.step===5){
@@ -891,9 +952,11 @@ function startAdmin(){
     ADMIN_ROWS=(data||[]).map(r=>({id:r.user_id,s:norm(r.state),nombre:r.nombre,email:r.email})); NAMES={}; ADMIN_ROWS.forEach(r=>NAMES[r.id]=r.nombre||r.email);
     if(view==="admin") renderAdmin();
   });
+  SB.from("testimonios").select("*").order("created_at",{ascending:false}).limit(50).then(({data})=>{TESTIS=data||[];if(view==="admin") renderAdmin()});
+  SB.from("referidos").select("invitador,activado_at").then(({data})=>{REFS=data||[];if(view==="admin") renderAdmin()});
   SB.from("sugerencias").select("*").order("created_at",{ascending:false}).limit(50).then(({data})=>{SUGS=data||[];if(view==="admin") renderAdmin()});
 }
-let NAMES={}, SUGS=[];
+let NAMES={}, SUGS=[], TESTIS=[], REFS=[];
 function loadNames(){}
 function rowInfo(x){
   const s=x.s, n2=!!s.n2.start;
@@ -915,6 +978,8 @@ function renderAdmin(){
   h+='<div class="stats"><div class="stat"><b>'+rows.length+'</b><span>participantes</span></div><div class="stat"><b>'+term+'</b><span>terminaron</span></div><div class="stat"><b>'+en2+'</b><span>en nivel 2</span></div><div class="stat"><b>'+dts+'</b><span>pedidos de ayuda</span></div></div>';
   if(topM.length) h+='<div class="block"><p class="k">Lo que más traba</p><ul class="list">'+topM.map(m=>'<li>'+esc(motivo(m).l)+' · '+motAll[m]+' veces</li>').join("")+'</ul></div>';
   if(quietos.length) h+='<div class="block"><p class="k">Hace 3 días o más que no entran</p><p>'+quietos.map(q=>esc(q.nombre)).join(", ")+'</p><p class="mute" style="font-size:.9rem">Buen momento para escribirles.</p></div>';
+  if(TESTIS.length) h+='<div class="block"><p class="k">💬 Testimonios</p><div style="display:grid;gap:8px">'+TESTIS.slice(0,15).map(g=>'<div class="ans"><span>“'+esc(g.texto)+'”</span><span class="mute" style="font-size:.85rem">'+esc(g.nombre||"")+' · '+(g.permiso?"✅ se puede compartir":"🔒 solo para vos")+' · '+esc((g.created_at||"").slice(0,10))+'</span></div>').join("")+'</div></div>';
+  if(REFS.length){const act=REFS.filter(r=>r.activado_at).length;h+='<div class="block"><p class="k">🎁 Referidos</p><p>'+REFS.length+' personas llegaron por invitación · '+act+' ya arrancaron el día 1.</p></div>'}
   if(SUGS.length) h+='<div class="block"><p class="k">💡 Sugerencias recibidas</p><div style="display:grid;gap:8px">'+SUGS.slice(0,15).map(g=>'<div class="ans"><span>'+esc(g.texto)+'</span><span class="mute" style="font-size:.85rem">'+esc((g.created_at||"").slice(0,10))+' · '+esc(g.pantalla||"")+' · '+esc(g.email||"")+'</span></div>').join("")+'</div></div>';
   h+='<div class="block"><p class="k">Participantes</p>';
   if(!rows.length) h+='<p class="mute">Todavía nadie empezó. Cuando compartas la página, van a aparecer acá.</p>';
@@ -964,6 +1029,9 @@ document.addEventListener("click",e=>{
   if(t.id==="otherEmail"){loginStep="email";renderLogin();return}
   if(t.id==="logout"){SB&&SB.auth.signOut();try{localStorage.removeItem(KEY)}catch(e){}location.reload();return}
   if(t.id==="installBtn"){doInstall();return}
+  if(t.id==="copyRef"){try{navigator.clipboard.writeText(refLink()).then(()=>setStatus("✅ Link copiado. Pegalo donde quieras."),()=>setStatus(refLink()))}catch(err){setStatus(refLink())}return}
+  if(t.dataset.regalo!==undefined){state.regalos=state.regalos||{};const i=+t.dataset.regalo;state.regalos[i]=!state.regalos[i];save();if(state.regalos[i]){playWin();confetti()}renderCamino();return}
+  if(t.id==="testiSend"){enviarTestimonio();return}
   if(t.id==="previewBtn"||t.id==="previewOff"){PREVIEW=!PREVIEW;try{sessionStorage.setItem("reto-preview",PREVIEW?"1":"0")}catch(e){}ADMIN=REAL_ADMIN&&!PREVIEW;if(view==="admin")view="n1";if(PREVIEW)view="n2";render();if($("previewBtn"))$("previewBtn").textContent=PREVIEW?'👑 Volver a creador':'👀 Ver como participante';scrollTo(0,0);return}
   if(t.id==="goVinc"){loginStep="vinc";renderLogin();setTimeout(()=>$("vincIn")&&$("vincIn").focus(),50);return}
   if(t.id==="doVinc"){doVinc();return}
@@ -1004,6 +1072,7 @@ document.addEventListener("click",e=>{
   if(t.id==="startBtn"){const o=lv();o.start=$("startDate").value||ymd(new Date()); if(view==="n1"&&Object.keys(tmpCheck).length) state.inicio=Object.assign({at:o.start},tmpCheck);sel[view]=todayIdx(o);save();render();return}
   if(t.id==="doneBtn"){
     const o=lv(), n=sel[view], d=dayOf(o,n); d.done=!d.done; if(d.done) d.skipped=false; d.at=ymd(new Date());
+    if(view==="n1"&&d.done&&SB&&SESSION&&!state.refActivo){state.refActivo=true;SB.rpc("activar_referido").then(()=>{},()=>{})}
     if(view==="n2"&&n===21&&d.done){ save(); render(); confetti(); playWin(); setStatus("🎉 ¡Terminaste el nivel 2!"); return }
     if(view==="n1"&&n===21&&d.done){ playWin(); if(!state.cierre) state.cierre={at:ymd(new Date())}; save(); view="cierre"; render(); scrollTo(0,0); confetti(); return }
     save(); render(); return
@@ -1091,6 +1160,8 @@ async function afterLogin(session){
   try{const {data:adm}=await SB.rpc("soy_admin"); REAL_ADMIN=!!adm}catch(e){REAL_ADMIN=false}
   if(!REAL_ADMIN) PREVIEW=false;
   ADMIN=REAL_ADMIN&&!PREVIEW;
+  MI_REF=session.user.id.replace(/-/g,"").slice(0,8);
+  await registrarRef(); cargarRegalos();
   await checkCompra(false);
   sel.n1=todayIdx(state);
   showApp(true); render();
@@ -1157,6 +1228,7 @@ function afterLoginBtns(){if($("acct")&&DEFERRED&&!$("installBtn")) $("acct").in
 function doInstall(){if(DEFERRED){DEFERRED.prompt();DEFERRED=null;$("installBtn")&&$("installBtn").remove()}}
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
 /* Arranque */
+try{const rp=new URLSearchParams(location.search).get("ref");if(rp&&/^[a-f0-9]{6,12}$/i.test(rp))localStorage.setItem("reto-ref",rp.toLowerCase())}catch(e){}
 loadLocal();
 (async()=>{
   try{TTS=null}catch(e){}
