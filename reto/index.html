@@ -376,7 +376,7 @@ function unlockBox(){
     const u=UNLOCK.n2, msg="Hola Rodrigo, terminé el reto de 21 días y quiero desbloquear el Nivel 2 ("+u.precio+").";
     const buy=CONFIG.checkoutN2.indexOf("__")===0?"#":CONFIG.checkoutN2;
     h+='<div class="practice" style="margin-top:6px"><p class="k" style="color:var(--gold)">🔓 Último paso</p><h3>Nivel 2 · '+esc(u.precio)+'</h3>'+
-      '<div style="display:grid;gap:6px"><span>✅ Es tuyo para siempre.</span><span>🔁 Lo hacés las veces que quieras.</span><span>🕒 A tu ritmo.</span></div>'+
+      '<div style="display:grid;gap:6px"><span>✅ Un camino nuevo, armado con tus trabas.</span><span>💾 Tus respuestas quedan guardadas siempre.</span><span>🕒 A tu ritmo.</span></div>'+
       '<div class="btns"><a class="btn" href="'+esc(buy)+'" target="_blank" rel="noopener" style="text-decoration:none">💳 Desbloquear por '+esc(u.precio)+'</a></div>'+
       '<p class="note">📧 Pagá con este mismo email: <b>'+esc(EMAIL)+'</b>. Apenas se aprueba el pago, el Nivel 2 se abre solo.</p>'+
       '<div class="btns"><button type="button" class="btn ghost" id="checkPago">🔄 Ya pagué: revisar</button></div></div>';
@@ -984,7 +984,7 @@ document.addEventListener("click",e=>{
   if(t.id==="modoOn"){state.plan.modo=true;save();render();return}
   if(t.dataset.again){if(t.dataset.sure){again(t.dataset.again)}else{t.dataset.sure="1";t.textContent="¿Seguro? Tocá de nuevo";}return}
   if(t.id==="checkPago"){checkCompra(true);return}
-  if(t.id==="codeBtn"){const v=($("codeIn").value||"").trim();if(v&&codeNorm(v)===UNLOCK.n2.token){state.unlocked.n2=ymd(new Date());save();view="n2";render();scrollTo(0,0);confetti();playWin();setStatus("🔓 ¡Nivel 2 desbloqueado! Es tuyo para siempre.")}else setStatus("Ese código no es correcto. Revisalo o escribile a Rodrigo.");return}
+  if(t.id==="codeBtn"){const v=($("codeIn").value||"").trim();if(v&&codeNorm(v)===UNLOCK.n2.token){state.unlocked.n2=ymd(new Date());save();view="n2";render();scrollTo(0,0);confetti();playWin();setStatus("🔓 ¡Nivel 2 desbloqueado!")}else setStatus("Ese código no es correcto. Revisalo o escribile a Rodrigo.");return}
   if(t.dataset.animo){const d=dayOf(lv(),sel[view]);d.animo=+t.dataset.animo;save();render();return}
   if(t.dataset.ck){const v=+t.dataset.val,sc=t.dataset.scope;if(sc==="tmp"){tmpCheck[t.dataset.ck]=v;renderStart();return} state[sc]=Object.assign({},state[sc]||{},{[t.dataset.ck]:v,at:ymd(new Date())});save();render();return}
   if(t.id==="micBtn"){
@@ -1127,7 +1127,7 @@ async function checkCompra(manual){
   if(PREVIEW){ if(manual) setStatus("👀 Vista de participante: acá vería si su pago ya entró."); return }
   const {data}=await SB.from("compras").select("producto,estado").eq("email",EMAIL).eq("producto","n2").eq("estado","aprobada").limit(1);
   if(data&&data.length){
-    if(!state.unlocked.n2){state.unlocked.n2=ymd(new Date());save();if(manual||view==="n2"){view="n2";render();scrollTo(0,0);confetti();playWin();setStatus("🔓 ¡Nivel 2 desbloqueado! Es tuyo para siempre.")}}
+    if(!state.unlocked.n2){state.unlocked.n2=ymd(new Date());save();if(manual||view==="n2"){view="n2";render();scrollTo(0,0);confetti();playWin();setStatus("🔓 ¡Nivel 2 desbloqueado!")}}
   }else if(manual) setStatus("Todavía no vemos tu pago. Si recién pagaste, esperá 1 minuto y tocá de nuevo. Pagá con "+EMAIL+".");
 }
 document.addEventListener("visibilitychange",async()=>{
