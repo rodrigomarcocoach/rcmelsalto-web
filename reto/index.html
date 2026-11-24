@@ -216,7 +216,9 @@ const KEY="reto-venta-consciente-app";
 const CONFIG={
   supabaseUrl:"https://lfivxrsropprcyrafipw.supabase.co",
   supabaseKey:"sb_publishable_r92f938vOni-B0eERSkS8g_026vTMXJ",
-  checkoutN2:"https://nivel-2-venta-conciente.impultienda.ar/checkout?p=8340d56c-bb93-40f0-b730-bf95d631a978"
+  checkoutN2:"https://nivel-2-venta-conciente.impultienda.ar/checkout?p=8340d56c-bb93-40f0-b730-bf95d631a978",
+  checkoutN3:"https://nivel-2-venta-conciente.impultienda.ar/checkout?p=3965b4d8-aea0-4df4-9020-6ed0bcc5fdee",
+  n3Venta:false
 };
 const ESCALERA={
   wa:"5492915724766",
@@ -244,26 +246,27 @@ const EMO=["😟","🙁","😐","🙂","😄"];
 const IAS=[{n:"💬 ChatGPT",d:"te ayuda a pensarlo",u:q=>"https://chatgpt.com/?q="+encodeURIComponent(q),k:"coach"},{n:"📊 Perplexity",d:"datos y fuentes",u:q=>"https://www.perplexity.ai/search?q="+encodeURIComponent(q),k:"datos"},{n:"✨ Gemini",d:"copiá y pegá",u:()=>"https://gemini.google.com",k:"coach",copy:true}];
 
 /* ---------- Estado ---------- */
-function blank(){return {start:null,inicio:null,hoy:null,plan:null,unlocked:{},vueltas:[],days:{},signs:{},cierre:null,n2:{start:null,days:{}},destrabes:[],ultimo:null}}
+function blank(){return {start:null,inicio:null,hoy:null,plan:null,unlocked:{},vueltas:[],days:{},signs:{},cierre:null,n2:{start:null,days:{}},n3:{start:null,days:{}},destrabes:[],ultimo:null}}
 function norm(s){
   const b=blank(); s=Object.assign(b,(s&&typeof s==="object")?s:{});
   s.days=s.days||{}; s.signs=s.signs||{};
   s.n2=Object.assign({start:null,days:{}},s.n2||{}); s.n2.days=s.n2.days||{};
+  s.n3=Object.assign({start:null,days:{}},s.n3||{}); s.n3.days=s.n3.days||{};
   if(!Array.isArray(s.destrabes)) s.destrabes=[];
   if(!Array.isArray(s.vueltas)) s.vueltas=[];
   s.unlocked=s.unlocked||{};
   return s;
 }
 let state=blank();
-let view="n1", sel={n1:1,n2:1};
+let view="n1", sel={n1:1,n2:1,n3:1};
 let DB=null, dbDoc=null, USER=null, UID=null, NOMBRE="", ADMIN=false, timer=null, unsubAdmin=null, ADMIN_ROWS=[], adminSel=null;
 let dt=null, cdTimer=null, busy=false, tmpCheck={}, TTS, DICT=null, speaking=false;
 const $=id=>document.getElementById(id);
 const ymd=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 function parse(s){const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-function lv(){return view==="n2"?state.n2:state}
-function lvDef(){return view==="n2"?{days:(state.n2.misiones||[]).map(m=>({t:m.t,i:m.por,q:"¿Qué aprendiste con esta misión?",p:m.medio||m.p,e:""})),stages:TRAMOS}:L1}
+function lv(){return view==="n2"?state.n2:view==="n3"?state.n3:state}
+function lvDef(){if(view==="n3") return {days:n3Days(),stages:TRAMOS3};return view==="n2"?{days:(state.n2.misiones||[]).map(m=>({t:m.t,i:m.por,q:"¿Qué aprendiste con esta misión?",p:m.medio||m.p,e:""})),stages:TRAMOS}:L1}
 function todayIdx(o){
   if(!o.start) return 1;
   const a=parse(o.start), b=new Date(); b.setHours(0,0,0,0);
@@ -288,7 +291,7 @@ function n2Conds(){return [
   {ok:!!(state.cierre&&state.cierre.resumen),t:"Ver tu resumen y tu plan en “Mi cierre”."}
 ]}
 function n2Ready(){return n2Conds().every(c=>c.ok)}
-function n2Open(){return ADMIN||(!PREVIEW&&!!state.unlocked.n2)}
+function n2Open(){return ADMIN||(!PREVIEW&&!!(state.unlocked.n2||state.unlocked.n3))}
 
 /* ---------- Guardado ---------- */
 function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open("reto-vc",1);r.onupgradeneeded=()=>r.result.createObjectStore("s");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
@@ -326,15 +329,16 @@ function renderTabs(){
   if(cierreOpen()||(state.cierre&&state.cierre.resumen)) h+='<button type="button" class="tab'+(view==="cierre"?" on":"")+'" data-v="cierre">🎉 Mi cierre</button>';
   if(state.cierre&&state.cierre.resumen) h+='<button type="button" class="tab'+(view==="plan"?" on":"")+'" data-v="plan">🧭 Mi plan</button>';
   h+='<button type="button" class="tab'+(view==="n2"?" on":"")+(n2Open()?"":" lock")+'" data-v="n2">'+(n2Open()?"":"🔒 ")+'Nivel 2</button>';
+  h+='<button type="button" class="tab'+(view==="n3"?" on":"")+(n3Open()?"":" lock")+'" data-v="n3">'+(n3Open()?"":"🔒 ")+'Nivel 3</button>';
   if(ADMIN) h+='<button type="button" class="tab'+(view==="admin"?" on":"")+'" data-v="admin">Panel</button>';
   $("tabs").innerHTML=h;
 }
 function renderBanner(){
   if(PREVIEW){$("banner").innerHTML='<div class="banner"><span>👀 Estás viendo la app <b>como un participante</b>: el Nivel 2 tiene candado y aparece la compra.</span><button type="button" class="btn" id="previewOff">👑 Volver a creador</button></div>';return}
-  const o=(view==="n2")?state.n2:state;
+  const o=(view==="n2")?state.n2:(view==="n3")?state.n3:state;
   const gap=daysSince(state.ultimo);
   const fin=o===state?cierreOpen():!!(o.days[21]&&o.days[21].done);
-  if(o.start && gap>=2 && !fin && (view==="n1"||view==="n2")){
+  if(o.start && gap>=2 && !fin && (view==="n1"||view==="n2"||view==="n3")){
     $("banner").innerHTML='<div class="banner"><span>Hace '+gap+' días que no pasás por acá. Retomar es parte del reto.</span><button type="button" class="btn" id="bannerBtn">Ayudame a retomar</button></div>';
   }else $("banner").innerHTML="";
 }
@@ -380,7 +384,7 @@ function renderDay(){
   h+=DICT?'<div class="tools"><button type="button" class="mini" id="micBtn">🎤 Hablar mi respuesta</button></div>':'<p class="mute" style="font-size:.9rem">📱 Tip: tocá el micrófono 🎤 de tu teclado y hablá en vez de escribir.</p>';
   h+='</div>';
   h+='<div class="block"><p class="k">🤖 Mirala desde 2 ángulos con IA gratis</p><p class="mute" style="font-size:.95rem">Tocá una. Tu pregunta ya va escrita.</p>'+iaLinks("day")+'</div>';
-  if(view==="n2"&&n===21&&d.done) h+='<div class="block"><p class="k">🎉 Nivel 2 terminado</p><div class="btns"><button type="button" class="btn ghost" data-again="n2">🔁 Hacer el nivel 2 otra vez</button></div><div class="week" style="opacity:.7"><b>🔒 Nivel 3 · Próximamente</b></div></div>';
+  if(view==="n2"&&n===21&&d.done) h+='<div class="block"><p class="k">🎉 Nivel 2 terminado</p><div class="btns"><button type="button" class="btn ghost" data-again="n2">🔁 Hacer el nivel 2 otra vez</button></div></div>'+testiHtml("n2")+'<div class="block"><p class="k">🎬 Tu próximo nivel</p><p><b>Nivel 3 · Vender con naturalidad.</b> 21 días para que tu servicio hable por vos.</p><div class="btns"><button type="button" class="btn" data-v="n3">Ver el Nivel 3</button></div></div>';
   if(view==="n1"&&n===21){
     h+='<div class="block"><p class="k">Cinco señales de integración</p><div class="signs">'+SIGNS.map((s,i)=>'<label><input type="checkbox" data-s="'+i+'"'+(state.signs[i]?" checked":"")+'><span>'+esc(s)+'</span></label>').join("")+'</div>';
     h+=cierreOpen()?'<button type="button" class="btn" data-v="cierre">🎉 Ver mi cierre</button>':'<p class="note">Cuando marques “Lo hice” en este día se abre tu cierre: celebración, resumen y plan.</p>';
@@ -401,7 +405,7 @@ function unlockBox(){
       '<p class="note">📧 Pagá con este mismo email: <b>'+esc(EMAIL)+'</b>. Apenas se aprueba el pago, el Nivel 2 se abre solo.</p>'+
       '<div class="btns"><button type="button" class="btn ghost" id="checkPago">🔄 Ya pagué: revisar</button></div></div>';
   }
-  h+='<div class="week" style="opacity:.7"><b>🔒 Nivel 3 · Próximamente</b><span>Se va a desbloquear de la misma forma.</span></div>';
+  h+='<div class="week" style="opacity:.8"><b>🎬 Después: Nivel 3 · Vender con naturalidad</b><span>21 días para mostrarte con la cámara, a tu ritmo.</span></div>';
   return h;
 }
 function renderN2Locked(){
@@ -455,9 +459,11 @@ function renderCamino(){
   let h='<div><p class="eyebrow">Tu escalera de crecimiento</p><h2 style="margin-top:8px">🪜 Mi camino</h2></div><p>Cada paso te lleva un 1% más lejos. Avanzás a tu ritmo.</p><div style="display:grid;gap:10px">';
   h+=paso(1,"📅","Reto · Nivel 1","ok", n1fin?"✅ Terminado. ¡Bien ahí!":"En camino: día "+todayIdx(state)+" de 21.", n1fin?'':'<button type="button" class="btn ghost" data-v="n1">Seguir con el reto</button>');
   h+=paso(2,"🔓","Nivel 2 · Afinar tu hábito",n2ok?"ok":"", n2ok?"✅ Abierto: 21 misiones armadas con tus trabas.":(n1fin?"Se abre por USD 17.":"Se habilita cuando terminás el Nivel 1."), n2ok?'<button type="button" class="btn ghost" data-v="n2">Ir al Nivel 2</button>':(n1fin?'<button type="button" class="btn" data-v="n2">Ver cómo abrirlo</button>':''));
-  h+=paso(3,"🔒","Nivel 3","", n2fin?"Muy pronto. Te avisamos cuando esté listo.":"Se habilita cuando terminás el Nivel 2.","");
+  const n3ok=n3Open(), n3fin=!!(state.n3.days&&state.n3.days[21]&&state.n3.days[21].done);
+  h+=paso(3,n3ok?"🎬":"🔒","Nivel 3 · Vender con naturalidad",n3ok?"ok":"", n3fin?"✅ Terminado. Tu manifiesto ya está escrito.":(n3ok?"✅ Abierto: 21 días con la cámara, a tu ritmo.":"21 días para mostrarte con naturalidad. USD 17, incluye el Nivel 2."), '<button type="button" class="btn ghost" data-v="n3">'+(n3ok?"Ir al Nivel 3":"Ver el Nivel 3")+'</button>');
   h+=paso(4,"☀️","Domingos del 1% · comunidad","", "Encuentros de los domingos y todas las clases grabadas. 1 mes "+dom.mes.precio+" · 3 meses "+dom.tri.precio+".", dom.activo?'<a class="btn" href="'+dom.mes.link+'" target="_blank" rel="noopener" style="text-decoration:none">1 mes</a><a class="btn ghost" href="'+dom.tri.link+'" target="_blank" rel="noopener" style="text-decoration:none">3 meses</a>':'<a class="btn ghost" href="'+esc(waLink("Hola Rodrigo, quiero sumarme a Domingos del 1%."))+'" target="_blank" rel="noopener" style="text-decoration:none">💬 Quiero sumarme</a>');
   h+=paso(5,"🎓","Mentoría 1 a 1","", "4 encuentros con Rodrigo, a tu medida. "+ESCALERA.mentoria.precio+". También hay un encuentro suelto de "+ESCALERA.encuentro.precio+".", '<a class="btn ghost" href="'+esc(waLink("Hola Rodrigo, quiero saber más de la mentoría 1 a 1."))+'" target="_blank" rel="noopener" style="text-decoration:none">💬 Hablar con Rodrigo</a>');
+  h+=paso(6,"🏕️","Retiros y eventos presenciales","", "Encuentros en persona para vivir el método con otras personas. Próximamente.", '<a class="btn ghost" href="'+esc(waLink("Hola Rodrigo, quiero enterarme de los retiros y eventos presenciales."))+'" target="_blank" rel="noopener" style="text-decoration:none">💬 Avisame</a>');
   h+='</div>';
   /* Referidos */
   h+='<div class="block"><p class="k">🎁 Invitá y ganá</p><p>Invitá a alguien a hacer el reto con vos. <b>Cuando arranca su día 1, se te abre una misión de regalo.</b></p>';
@@ -533,7 +539,7 @@ function render(){
   renderTabs(); renderBanner();
   const isLevel=view==="n1"||view==="n2";
   $("admin").hidden=view!=="admin";
-  $("backup").hidden=!(state.start&&(view==="n1"||view==="n2"||view==="avance"));
+  $("backup").hidden=!(state.start&&(view==="n1"||view==="n2"||view==="n3"||view==="avance"));
   if(0)$("betaNote").textContent="Versión beta del equipo. "+(dbDoc?"Tus respuestas se guardan en tu cuenta.":"Tus respuestas se guardan solo en este dispositivo.")+" Si algo no funciona o querés contarnos cómo te fue, escribile a Rodrigo por WhatsApp: +54 9 2915 724766.";
   if(view==="admin"){ $("startPanel").hidden=true;$("app").hidden=true;$("dayCard").hidden=true;$("cierre").hidden=true; renderAdmin(); return }
   if(view==="camino"){ $("startPanel").hidden=true;$("app").hidden=true;$("dayCard").hidden=true;$("cierre").hidden=false; renderCamino(); return }
@@ -541,6 +547,11 @@ function render(){
   if(view==="avance"){ $("startPanel").hidden=true;$("app").hidden=true;$("dayCard").hidden=true;$("cierre").hidden=false; renderAvance(); return }
   if(view==="cierre"){ $("startPanel").hidden=true;$("app").hidden=true;$("dayCard").hidden=true;$("cierre").hidden=false; renderCierre(); return }
   if(view==="n2"&&!n2Open()){ $("startPanel").hidden=true;$("app").hidden=true;$("dayCard").hidden=true;$("cierre").hidden=false; renderN2Locked(); return }
+  if(view==="n3"){
+    if(!n3Open()){ $("startPanel").hidden=true;$("app").hidden=true;$("dayCard").hidden=true;$("cierre").hidden=false; renderN3Locked(); return }
+    if(!state.n3.start){ $("startPanel").hidden=true;$("app").hidden=true;$("dayCard").hidden=true;$("cierre").hidden=false; renderN3Setup(); return }
+    $("cierre").hidden=true;$("startPanel").hidden=true;$("app").hidden=false;$("dayCard").hidden=false; if(!sel.n3||n3Locked(sel.n3)) sel.n3=n3Next(); renderN3(); return;
+  }
   $("cierre").hidden=true;
   if(view==="n2"){
     if(!state.n2.misiones){ $("startPanel").hidden=true;$("app").hidden=true;$("dayCard").hidden=true;$("cierre").hidden=false; renderN2Setup(); return }
@@ -632,6 +643,7 @@ function sayText(k){
   if(k==="cierre"){const r=state.cierre&&state.cierre.resumen;if(!r) return "¡Lo lograste! Terminaste el reto.";return r.titulo+". "+r.reconocimiento+" Lo que aprendiste: "+(r.aprendizajes||[]).join(" ")+" Tu plan: "+(r.plan||[]).map((p,i)=>"Semana "+(i+1)+": "+p.practica).join(" ")+" "+(r.frase||"")}
   if(k==="dt"&&dt&&dt.res){return dt.res.reconocer+" Tu paso: "+dt.res.paso+" "+(dt.res.frase||"")}
   if(k==="avance") return avanceTexto();
+  if(k==="mision3"){const m=n3Days()[sel.n3-1];return m.t+". "+m.i+" Qué decir hoy: "+m.decir+" Mini: solo te mirás con la cámara prendida. Medio: tu voz o tus manos. Pro: te grabás."}
   if(k==="mision"){const m=state.n2.misiones[sel.n2-1];return m.t+". "+m.por+" Mini: "+(m.mini||m.p)+" Medio: "+(m.medio||m.p)+" Pro: "+m.pro}
   if(k==="plan"){const P=planData();if(!P||!state.plan)return "";const n=planDay(),p=P.sem[Math.min(3,Math.floor((n-1)/7))];return "Hoy, día "+n+". "+p.foco+". "+p.practica+" "+ANIMOS[n%ANIMOS.length]}
   return "";
@@ -794,9 +806,146 @@ function renderN2(){
   if(d.done&&n<21) h+='<div class="practice" style="text-align:center"><p style="font-size:1.3rem;color:var(--gold2)">🎉 ¡Misión '+n+' hecha!</p><p>'+esc(ANIMOS[n%ANIMOS.length])+'</p><div class="btns" style="justify-content:center"><button type="button" class="btn" id="goNext" style="font-size:1.2rem;padding:14px 26px">▶️ Ir a la misión '+(n+1)+'</button></div></div>';
   h+='<div class="block"><label class="k" for="ans">✍️ ¿Qué aprendiste?</label><textarea id="ans" placeholder="Unas líneas alcanzan. Podés hablar en vez de escribir.">'+esc(d.answer||"")+'</textarea>'+(DICT?'<div class="tools"><button type="button" class="mini" id="micBtn">🎤 Hablar mi respuesta</button></div>':'<p class="mute" style="font-size:.9rem">📱 Tip: tocá el 🎤 de tu teclado y hablá.</p>')+'</div>';
   h+='<div class="block"><p class="k">🤖 Mirala desde 2 ángulos con IA gratis</p>'+iaLinks("day")+'</div>';
-  if(n===21&&d.done) h+='<div class="block"><p class="k">🎉 Nivel 2 terminado</p><p>Llevaste tu hábito un escalón más arriba: '+puntos+' ⭐ de excelencia y '+pros+' misiones en Pro.</p><div class="btns"><button type="button" class="btn ghost" data-again="n2">🔁 Armar un Nivel 2 nuevo con mis trabas de hoy</button></div><div class="week" style="opacity:.7"><b>🔒 Nivel 3 · Próximamente</b></div></div>';
+  if(n===21&&d.done) h+='<div class="block"><p class="k">🎉 Nivel 2 terminado</p><p>Llevaste tu hábito un escalón más arriba: '+puntos+' ⭐ de excelencia y '+pros+' misiones en Pro.</p><div class="btns"><button type="button" class="btn ghost" data-again="n2">🔁 Armar un Nivel 2 nuevo con mis trabas de hoy</button></div></div>'+testiHtml("n2")+'<div class="block"><p class="k">🎬 Tu próximo nivel</p><p><b>Nivel 3 · Vender con naturalidad.</b> 21 días para que tu servicio hable por vos.</p><div class="btns"><button type="button" class="btn" data-v="n3">Ver el Nivel 3</button></div></div>';
   h+='<div class="nav"><button type="button" class="btn ghost" id="prev"'+(n===1?" disabled":"")+'>Anterior</button><button type="button" class="btn ghost" id="next"'+(n===21||n2Locked(n+1)?" disabled":"")+'>'+(n2Locked(n+1)&&n<21?"🔒 Siguiente":"Siguiente")+'</button></div>';
   $("dayCard").innerHTML=h;
+}
+
+/* ---------- Nivel 3 · Vender con naturalidad ---------- */
+const TRAMOS3=["Reconocer","Comunicar","Moverte"];
+const TRAMOS3_D=["Te mirás y te reconocés. La venta ya está en tu vida.","Mostrás lo que elegís compartir, con tu voz y tus manos.","Tu servicio habla por vos: compartís, invitás y cobrás."];
+const N3=[
+ {ico:"🪞",t:"Tu primera venta",i:"Vendés desde que naciste. Hoy solo te mirás.",decir:"Hola, soy {nombre}. Esto es lo que hago."},
+ {ico:"👀",t:"Mirarte sin juzgarte",i:"La cámara es un espejo. Mirá qué ves, sin criticar.",decir:"Hoy me miro y veo a alguien que..."},
+ {ico:"🗣️",t:"Tu voz",i:"Tu voz ya vende. Hoy la escuchás.",decir:"Algo que me gusta de lo que hago es..."},
+ {ico:"🧺",t:"Lo que vendiste hoy",i:"Hoy vendiste algo sin darte cuenta: una idea, un plan, una opinión.",decir:"Hoy convencí a alguien de..."},
+ {ico:"❤️",t:"Lo que te gusta",i:"Cuando hablás de lo que te gusta, la venta sale sola.",decir:"Me encanta {hab} porque..."},
+ {ico:"✋",t:"Lo que no",i:"Decir que no también es mostrarte.",decir:"Esto no lo hago, y está bien:..."},
+ {ico:"🌱",t:"Tu por qué",i:"Tu razón es tu mejor argumento.",decir:"Hago lo que hago porque..."},
+ {ico:"🤲",t:"Mostrar tus manos",i:"Lo que hacés con las manos cuenta tu historia.",decir:"Así trabajo yo:..."},
+ {ico:"💬",t:"La pregunta de siempre",i:"Lo que más te preguntan es lo que más quieren saber.",decir:"Me preguntan mucho... y la respuesta es..."},
+ {ico:"📖",t:"Una historia corta",i:"Una historia vale más que una lista de beneficios.",decir:"Una persona llegó con... y se fue con..."},
+ {ico:"🧱",t:"Tu traba en voz alta",i:"Nombrar lo que te frena le quita fuerza.",decir:"Antes me frenaba {traba}. Hoy..."},
+ {ico:"🙃",t:"Un error que te enseñó",i:"Mostrar un error te hace real. Y lo real vende.",decir:"Me equivoqué en... y aprendí que..."},
+ {ico:"🎯",t:"A quién ayudás",i:"Cuando nombrás a tu persona, esa persona se reconoce.",decir:"Esto es para vos si..."},
+ {ico:"✨",t:"Tu oferta en 30 segundos",i:"Simple, clara y con tus palabras.",decir:"Ayudo a ... a ... sin ..."},
+ {ico:"📤",t:"Llegar a 1 persona",i:"Tu video no tiene que ser perfecto. Tiene que llegar.",decir:"Te quiero mostrar algo que hago:..."},
+ {ico:"🙋",t:"Invitar sin presionar",i:"Invitar es dar una opción, no empujar.",decir:"Si te sirve, lo hacemos. Si no, también está bien."},
+ {ico:"💰",t:"Decir tu precio",i:"El precio dicho con calma también es natural.",decir:"Esto cuesta ... e incluye ..."},
+ {ico:"🌟",t:"Lo que dicen de vos",i:"Lo que otros vivieron con vos es tu mejor carta.",decir:"Una persona me dijo... y eso me mostró que..."},
+ {ico:"📱",t:"Publicar",i:"Compartir es elegir qué mostrar. Vos elegís.",decir:"Hoy comparto esto porque..."},
+ {ico:"🤝",t:"Pedir el sí",i:"Preguntar con claridad es respetar a la otra persona.",decir:"¿Te gustaría que empecemos esta semana?"},
+ {ico:"📜",t:"Tu manifiesto",i:"Hoy juntás todo lo que descubriste en estos 21 días.",decir:"Yo vendo con naturalidad porque..."}
+];
+const NIV3=[
+ ["mini","🌱 Mini","📷 Prendé la cámara, sin grabar. Mirate 1 minuto y decilo en voz baja."],
+ ["medio","🔥 Medio","🎙️ Grabá solo tu voz, o tus manos, mientras lo decís."],
+ ["pro","🏆 Pro","🎬 Grabate de frente diciéndolo. De 30 a 60 segundos."]
+];
+function n3Open(){return ADMIN||(!PREVIEW&&!!state.unlocked.n3)}
+function n3Pers(){
+  const o=state.n2||{}, hb=HABITOS.find(x=>x.id===o.habito), mp=o.mapa||(state.start?mapaN2():null);
+  const frases=[];for(let i=1;i<=21;i++){const a=((o.days&&o.days[i]&&o.days[i].answer)||"").trim();if(a.length>12) frases.push(a)}
+  const TR3={posterga:"postergar",miedo:"el miedo a ofrecer",nose:"no saber qué decir",ganas:"la falta de ganas",racha:"cortar la racha",rechazo:"el miedo al no",otro:"algo que no sabía nombrar"};
+  return {hab:hb?hb.l:(o.custom||""),traba:mp&&mp.traba?(TR3[mp.traba]||motivo(mp.traba).nombre.toLowerCase()):"",frases};
+}
+function n3Fill(s,p){
+  const nom=(NOMBRE||"").split(" ")[0]||"[tu nombre]";
+  return s.replace("{nombre}",nom).replace("{hab}",p.hab?p.hab.toLowerCase():"lo que hago").replace("{traba}",p.traba?p.traba.toLowerCase():"el miedo a molestar");
+}
+function n3Days(){
+  const p=(state.n3&&state.n3.pers)||n3Pers();
+  return N3.map((d,i)=>{
+    const n=i+1, tr=Math.floor(i/7); let por;
+    if(n===11&&p.traba) por="En el Nivel 2 trabajaste esto: "+p.traba+". Hoy lo decís en voz alta.";
+    else if(tr===0) por=p.hab?"Venís de afinar: "+p.hab.toLowerCase()+". Ahora te reconocés haciéndolo.":TRAMOS3_D[0];
+    else if(tr===1) por=TRAMOS3_D[1];
+    else por=TRAMOS3_D[2];
+    const fr=[3,10,18].indexOf(n)>=0&&p.frases.length?p.frases[[3,10,18].indexOf(n)%p.frases.length]:"";
+    return {ico:d.ico,t:d.t,i:d.i,decir:n3Fill(d.decir,p),por,frase:fr.length>160?fr.slice(0,157)+"...":fr,q:"¿Qué descubriste de vos hoy?",p:d.decir};
+  });
+}
+function n3Next(){const o=state.n3;for(let i=1;i<=21;i++) if(!(o.days[i]&&o.days[i].done)) return i;return 21}
+function n3Locked(n){return n>1&&!(state.n3.days[n-1]&&state.n3.days[n-1].done)}
+function n3Video(){return '<video src="n3-bienvenida.mp4" poster="n3-poster.jpg" controls playsinline preload="none" style="width:100%;max-height:70vh;border:1px solid var(--line);background:#000;border-radius:2px"></video>'}
+function n3Ventas(){const o=state.n3;let c=0;for(let i=1;i<=21;i++) if(o.days[i]&&(o.days[i].vendi||"").trim()) c++;return c}
+function renderN3Locked(){
+  const n2fin=!!(state.n2.days&&state.n2.days[21]&&state.n2.days[21].done), msg="Hola Rodrigo, quiero el Nivel 3: Vender con naturalidad.";
+  let h='<div><p class="eyebrow">Nivel 3 · Vender con naturalidad</p><h2 style="margin-top:8px">🔒 Todavía bloqueado</h2></div>';
+  h+='<div style="display:grid;gap:8px"><span>🎬 21 días para usar la cámara a tu ritmo.</span><span>🌱 Mini: solo te mirás. 🔥 Medio: tu voz o tus manos. 🏆 Pro: te grabás.</span><span>🧭 Armado con lo que trabajaste en el Nivel 2.</span><span>🔓 Incluye el Nivel 2.</span></div>';
+  if(!n2fin&&state.n2&&state.n2.start) h+='<p class="note">💡 Te recomiendo terminar el Nivel 2 primero: el Nivel 3 se arma con lo que hiciste ahí.</p>';
+  h+='<div class="practice"><h3>Nivel 3 · USD 17</h3>';
+  h+=CONFIG.n3Venta?'<div class="btns"><a class="btn" href="'+esc(CONFIG.checkoutN3)+'" target="_blank" rel="noopener" style="text-decoration:none">💳 Desbloquear por USD 17</a></div><p class="note">📧 Pagá con este mismo email: <b>'+esc(EMAIL)+'</b>. Apenas se aprueba el pago, el Nivel 3 se abre solo.</p><div class="btns"><button type="button" class="btn ghost" id="checkPago">🔄 Ya pagué: revisar</button></div>'
+    :'<p>Se abre muy pronto.</p><div class="btns"><a class="btn ghost" href="'+esc(waLink(msg))+'" target="_blank" rel="noopener" style="text-decoration:none">💬 Avisame cuando esté</a></div>';
+  h+='</div>';
+  $("cierre").innerHTML=h;
+}
+function renderN3Setup(){
+  const p=n3Pers();
+  let h='<div><p class="eyebrow">Nivel 3</p><h2 style="margin-top:8px">🎬 Vender con naturalidad</h2></div>'+n3Video();
+  h+='<div class="block"><p class="k">🧭 Tu punto de partida</p><div style="display:grid;gap:10px">';
+  if(p.hab) h+='<div class="week"><b>🎯 Lo que afinaste</b><span>'+esc(p.hab)+'</span></div>';
+  if(p.traba) h+='<div class="week"><b>🧱 Lo que te frenaba</b><span>'+esc(p.traba.charAt(0).toUpperCase()+p.traba.slice(1))+'</span></div>';
+  if(p.frases.length) h+='<div class="week"><b>📝 Una frase tuya</b><span>«'+esc(p.frases[p.frases.length-1].slice(0,160))+'»</span></div>';
+  h+='</div></div>';
+  h+='<div class="block"><p class="k">📷 Cada día elegís tu nivel</p><div style="display:grid;gap:8px">'+NIV3.map(x=>'<div class="week"><b>'+x[1]+'</b><span>'+esc(x[2])+'</span></div>').join("")+'</div><p class="mute">Nadie ve tus videos. Vos elegís qué compartir.</p></div>';
+  h+='<div class="btns"><button type="button" class="btn" id="n3Start" style="font-size:1.2rem;padding:14px 26px">🎬 Arrancar el Nivel 3</button></div>';
+  $("cierre").innerHTML=h;
+}
+function manifiestoTxt(){const m=state.n3.manifiesto||{};return "📜 Mi manifiesto · Vender con naturalidad\n\nYo vendo cuando "+(m.a||"...")+"\nElijo mostrar "+(m.b||"...")+"\nMi servicio habla de "+(m.c||"...")+"\n\nUn 1% por día. · Método RCM"}
+function renderN3(){
+  const o=state.n3, D=n3Days(), n=sel.n3||n3Next(), m=D[n-1], d=o.days[n]||{}, tr=Math.floor((n-1)/7);
+  const hechos=doneCount(o), pros=Object.values(o.days).filter(x=>x.done&&x.nivel==="pro").length;
+  $("stats").innerHTML='<div class="stat"><b>'+hechos+'/21</b><span>días</span></div><div class="stat"><b>'+pros+' 🎬</b><span>videos Pro</span></div><div class="stat"><b>'+n3Ventas()+' 🧺</b><span>ventas de la vida</span></div>';
+  let st="";for(let s=0;s<3;s++){st+='<div class="stage"><div class="lbl"><span>'+"RCM"[s]+' · '+TRAMOS3[s]+'</span><span>Días '+(s*7+1)+' a '+(s*7+7)+'</span></div><div class="row">';
+    for(let k=1;k<=7;k++){const i=s*7+k,x=o.days[i]||{},lk=n3Locked(i);st+='<button type="button" class="dot'+(x.done?" done":"")+(i===n?" sel":"")+'" data-n="'+i+'"'+(lk?' disabled style="opacity:.45"':'')+' aria-label="Día '+i+(lk?", bloqueado":"")+'">'+(lk?"🔒":(x.done?(x.nivel==="pro"?"🎬":i):i))+'</button>'}
+    st+='</div></div>'}
+  $("strip").innerHTML=st;
+  let h='<div><p class="eyebrow">Día '+n+' · '+TRAMOS3[tr]+'</p><p style="font-size:3rem;line-height:1.1;margin-top:6px">'+esc(m.ico)+'</p><h2>'+esc(m.t)+'</h2></div>';
+  if(n===1) h+=n3Video();
+  h+='<p class="big3">'+esc(m.i)+'</p>';
+  h+='<div class="tools"><button type="button" class="mini" data-say="mision3">🔊 Escuchar el día</button></div>';
+  h+='<p class="note">🎯 '+esc(m.por)+'</p>';
+  if(m.frase) h+='<div class="week"><b>📝 Vos escribiste en el Nivel 2</b><span>«'+esc(m.frase)+'»</span></div>';
+  h+='<div class="practice"><p class="k" style="color:var(--gold)">💬 Qué decir hoy</p><p class="big3" style="font-size:1.4rem">«'+esc(m.decir)+'»</p><p class="mute">Es una sugerencia. Decilo con tus palabras.</p></div>';
+  h+='<div class="block"><p class="k">📷 Elegí tu nivel y hacelo hoy</p><div style="display:grid;gap:10px">';
+  NIV3.forEach(([k,l,txt])=>{
+    const on=d.nivel===k;
+    h+='<div class="practice" style="'+(on?"":"border-color:var(--line);background:var(--bg)")+'"><b style="font-family:var(--display);font-size:1.3rem;color:var(--gold2)">'+l+'</b><span class="big3">'+esc(txt)+'</span><div class="btns"><button type="button" class="btn'+(on?" on":" ghost")+'" data-lvl="'+k+'">'+(on&&d.done?"✅ Hecho":"✅ Lo hice")+'</button></div></div>';
+  });
+  h+='</div>'+(tr===2?'<p class="note">➕ Si te animás: mandáselo a 1 persona o publicalo. Vos elegís.</p>':'')+'</div>';
+  if(tr===0) h+='<div class="block"><label class="k" for="vendi">🧺 ¿Qué vendí hoy sin darme cuenta?</label><input type="text" id="vendi" maxlength="160" value="'+esc(d.vendi||"")+'" placeholder="Ej: convencí a mi hijo de salir a caminar"><p class="mute" style="font-size:.9rem">Una idea, un plan, una opinión. Todo cuenta.</p></div>';
+  if(n===21){
+    const mf=o.manifiesto||{};
+    h+='<div class="block"><p class="k">📜 Tu manifiesto</p><p>Completá las 3 frases con tus palabras.</p>'+
+      [["a","Yo vendo cuando..."],["b","Elijo mostrar..."],["c","Mi servicio habla de..."]].map(([k,l])=>'<label class="mute" for="mf_'+k+'">'+l+'</label><input type="text" id="mf_'+k+'" data-mf="'+k+'" maxlength="140" value="'+esc(mf[k]||"")+'">').join("")+
+      '<div class="tools"><button type="button" class="mini" id="mfCopy">📋 Copiar mi manifiesto</button></div></div>';
+  }
+  if(d.done&&n<21) h+='<div class="practice" style="text-align:center"><p style="font-size:1.3rem;color:var(--gold2)">🎉 ¡Día '+n+' hecho!</p><p>'+esc(ANIMOS[n%ANIMOS.length])+'</p><div class="btns" style="justify-content:center"><button type="button" class="btn" id="goNext3" style="font-size:1.2rem;padding:14px 26px">▶️ Ir al día '+(n+1)+'</button></div></div>';
+  h+='<div class="block"><label class="k" for="ans">✍️ '+esc(m.q)+'</label><textarea id="ans" placeholder="Unas líneas alcanzan. Podés hablar en vez de escribir.">'+esc(d.answer||"")+'</textarea><p class="mute" style="font-size:.9rem">📱 Tip: tocá el 🎤 de tu teclado y hablá.</p></div>';
+  if(n===21&&d.done) h+=n3Cierre();
+  h+='<div class="nav"><button type="button" class="btn ghost" id="prev"'+(n===1?" disabled":"")+'>Anterior</button><button type="button" class="btn ghost" id="next"'+(n===21||n3Locked(n+1)?" disabled":"")+'>'+(n3Locked(n+1)&&n<21?"🔒 Siguiente":"Siguiente")+'</button></div>';
+  $("dayCard").innerHTML=h;
+}
+function n3Cierre(){
+  const o=state.n3, pros=Object.values(o.days).filter(x=>x.done&&x.nivel==="pro").length, dom=ESCALERA.domingos;
+  let h='<div class="block"><p class="k">🎉 Nivel 3 terminado</p><p>21 días mostrándote con naturalidad. '+pros+' videos en Pro y '+n3Ventas()+' ventas de la vida registradas.</p>';
+  if(o.manifiesto&&(o.manifiesto.a||o.manifiesto.b||o.manifiesto.c)) h+='<div class="practice"><p style="white-space:pre-line">'+esc(manifiestoTxt())+'</p></div>';
+  h+='</div>'+testiHtml("n3");
+  h+='<div class="block"><p class="k">☀️ Tu próximo escalón</p><p>Seguí creciendo en comunidad: <b>Domingos del 1%</b>. Encuentros de los domingos y todas las clases grabadas.</p><div class="btns">'+(dom.activo?'<a class="btn" href="'+dom.mes.link+'" target="_blank" rel="noopener" style="text-decoration:none">1 mes · '+dom.mes.precio+'</a><a class="btn ghost" href="'+dom.tri.link+'" target="_blank" rel="noopener" style="text-decoration:none">3 meses · '+dom.tri.precio+'</a>':'<a class="btn" href="'+esc(waLink("Hola Rodrigo, terminé el Nivel 3 y quiero sumarme a Domingos del 1%."))+'" target="_blank" rel="noopener" style="text-decoration:none">💬 Quiero sumarme</a>')+'<button type="button" class="btn ghost" data-v="camino">🪜 Ver mi camino</button></div></div>';
+  return h;
+}
+function testiHtml(nv){
+  const lbl={n2:"el Nivel 2",n3:"el Nivel 3"}[nv]||"el reto";
+  let h='<div class="block"><p class="k">💬 Tu testimonio</p>';
+  if(state.testis&&state.testis[nv]) return h+'<p>🙌 ¡Gracias! Tu testimonio le llegó a Rodrigo.</p></div>';
+  return h+'<p>¿Qué te dejó '+lbl+'? Dos o tres frases alcanzan.</p><textarea id="testiTxt_'+nv+'" placeholder="Por ejemplo: antes me daba vergüenza y ahora..."></textarea><label style="display:flex;gap:10px;align-items:center;cursor:pointer"><input type="checkbox" id="testiOk_'+nv+'" checked style="width:22px;height:22px;accent-color:var(--gold)"> Rodrigo puede compartirlo con mi nombre</label><div class="btns"><button type="button" class="btn" data-testi="'+nv+'">Enviar testimonio</button></div></div>';
+}
+async function enviarTestiNv(nv){
+  const v=(($("testiTxt_"+nv)||{}).value||"").trim(); if(v.length<5){setStatus("Escribí unas palabras.");return}
+  const tag={n2:"[Nivel 2] ",n3:"[Nivel 3] "}[nv]||"";
+  if(SB&&SESSION){const {error}=await SB.from("testimonios").insert({user_id:SESSION.user.id,nombre:NOMBRE,texto:tag+v,permiso:!!($("testiOk_"+nv)||{}).checked});if(error){setStatus("No se pudo enviar. Probá de nuevo.");return}}
+  state.testis=Object.assign({},state.testis||{},{[nv]:true}); save(); render(); setStatus("🙌 ¡Gracias por tu testimonio!");
 }
 
 /* ---------- Cierre ---------- */
@@ -1042,6 +1191,11 @@ document.addEventListener("click",e=>{
   if(t.id==="copyRef"){try{navigator.clipboard.writeText(refLink()).then(()=>setStatus("✅ Link copiado. Pegalo donde quieras."),()=>setStatus(refLink()))}catch(err){setStatus(refLink())}return}
   if(t.dataset.regalo!==undefined){state.regalos=state.regalos||{};const i=+t.dataset.regalo;state.regalos[i]=!state.regalos[i];save();if(state.regalos[i]){playWin();confetti()}renderCamino();return}
   if(t.id==="testiSend"){enviarTestimonio();return}
+  if(t.dataset.testi){enviarTestiNv(t.dataset.testi);return}
+  if(t.id==="n3Start"){state.n3=Object.assign({},state.n3,{start:ymd(new Date()),days:state.n3.days||{},pers:n3Pers()});sel.n3=1;save();render();scrollTo(0,0);confetti();return}
+  if(t.dataset.lvl&&view==="n3"){const d=dayOf(state.n3,sel.n3);d.done=true;d.nivel=t.dataset.lvl;d.at=ymd(new Date());save();playWin();if(sel.n3===21){confetti()}render();setStatus(ANIMOS[sel.n3%ANIMOS.length]);return}
+  if(t.id==="goNext3"){sel.n3=Math.min(21,sel.n3+1);render();$("app").scrollIntoView({behavior:"smooth"});return}
+  if(t.id==="mfCopy"){const txt=manifiestoTxt();try{navigator.clipboard.writeText(txt).then(()=>setStatus("✅ Manifiesto copiado."),()=>setStatus(txt))}catch(err){setStatus(txt)}return}
   if(t.id==="previewBtn"||t.id==="previewOff"){PREVIEW=!PREVIEW;try{sessionStorage.setItem("reto-preview",PREVIEW?"1":"0")}catch(e){}ADMIN=REAL_ADMIN&&!PREVIEW;if(view==="admin")view="n1";if(PREVIEW)view="n2";render();if($("previewBtn"))$("previewBtn").textContent=PREVIEW?'👑 Volver a creador':'👀 Ver como participante';scrollTo(0,0);return}
   if(t.id==="goVinc"){loginStep="vinc";renderLogin();setTimeout(()=>$("vincIn")&&$("vincIn").focus(),50);return}
   if(t.id==="doVinc"){doVinc();return}
@@ -1089,7 +1243,7 @@ document.addEventListener("click",e=>{
   }
   if(t.id==="skipBtn"){const d=dayOf(lv(),sel[view]);d.skipped=!d.skipped;if(d.skipped)d.done=false;save();render();return}
   if(t.id==="prev"&&sel[view]>1){sel[view]--;render();return}
-  if(t.id==="next"&&sel[view]<21){if(view==="n2"&&n2Locked(sel.n2+1))return;sel[view]++;render();return}
+  if(t.id==="next"&&sel[view]<21){if(view==="n2"&&n2Locked(sel.n2+1))return;if(view==="n3"&&n3Locked(sel.n3+1))return;sel[view]++;render();return}
   if(t.id==="resetStart"){lv().start=null;save();render();return}
   if(t.dataset.s!==undefined&&t.type==="checkbox"){state.signs[t.dataset.s]=t.checked;save();return}
   if(t.id==="resBtn"){generarResumen();return}
@@ -1109,6 +1263,8 @@ document.addEventListener("change",e=>{
   if(e.target.id==="startEdit"&&e.target.value){lv().start=e.target.value;sel[view]=todayIdx(lv());save();render();setStatus("Día de inicio actualizado.")}
 });
 document.addEventListener("input",e=>{
+  if(e.target.id==="vendi"){dayOf(state.n3,sel.n3).vendi=e.target.value;save();return}
+  if(e.target.dataset&&e.target.dataset.mf){state.n3.manifiesto=Object.assign({},state.n3.manifiesto||{},{[e.target.dataset.mf]:e.target.value});save();return}
   if(e.target.id==="ans"){dayOf(lv(),sel[view]).answer=e.target.value;setStatus("Guardando...");save();refreshIA()}
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&dt) closeDt(); if(e.key==="Enter"&&e.target.id==="dtTxt"){$("dtGo").click()}});
@@ -1208,7 +1364,7 @@ async function checkCompra(manual){
   if(PREVIEW){ if(manual) setStatus("👀 Vista de participante: acá vería si su pago ya entró."); return }
   const {data}=await SB.from("compras").select("producto,estado").eq("email",EMAIL).in("producto",["n2","n3"]).eq("estado","aprobada");
   /* Comprar un nivel abre también todos los anteriores: Nivel 3 incluye el Nivel 2. */
-  if(data&&data.some(c=>c.producto==="n3")&&!state.unlocked.n3){state.unlocked.n3=ymd(new Date());if(!state.unlocked.n2)state.unlocked.n2=state.unlocked.n3;save()}
+  if(data&&data.some(c=>c.producto==="n3")&&!state.unlocked.n3){state.unlocked.n3=ymd(new Date());if(!state.unlocked.n2)state.unlocked.n2=state.unlocked.n3;save();if(manual||view==="n3"){view="n3";render();scrollTo(0,0);confetti();playWin();setStatus("🔓 ¡Nivel 3 desbloqueado!")}}
   if(data&&data.length){
     if(!state.unlocked.n2){state.unlocked.n2=ymd(new Date());save();if(manual||view==="n2"){view="n2";render();scrollTo(0,0);confetti();playWin();setStatus("🔓 ¡Nivel 2 desbloqueado!")}}
   }else if(manual) setStatus("Todavía no vemos tu pago. Si recién pagaste, esperá 1 minuto y tocá de nuevo. Pagá con "+EMAIL+".");
@@ -1216,7 +1372,7 @@ async function checkCompra(manual){
 document.addEventListener("visibilitychange",async()=>{
   if(document.hidden||!SESSION||!SB) return;
   if(!timer){try{const {data:row}=await SB.from("participantes").select("state,updated_at").eq("user_id",SESSION.user.id).maybeSingle();if(row&&row.updated_at&&new Date(row.updated_at)>new Date(SYNC_AT||0)){state=norm(row.state);SYNC_AT=row.updated_at;try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}render();setStatus("🔄 Actualizado con tus últimos datos.")}}catch(e){}}
-  if(!state.unlocked.n2&&n2Ready()) checkCompra(false);
+  if((!state.unlocked.n2&&n2Ready())||!state.unlocked.n3) checkCompra(false);
 });
 /* Sugerencias de mejora */
 function openSug(){
