@@ -1325,6 +1325,7 @@ async function afterLogin(session){
   else { await SB.from("participantes").upsert({user_id:session.user.id,email:EMAIL,nombre:NOMBRE,state:JSON.parse(JSON.stringify(state)),updated_at:new Date().toISOString()}); }
   try{const {data:adm}=await SB.rpc("soy_admin"); REAL_ADMIN=!!adm}catch(e){REAL_ADMIN=false}
   if(!REAL_ADMIN) PREVIEW=false;
+  if(REAL_ADMIN&&location.pathname.indexOf("/creador")<0){location.replace(new URL("creador/",location.href).href+location.search);return}
   ADMIN=REAL_ADMIN&&!PREVIEW;
   MI_REF=session.user.id.replace(/-/g,"").slice(0,8);
   await registrarRef(); cargarRegalos();
