@@ -206,6 +206,15 @@ footer{text-align:center;color:var(--mute);font-size:.9rem}
 .z-do .note{background:#1b1712;border-color:#2f2a22;color:#e5dccb}
 .z-reg{background:#15120e;border:1px solid #2f2a22;border-radius:8px;padding-top:0;overflow:hidden}
 .z-reg .zhead{color:#ece3cf;margin:0 -18px 4px;padding:11px 18px;background:#1d1913;border-bottom:1px solid #2f2a22}
+
+/* Zonas 1 a 4 pintadas, todas iguales */
+.z-idea,.z-q,.z-do,.z-write{background:#262019;border-color:#3a3226}
+.z-idea .zhead,.z-q .zhead,.z-do .zhead,.z-write .zhead{background:#322a20;border-bottom-color:#3a3226}
+.z-do .lvl,.z-do .note{background:#2e271e;border-color:#3a3226}
+.z-write textarea{background:#1c1813;border-color:#3a3226}
+.chips2{display:grid;grid-template-columns:1fr;gap:8px}
+.chips2 .cmd{text-align:left;border-radius:8px;padding:10px 14px}
+.howia{margin:2px 0 4px}
 canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
@@ -469,7 +478,7 @@ function renderDay(){
   h+=iaZone(5);
   if(view==="n2"&&n===21&&d.done) h+='<div class="block"><p class="k">Nivel 2 terminado</p><div class="btns"><button type="button" class="btn ghost" data-again="n2">Hacer el nivel 2 otra vez</button></div></div>'+testiHtml("n2")+'<div class="block"><p class="k">Tu próximo nivel</p><p><b>Nivel 3 · Vender con naturalidad.</b> 21 días para que tu servicio hable por vos.</p><div class="btns"><button type="button" class="btn" data-v="n3">Ver el Nivel 3</button></div></div>';
   if(view==="n1"&&n===21){
-    h+='<div class="block"><p class="k">Cinco señales de integración</p><div class="signs">'+SIGNS.map((s,i)=>'<label><input type="checkbox" data-s="'+i+'"'+(state.signs[i]?" checked":"")+'><span>'+esc(s)+'</span></label>').join("")+'</div>';
+    h+='<div class="block">';
     h+=cierreOpen()?'<button type="button" class="btn" data-v="cierre">Ver mi cierre</button>':'<p class="note">Cuando marques “Lo hice” en este día se abre tu cierre: celebración, resumen y plan.</p>';
     h+='</div>';
   }
@@ -484,7 +493,7 @@ function unlockBox(){
     const buy=CONFIG.checkoutN2.indexOf("__")===0?"#":CONFIG.checkoutN2;
     h+='<div class="practice" style="margin-top:6px"><p class="k" style="color:var(--gold)">Último paso</p><h3>Nivel 2 · '+esc(u.precio)+'</h3>'+
       '<div style="display:grid;gap:6px"><span>Un camino nuevo, armado con tus puntos a mejorar, para llevar tu hábito a la excelencia.</span><span>Tus respuestas quedan guardadas siempre.</span><span>A tu ritmo.</span></div>'+
-      '<div class="btns"><a class="btn" href="'+esc(buy)+'" target="_blank" rel="noopener" style="text-decoration:none">Desbloquear por '+esc(u.precio)+'</a></div>'+
+      '<div class="btns"><a class="btn" href="'+esc(buy)+'" target="_blank" rel="noopener" style="text-decoration:none">'+ic("lock")+' Desbloquear por '+esc(u.precio)+'</a></div>'+
       '<p class="note">Pagá con este mismo email: <b>'+esc(EMAIL)+'</b>. Apenas se aprueba el pago, el Nivel 2 se abre solo.</p>'+
       '<div class="btns"><button type="button" class="btn ghost" id="checkPago">Ya pagué: revisar</button></div></div>';
   }
@@ -492,7 +501,7 @@ function unlockBox(){
   return h;
 }
 function renderN2Locked(){
-  let h='<div><p class="eyebrow">Nivel 2 · Afinar tu hábito</p><h2 style="margin-top:8px">Todavía bloqueado</h2></div>';
+  let h='<div><p class="eyebrow">Nivel 2 · Afinar tu hábito</p><h2 style="margin-top:8px">'+ic("lock")+' Todavía bloqueado</h2></div>';
   h+='<p>Para abrir el nivel 2:</p>'+unlockBox();
   const falt=[];for(let i=1;i<=21;i++) if(!(state.days[i]&&state.days[i].done)) falt.push(i);
   if(!n2Conds()[1].ok&&falt.length) h+='<div class="block"><p class="k">Días que podés completar</p><div class="chips">'+falt.map(i=>'<button type="button" class="dot" style="width:44px" data-goto="'+i+'">'+i+'</button>').join("")+'</div></div>';
@@ -535,16 +544,17 @@ function needAccion(){
 function waLink(txt){return "https://wa.me/"+ESCALERA.wa+"?text="+encodeURIComponent(txt)}
 function refLink(){return "https://rcmelsalto.com/reto/?ref="+MI_REF}
 function paso(n,ico,titulo,estado,desc,cta){
-  return '<div class="week" style="'+(estado==="ok"?"border-color:var(--gold)":"")+'"><b><span class="znum" style="display:inline-grid;margin-right:8px;color:var(--gold)">'+n+'</span>'+esc(titulo)+'</b><span>'+desc+'</span>'+(cta?'<div class="btns" style="margin-top:6px">'+cta+'</div>':'')+'</div>';
+  const lk=estado==="lock";
+  return '<div class="week" style="'+(estado==="ok"?"border-color:var(--gold)":"")+'"><b><span class="znum" style="display:inline-grid;margin-right:8px;color:var(--gold)">'+n+'</span>'+esc(titulo)+(lk?' <span style="color:var(--gold);margin-left:6px" title="Bloqueado">'+ic("lock")+'</span>':'')+'</b><span>'+desc+'</span>'+(cta?'<div class="btns" style="margin-top:6px">'+cta+'</div>':'')+'</div>';
 }
 function renderCamino(){
   const n1fin=cierreOpen(), n2ok=n2Open(), n2fin=!!(state.n2.days&&state.n2.days[21]&&state.n2.days[21].done), dom=ESCALERA.domingos;
   let h='<div><p class="eyebrow">Tu escalera de crecimiento</p><h2 style="margin-top:8px">Mi camino</h2></div><p>Cada paso te lleva un 1% más lejos. Avanzás a tu ritmo.</p><div style="display:grid;gap:10px">';
   h+=paso(1,"📅","Reto · Nivel 1","ok", n1fin?"Terminado. ¡Bien ahí!":"En camino: día "+todayIdx(state)+" de 21.", n1fin?'':'<button type="button" class="btn ghost" data-v="n1">Seguir con el reto</button>');
-  h+=paso(2,"🔓","Nivel 2 · Afinar tu hábito",n2ok?"ok":"", n2ok?"Abierto: 21 misiones armadas con tus trabas.":(n1fin?"Se abre por USD 17.":"Se habilita cuando terminás el Nivel 1."), n2ok?'<button type="button" class="btn ghost" data-v="n2">Ir al Nivel 2</button>':(n1fin?'<button type="button" class="btn" data-v="n2">Ver cómo abrirlo</button>':''));
+  h+=paso(2,"🔓","Nivel 2 · Afinar tu hábito",n2ok?"ok":"lock", n2ok?"Abierto: 21 misiones armadas con tus trabas.":(n1fin?"Se abre por USD 17.":"Se habilita cuando terminás el Nivel 1."), n2ok?'<button type="button" class="btn ghost" data-v="n2">Ir al Nivel 2</button>':(n1fin?'<button type="button" class="btn" data-v="n2">Ver cómo abrirlo</button>':''));
   const n3ok=n3Open(), n3fin=!!(state.n3.days&&state.n3.days[21]&&state.n3.days[21].done);
-  h+=paso(3,n3ok?"🎬":"🔒","Nivel 3 · Vender con naturalidad",n3ok?"ok":"", n3fin?"Terminado. Tu manifiesto ya está escrito.":(n3ok?"Abierto: 21 días con la cámara, a tu ritmo.":"21 días para mostrarte con naturalidad. USD 17, incluye el Nivel 2."), '<button type="button" class="btn ghost" data-v="n3">'+(n3ok?"Ir al Nivel 3":"Ver el Nivel 3")+'</button>');
-  h+=paso(4,"☀️","Domingos del 1% · comunidad","", "Encuentros de los domingos y todas las clases grabadas. 1 mes "+dom.mes.precio+" · 3 meses "+dom.tri.precio+".", dom.activo?'<a class="btn" href="'+dom.mes.link+'" target="_blank" rel="noopener" style="text-decoration:none">1 mes</a><a class="btn ghost" href="'+dom.tri.link+'" target="_blank" rel="noopener" style="text-decoration:none">3 meses</a>':'<a class="btn ghost" href="'+esc(waLink("Hola Rodrigo, quiero sumarme a Domingos del 1%."))+'" target="_blank" rel="noopener" style="text-decoration:none">Quiero sumarme</a>');
+  h+=paso(3,n3ok?"🎬":"🔒","Nivel 3 · Vender con naturalidad",n3ok?"ok":"lock", n3fin?"Terminado. Tu manifiesto ya está escrito.":(n3ok?"Abierto: 21 días con la cámara, a tu ritmo.":"21 días para mostrarte con naturalidad. USD 17, incluye el Nivel 2."), '<button type="button" class="btn ghost" data-v="n3">'+(n3ok?"Ir al Nivel 3":"Ver el Nivel 3")+'</button>');
+  h+=paso(4,"☀️","Domingos del 1% · comunidad","lock", "Encuentros de los domingos y todas las clases grabadas. 1 mes "+dom.mes.precio+" · 3 meses "+dom.tri.precio+".", dom.activo?'<a class="btn" href="'+dom.mes.link+'" target="_blank" rel="noopener" style="text-decoration:none">1 mes</a><a class="btn ghost" href="'+dom.tri.link+'" target="_blank" rel="noopener" style="text-decoration:none">3 meses</a>':'<a class="btn ghost" href="'+esc(waLink("Hola Rodrigo, quiero sumarme a Domingos del 1%."))+'" target="_blank" rel="noopener" style="text-decoration:none">Quiero sumarme</a>');
   h+=paso(5,"🎓","Mentoría 1 a 1","", "4 encuentros con Rodrigo, a tu medida. "+ESCALERA.mentoria.precio+". También hay un encuentro suelto de "+ESCALERA.encuentro.precio+".", '<a class="btn ghost" href="'+esc(waLink("Hola Rodrigo, quiero saber más de la mentoría 1 a 1."))+'" target="_blank" rel="noopener" style="text-decoration:none">Hablar con Rodrigo</a>');
   h+=paso(6,"🏕️","Retiros y eventos presenciales","", "Encuentros en persona para vivir el método con otras personas. Próximamente.", '<a class="btn ghost" href="'+esc(waLink("Hola Rodrigo, quiero enterarme de los retiros y eventos presenciales."))+'" target="_blank" rel="noopener" style="text-decoration:none">Avisame</a>');
   h+='</div>';
@@ -689,7 +699,6 @@ function renderAvance(){
   h+='<div class="tools"><button type="button" class="mini" data-say="avance">Escuchar mi avance</button></div>';
   h+=barrasProceso();
   h+='<div class="block"><p class="k">Tu ánimo día a día</p>'+moodChart(o)+'</div>';
-  if(state.n2.start) h+='<div class="block"><p class="k">Nivel 2 · ánimo</p>'+moodChart(state.n2)+'</div>';
   $("cierre").innerHTML=h;
 }
 function avanceTexto(){
@@ -789,8 +798,8 @@ const IAS=[
  {id:"gem",n:"Gemini",d:"Revisa tu texto, foto o video",u:()=>"https://gemini.google.com/app",copy:true}
 ];
 const CMDS={
- n1:[{id:"prof",l:"Profundizar el día",best:"gpt"},{id:"msj",l:"Escribir mi mensaje",best:"gpt"},{id:"traba",l:"Destrabarme",best:"gem"},{id:"datos",l:"Ver qué dicen los datos",best:"ppx"}],
- n2:[{id:"prof",l:"Afinar la misión",best:"gpt"},{id:"msj",l:"Escribir mi mensaje",best:"gpt"},{id:"exc",l:"Subir el estándar",best:"gem"},{id:"datos",l:"Ver qué dicen los datos",best:"ppx"}]
+ n1:[{id:"prof",l:"Profundizar el día",best:"gpt"},{id:"datos",l:"Ver qué dicen los datos",best:"ppx"},{id:"traba",l:"Destrabarme",best:"gem"}],
+ n2:[{id:"prof",l:"Afinar la misión",best:"gpt"},{id:"exc",l:"Subir el estándar",best:"gem"},{id:"datos",l:"Ver qué dicen los datos",best:"ppx"}]
 };
 const CMD3={
  ganchos:{l:"Ganchos para empezar",best:"gpt"},
@@ -881,11 +890,11 @@ function iaLinks(ctx){
   const c=iaCmd(), L=iaCmds();
   let h='<div class="chips2">'+L.map(x=>'<button type="button" class="cmd'+(x.id===c.id?" on":"")+'" data-cmd="'+x.id+'">'+esc(x.l)+'</button>').join("")+'</div>';
   h+='<div class="iagrid">'+IAS.map((a,i)=>'<a class="iacard'+(a.id===c.best?" best":"")+'" data-ia="'+i+'" data-ctx="day" href="'+esc(a.u(iaPrompt("day",i)))+'" target="_blank" rel="noopener"><b>'+a.n+(a.id===c.best?' <em>Recomendada</em>':'')+'</b><span>'+esc(a.d)+'</span><i>'+(a.copy?"Copia la pregunta y abre":"Abre con la pregunta escrita")+'</i></a>').join("")+'</div>';
-  h+='<details class="howia"><summary>¿Primera vez con IA? Así se usa</summary><ol><li>Elegí qué querés hacer (arriba).</li><li>Tocá una IA. ChatGPT y Perplexity abren con la pregunta ya escrita: solo tocá enviar.</li><li>En Gemini la pregunta se copia sola: mantené apretado el cuadro de texto, elegí <b>Pegar</b> y enviá.</li><li>Después pedile lo que necesites: “más corto”, “más natural”, “otro ejemplo”.</li></ol><button type="button" class="mini" data-copyia="day">Copiar la pregunta</button></details>';
   return h;
 }
 function refreshIA(){document.querySelectorAll("a[data-ia]").forEach(el=>{const a=IAS[+el.dataset.ia];el.href=a.u(iaPrompt(el.dataset.ctx,+el.dataset.ia))})}
-function iaZone(n){return zone("z-ia",n,"spark",view==="n3"?"Creá con IA":"Profundizá con IA",'<p class="mute" style="font-size:.95rem">Elegí qué querés y tocá una IA. Gratis y sin cuenta.</p><div id="iaBox">'+iaLinks("day")+'</div>')}
+function iaHow(){return '<details class="howia"><summary>¿Primera vez con IA? Así se usa</summary><ol><li>Elegí qué querés hacer (arriba).</li><li>Tocá una IA. ChatGPT y Perplexity abren con la pregunta ya escrita: solo tocá enviar.</li><li>En Gemini la pregunta se copia sola: mantené apretado el cuadro de texto, elegí <b>Pegar</b> y enviá.</li><li>Después pedile lo que necesites: “más corto”, “más natural”, “otro ejemplo”.</li></ol><button type="button" class="mini" data-copyia="day">Copiar la pregunta</button></details>'}
+function iaZone(n){return zone("z-ia",n,"spark",view==="n3"?"Creá con IA":"Profundizá con IA",'<p class="mute" style="font-size:.95rem">Elegí qué querés y tocá una IA. Gratis y sin cuenta.</p>'+iaHow()+'<div id="iaBox">'+iaLinks("day")+'</div>')}
 
 /* ---------- Nivel 2 personalizado: Afinar tu hábito ---------- */
 const TRAMOS=["Destrabar","Afinar","Excelencia"];
@@ -1019,7 +1028,7 @@ function renderN2(){
     for(let k=1;k<=7;k++){const i=s*7+k,x=o.days[i]||{},lk=n2Locked(i);st+='<button type="button" class="dot'+(x.done?" done":"")+(i===n?" sel":"")+'" data-n="'+i+'"'+(lk?' disabled style="opacity:.45"':'')+' aria-label="Misión '+i+(lk?", bloqueada":"")+'">'+(lk?"🔒":(x.done?(x.nivel==="pro"?"🏆":i):i))+'</button>'}
     st+='</div></div>'}
   $("strip").innerHTML=st;
-  let h=dayHero(n,'Nivel 2 · Misión '+n+' · '+TRAMOS[tr],m.t);
+  let h=dayHero(n,'Nivel 2 · Misión '+n+' · '+TRAMOS[tr],m.t,["R","C","M"].map((x,k)=>'<span class="chip'+(k===tr?" on":"")+'" title="'+AXN[x]+'">'+x+'</span>').join("")+'<span class="axn">'+AXN["RCM"[tr]]+'</span>');
   h+='<div class="tools"><button type="button" class="mini" data-say="mision">'+ic("speak")+' Escuchar la misión</button></div>';
   h+=zone("z-idea",1,"target","Por qué esta misión",'<p class="zidea">'+esc(m.por)+'</p>');
   let lv2='<div class="lvls">';
@@ -1096,11 +1105,11 @@ function n3Video(){return '<video src="../n3-bienvenida.mp4" poster="../n3-poste
 function n3Ventas(){const o=state.n3;let c=0;for(let i=1;i<=21;i++) if(o.days[i]&&(o.days[i].vendi||"").trim()) c++;return c}
 function renderN3Locked(){
   const n2fin=!!(state.n2.days&&state.n2.days[21]&&state.n2.days[21].done), msg="Hola Rodrigo, quiero el Nivel 3: Vender con naturalidad.";
-  let h='<div><p class="eyebrow">Nivel 3 · Vender con naturalidad</p><h2 style="margin-top:8px">Todavía bloqueado</h2></div>';
-  h+='<div style="display:grid;gap:8px"><span>21 días para usar la cámara a tu ritmo.</span><span>Mini: solo te mirás. Medio: tu voz o tus manos. Pro: te grabás.</span><span>Armado con lo que trabajaste en el Nivel 2.</span><span>Incluye el Nivel 2.</span></div>';
+  let h='<div><p class="eyebrow">Nivel 3 · Vender con naturalidad</p><h2 style="margin-top:8px">'+ic("lock")+' Todavía bloqueado</h2></div>';
+  h+='<div style="display:grid;gap:8px"><span>21 días para usar la cámara a tu ritmo.</span><span>Mini: solo te mirás. Medio: tu voz o tus manos. Pro: te grabás.</span><span>Armado con lo que trabajaste en el Nivel 2.</span><span><span style="color:var(--gold)">'+ic("lock")+'</span> Desbloquea también el Nivel 2.</span></div>';
   if(!n2fin&&state.n2&&state.n2.start) h+='<p class="note">Te recomiendo terminar el Nivel 2 primero: el Nivel 3 se arma con lo que hiciste ahí.</p>';
   h+='<div class="practice"><h3>Nivel 3 · USD 17</h3>';
-  h+=CONFIG.n3Venta?'<div class="btns"><a class="btn" href="'+esc(CONFIG.checkoutN3)+'" target="_blank" rel="noopener" style="text-decoration:none">Desbloquear por USD 17</a></div><p class="note">Pagá con este mismo email: <b>'+esc(EMAIL)+'</b>. Apenas se aprueba el pago, el Nivel 3 se abre solo.</p><div class="btns"><button type="button" class="btn ghost" id="checkPago">Ya pagué: revisar</button></div>'
+  h+=CONFIG.n3Venta?'<div class="btns"><a class="btn" href="'+esc(CONFIG.checkoutN3)+'" target="_blank" rel="noopener" style="text-decoration:none">'+ic("lock")+' Desbloquear por USD 17</a></div><p class="note">Pagá con este mismo email: <b>'+esc(EMAIL)+'</b>. Apenas se aprueba el pago, el Nivel 3 se abre solo.</p><div class="btns"><button type="button" class="btn ghost" id="checkPago">Ya pagué: revisar</button></div>'
     :'<p>Se abre muy pronto.</p><div class="btns"><a class="btn ghost" href="'+esc(waLink(msg))+'" target="_blank" rel="noopener" style="text-decoration:none">Avisame cuando esté</a></div>';
   h+='</div>';
   $("cierre").innerHTML=h;
