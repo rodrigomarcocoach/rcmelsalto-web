@@ -228,6 +228,14 @@ const REGALOS=[
   {ico:"🎁",t:"Pedí una recomendación",mini:"Escribí el nombre de 1 cliente que quedó contento.",medio:"Pedile que te recomiende con 1 persona.",pro:"Pedíselo a 2 clientes hoy."},
   {ico:"🎁",t:"Tu oferta en voz alta",mini:"Decí tu oferta en voz alta 1 vez.",medio:"Grabala en 30 segundos.",pro:"Publicala en una historia."}
 ];
+const FAQ=[
+  {q:"¿Tengo que ofrecer de verdad o es una simulación?",a:"De verdad. Las prácticas son con personas reales: un mensaje real a alguien real. Ahí está el cambio. Si un día te cuesta, empezá por lo más chico o tocá 🛟 Estoy trabado/a."},
+  {q:"¿Cuánto tiempo me lleva por día?",a:"Entre 1 y 5 minutos: leer la idea, hacer la práctica y escribir 2 o 3 líneas. Podés hablar en vez de escribir."},
+  {q:"¿Qué pasa si un día no puedo?",a:"Tocá “Hoy no pude” y retomás al día siguiente, sin culpa ni reproche. Un día perdido no es el fin: lo que cuenta es retomar."},
+  {q:"¿Quién ve mis respuestas?",a:"Vos y Rodrigo. Él las lee para acompañarte mejor. No se comparten con nadie más."},
+  {q:"¿Se borra lo que escribí si cambio de teléfono?",a:"No. Tu reto queda guardado en tu cuenta. Entrás con tu email desde cualquier teléfono y está todo."}
+];
+function faqHtml(){return '<div class="block" id="faq"><p class="k">❓ Preguntas frecuentes</p><div style="display:grid;gap:8px">'+FAQ.map(f=>'<details class="week"><summary style="cursor:pointer;font-weight:600">'+esc(f.q)+'</summary><p style="margin-top:8px">'+esc(f.a)+'</p></details>').join("")+'</div><p class="mute" style="font-size:.95rem">¿Otra duda? Tocá 💡 y escribila.</p></div>'}
 let REGALOS_N=0, MI_REF="";
 let SB=null, SESSION=null, EMAIL="", loginStep="email", loginEmail="", loginNombre="", REAL_ADMIN=false, PREVIEW=false, SYNC_AT="";
 try{PREVIEW=sessionStorage.getItem("reto-preview")==="1"}catch(e){}
@@ -364,7 +372,7 @@ function renderDay(){
   h+='<div class="ql"><p class="k">🌤️ ¿Cómo llegás hoy?</p><div class="emojis">'+EMO.map((x,i)=>'<button type="button" class="emo'+(d.animo===i+1?" on":"")+'" data-animo="'+(i+1)+'" aria-label="Ánimo '+(i+1)+' de 5">'+x+'</button>').join("")+'</div></div>';
   h+='<div class="block"><p class="k">💡 La idea</p><p>'+esc(D.i)+'</p></div>';
   h+='<div class="block"><p class="k">❓ Pregunta del día</p><p class="q">'+esc(D.q)+'</p></div>';
-  h+='<div class="block"><p class="k">⚡ Práctica de 1 a 30 segundos</p><div class="practice"><p>'+esc(D.p)+'</p><div class="btns"><button type="button" class="btn'+(d.done?" on":"")+'" id="doneBtn">'+(d.done?"Hecho ✓":"Lo hice")+'</button><button type="button" class="btn ghost" id="skipBtn">'+(d.skipped?"Quitar “hoy no pude”":"Hoy no pude")+'</button></div></div>';
+  h+='<div class="block"><p class="k">⚡ Práctica de 1 a 30 segundos</p><p class="mute" style="font-size:.9rem">Es con personas reales, no una simulación. <button type="button" data-v="camino" style="background:none;border:0;color:var(--gold2);text-decoration:underline;font:inherit;cursor:pointer;padding:0">¿Dudas?</button></p><div class="practice"><p>'+esc(D.p)+'</p><div class="btns"><button type="button" class="btn'+(d.done?" on":"")+'" id="doneBtn">'+(d.done?"Hecho ✓":"Lo hice")+'</button><button type="button" class="btn ghost" id="skipBtn">'+(d.skipped?"Quitar “hoy no pude”":"Hoy no pude")+'</button></div></div>';
   if(d.skipped&&!d.done) h+='<p class="note">Un día perdido no es el fin. Lo que cuenta es retomar. <button type="button" class="btn ghost" data-sos="racha" style="margin-top:10px">Ayudame a retomar</button></p>';
   h+='</div>';
   h+='<div class="block"><p class="k">Eje RCM de hoy</p><div class="chips" aria-label="Eje RCM">'+chips+'</div><p class="mute" style="font-size:.9rem">'+D.e.split("").map(x=>AXN[x]).join(" · ")+'</p></div>';
@@ -388,7 +396,7 @@ function unlockBox(){
     const u=UNLOCK.n2, msg="Hola Rodrigo, terminé el reto de 21 días y quiero desbloquear el Nivel 2 ("+u.precio+").";
     const buy=CONFIG.checkoutN2.indexOf("__")===0?"#":CONFIG.checkoutN2;
     h+='<div class="practice" style="margin-top:6px"><p class="k" style="color:var(--gold)">🔓 Último paso</p><h3>Nivel 2 · '+esc(u.precio)+'</h3>'+
-      '<div style="display:grid;gap:6px"><span>✅ Un camino nuevo, armado con tus trabas.</span><span>💾 Tus respuestas quedan guardadas siempre.</span><span>🕒 A tu ritmo.</span></div>'+
+      '<div style="display:grid;gap:6px"><span>✅ Un camino nuevo, armado con tus puntos a mejorar, para llevar tu hábito a la excelencia.</span><span>💾 Tus respuestas quedan guardadas siempre.</span><span>🕒 A tu ritmo.</span></div>'+
       '<div class="btns"><a class="btn" href="'+esc(buy)+'" target="_blank" rel="noopener" style="text-decoration:none">💳 Desbloquear por '+esc(u.precio)+'</a></div>'+
       '<p class="note">📧 Pagá con este mismo email: <b>'+esc(EMAIL)+'</b>. Apenas se aprueba el pago, el Nivel 2 se abre solo.</p>'+
       '<div class="btns"><button type="button" class="btn ghost" id="checkPago">🔄 Ya pagué: revisar</button></div></div>';
@@ -463,6 +471,7 @@ function renderCamino(){
     h+='<div class="week" style="'+(abierto?"":"opacity:.55")+'"><b>'+(abierto?g.ico:"🔒")+' Misión regalo '+(i+1)+' · '+esc(g.t)+'</b>'+(abierto?'<span>🌱 Mini: '+esc(g.mini)+'</span><span>🔥 Medio: '+esc(g.medio)+'</span><span>🏆 Pro: '+esc(g.pro)+'</span><div class="btns"><button type="button" class="btn'+(hecho?" on":" ghost")+'" data-regalo="'+i+'">'+(hecho?"✅ Hecha":"✅ La hice")+'</button></div>':'<span>Se abre con tu invitación número '+(i+1)+'.</span>')+'</div>';
   });
   h+='</div>';
+  h+=faqHtml();
   $("cierre").innerHTML=h;
 }
 async function enviarTestimonio(){
@@ -575,12 +584,16 @@ function avanceBlocks(){
   h+='<p class="k" style="margin-top:8px">'+(state.hoy?'¿Cambió algo? Actualizá cómo estás hoy':'¿Cómo estás hoy?')+'</p>'+checkRows("hoy",state.hoy||{})+'</div>';
   return h;
 }
+function barrasProceso(){
+  if(!state.inicio&&!state.hoy) return '';
+  return '<div class="block"><p class="k">📍 Tu proceso: confianza, calma y constancia</p>'+compareBars()+'</div>';
+}
 function renderAvance(){
   const o=state, dts=state.destrabes, hechos=dts.filter(x=>x.hecho).length;
   let h='<div><p class="eyebrow">Tu estadística</p><h2 style="margin-top:8px">📈 Mi avance</h2></div>';
   h+='<div class="stats"><div class="stat"><b>'+doneCount(o)+'/21</b><span>días hechos</span></div><div class="stat"><b>'+streak(o)+'</b><span>racha de hoy</span></div><div class="stat"><b>'+bestStreak(o)+'</b><span>mejor racha</span></div><div class="stat"><b>'+answersCount(o)+'</b><span>respuestas</span></div><div class="stat"><b>'+hechos+'/'+dts.length+'</b><span>trabas resueltas</span></div></div>';
   h+='<div class="tools"><button type="button" class="mini" data-say="avance">🔊 Escuchar mi avance</button></div>';
-  h+=avanceBlocks();
+  h+=barrasProceso();
   h+='<div class="block"><p class="k">🌤️ Tu ánimo día a día</p>'+moodChart(o)+'</div>';
   if(state.n2.start) h+='<div class="block"><p class="k">Nivel 2 · ánimo</p>'+moodChart(state.n2)+'</div>';
   $("cierre").innerHTML=h;
@@ -838,16 +851,13 @@ function renderCierre(){
   const nom=NOMBRE?", "+esc(NOMBRE):"";
   let h='<div class="hero"><p class="eyebrow">Día 21 · Reto terminado</p><p class="big">¡Lo lograste'+nom+'!</p><p class="mute">Terminaste el Reto de Venta Consciente.</p><div class="tools" style="justify-content:center"><button type="button" class="mini" id="partyBtn">🎊 Celebrar otra vez</button><button type="button" class="mini" data-say="cierre">🔊 Escuchar mi cierre</button></div></div>';
   h+='<div class="stats" style="justify-content:center"><div class="stat"><b>'+doneCount(state)+'/21</b><span>días hechos</span></div><div class="stat"><b>'+bestStreak(state)+'</b><span>mejor racha</span></div><div class="stat"><b>'+answersCount(state)+'</b><span>respuestas escritas</span></div><div class="stat"><b>'+retomados(state)+'</b><span>veces que retomaste</span></div></div>';
-  h+=avanceBlocks();
+  h+=barrasProceso();
   if(!r){
     h+='<div class="block" style="text-align:center"><p>Ahora armamos tu resumen con lo que fuiste escribiendo estos 21 días.</p><div class="btns" style="justify-content:center"><button type="button" class="btn" id="resBtn">Ver mi resumen y mi plan</button></div></div>';
   }else{
     h+='<div class="block"><p class="k">Reconocimiento</p><h3>'+esc(r.titulo||"")+'</h3><p>'+esc(r.reconocimiento||"")+'</p></div>';
     h+='<div class="block"><p class="k">Lo que aprendiste</p><ul class="list">'+(r.aprendizajes||[]).map(a=>'<li>'+esc(a)+'</li>').join("")+'</ul></div>';
     h+='<div class="block"><p class="k">Tus ejes RCM</p><div class="axis"><div><span class="mute">Tu eje fuerte</span><b>'+esc(AXN[r.eje_fuerte]||"")+'</b></div><div><span class="mute">Para seguir entrenando</span><b>'+esc(AXN[r.eje_a_trabajar]||"")+'</b></div></div><p class="mute">'+esc(r.porque||"")+'</p></div>';
-    h+='<div class="block"><p class="k">🧭 Tu plan de 4 semanas</p>'+planCards(r,false)+'<div class="btns"><button type="button" class="btn" data-v="plan">🧭 Empezar mi plan y activar recordatorios</button></div></div>';
-    if(r.frase) h+='<p class="note" style="font-size:1.15rem">'+esc(r.frase)+'</p>';
-    h+='<div class="btns"><button type="button" class="btn ghost" id="resBtn">Rehacer resumen</button><button type="button" class="btn ghost" data-again="n1">🔁 Hacer el reto otra vez</button></div>';
   }
   if(r){
     h+='<div class="block"><p class="k">💬 Tu testimonio</p>';
@@ -856,7 +866,7 @@ function renderCierre(){
     h+='</div>';
   }
   h+='<div class="block"><p class="k">Nivel 2 · Afinar tu hábito</p>';
-  if(n2Open()) h+='<p>🔓 ¡Nivel 2 desbloqueado! Un camino nuevo, armado con tus trabas reales, para llevar tu hábito a la excelencia.</p><div class="btns"><button type="button" class="btn" data-v="n2">Ir al nivel 2</button></div>';
+  if(n2Open()) h+='<p>🔓 ¡Nivel 2 desbloqueado! Un camino nuevo, armado con tus puntos a mejorar, para llevar tu hábito a la excelencia.</p><div class="btns"><button type="button" class="btn" data-v="n2">Ir al nivel 2</button></div>';
   else h+=unlockBox();
   h+='</div>';
   $("cierre").innerHTML=h;
