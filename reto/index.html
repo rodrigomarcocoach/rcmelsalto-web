@@ -696,27 +696,45 @@ function avanceTexto(){
 }
 
 /* ---------- Audio ---------- */
-async function getTTS(){ TTS=null; return null; if(TTS!==undefined) return TTS; try{TTS=window.claude&&window.claude.use?await window.claude.use("tts"):null}catch(e){TTS=null} return TTS }
-function webSay(text){
-  return new Promise(res=>{
-    try{
-      if(!window.speechSynthesis){res();return}
-      const u=new SpeechSynthesisUtterance(text); u.lang="es-AR"; u.rate=.95;
-      const v=speechSynthesis.getVoices().find(v=>/^es/i.test(v.lang)); if(v) u.voice=v;
-      u.onend=res; u.onerror=res; speechSynthesis.cancel(); speechSynthesis.speak(u);
-    }catch(e){res()}
-  });
+/* Voz: Web Speech del teléfono. Se elige una voz femenina en español, cálida y con energía.
+   En iPhone el audio tiene que arrancar en el mismo toque, sin esperas: por eso no hay await antes de speak. */
+const VOZ_PREF=["Elena","Paulina","Mónica","Monica","Marisol","Angélica","Angelica","Isabela","Sabina","Dalia","Elvira","Helena","Laura","Lucía","Lucia","Paloma","Soledad","Francisca","Google español de Estados Unidos","Google español"];
+const VOZ_MASC=/jorge|juan|diego|carlos|pablo|enrique|raul|raúl|alvaro|álvaro|jorge|tom[aá]s|gonzalo|male|hombre/i;
+let VOZ=null;
+function pickVoz(){
+  try{
+    const vs=speechSynthesis.getVoices().filter(v=>/^es/i.test(v.lang)); if(!vs.length) return null;
+    for(const n of VOZ_PREF){const v=vs.find(x=>x.name.indexOf(n)>-1&&!VOZ_MASC.test(x.name));if(v) return v}
+    const loc=["es-AR","es-419","es-MX","es-US","es-ES"];
+    for(const l of loc){const v=vs.find(x=>x.lang.replace("_","-")===l&&!VOZ_MASC.test(x.name));if(v) return v}
+    return vs.find(x=>!VOZ_MASC.test(x.name))||vs[0];
+  }catch(e){return null}
 }
-function markSay(on){document.querySelectorAll("[data-say]").forEach(b=>{if(!b.dataset.lbl) b.dataset.lbl=b.textContent; b.textContent=on?"Parar":b.dataset.lbl; b.classList.toggle("on",on)})}
-function stopSay(){try{TTS&&TTS.stop()}catch(e){} try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){} speaking=false; markSay(false)}
-async function say(text){
+try{ if(window.speechSynthesis){ VOZ=pickVoz(); speechSynthesis.onvoiceschanged=()=>{VOZ=pickVoz()} } }catch(e){}
+function partes(t){return String(t).replace(/\s+/g," ").match(/[^.!?¿¡:;]+[.!?:;]*|[¿¡][^?!]+[?!]/g)||[t]}
+function webSay(text){
+  if(!window.speechSynthesis){setStatus("Tu navegador no tiene voz. Probá con Chrome o Safari.");speaking=false;markSay(false);return}
+  speechSynthesis.cancel();
+  if(!VOZ) VOZ=pickVoz();
+  const ps=partes(text).map(x=>x.trim()).filter(Boolean);
+  ps.forEach((x,i)=>{
+    const u=new SpeechSynthesisUtterance(x);
+    u.lang=VOZ?VOZ.lang:"es-AR"; if(VOZ) u.voice=VOZ;
+    u.rate=1.0; u.pitch=1.12; u.volume=1;
+    if(i===ps.length-1){u.onend=()=>{speaking=false;markSay(false)}}
+    u.onerror=e=>{if(e&&e.error!=="interrupted"&&e.error!=="canceled"){speaking=false;markSay(false)}};
+    speechSynthesis.speak(u);
+  });
+  try{speechSynthesis.resume()}catch(e){}
+}
+function markSay(on){document.querySelectorAll("[data-say]").forEach(b=>{if(!b.dataset.lbl) b.dataset.lbl=b.innerHTML; b.innerHTML=on?ic("speak")+" Parar":b.dataset.lbl; b.classList.toggle("on",on)})}
+function stopSay(){try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){} speaking=false; markSay(false)}
+function say(text){
   if(speaking){stopSay();return}
+  if(!text) return;
   speaking=true; markSay(true);
-  const t=await getTTS();
-  let ok=false;
-  if(t){ try{ await t.speak(text.slice(0,2000),{rate:.95}); ok=true }catch(e){ ok=!!(e&&(e.code==="viewer_stopped")) } }
-  if(!ok&&speaking) await webSay(text);
-  speaking=false; markSay(false);
+  webSay(text);
+  setTimeout(()=>{try{if(speaking&&!speechSynthesis.speaking&&!speechSynthesis.pending){speaking=false;markSay(false);setStatus("No se escucha? Subí el volumen y sacá el modo silencio del teléfono.")}}catch(e){}},2500);
 }
 function sayText(k){
   if(k==="day"){const D=lvDef().days[sel[view]-1];return D.t+". "+D.i+" La pregunta de hoy: "+D.q+" La práctica: "+D.p}
