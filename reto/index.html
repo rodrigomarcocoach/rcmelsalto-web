@@ -172,6 +172,36 @@ footer{text-align:center;color:var(--mute);font-size:.9rem}
 .howia{font-size:.95rem;color:var(--mute)}
 .howia summary{cursor:pointer;color:var(--gold2)}
 .howia ol{margin:8px 0;padding-left:22px;display:grid;gap:4px}
+
+/* Botones tipo píldora con efecto de presionado */
+.tabs{gap:10px}
+.tab{display:inline-flex;align-items:center;gap:8px;font-family:var(--body);font-weight:500;letter-spacing:.01em;text-transform:none;font-size:1rem;color:var(--gold2);background:#15110c;border:1.5px solid #4a3c28;padding:9px 18px;border-radius:999px;box-shadow:0 3px 0 #000,0 4px 10px rgba(0,0,0,.35);transition:transform .08s,box-shadow .08s,background .15s}
+.tab .ic{width:19px;height:19px}
+.tab:hover{border-color:var(--gold)}
+.tab:active{transform:translateY(2px) scale(.97);box-shadow:0 1px 0 #000,inset 0 2px 6px rgba(0,0,0,.6)}
+.tab.on{color:var(--gold2);background:#0c0a07;border-color:var(--gold);transform:translateY(2px);box-shadow:inset 0 3px 8px rgba(0,0,0,.85),inset 0 0 0 1px rgba(241,207,121,.15)}
+.tab.lock{opacity:.6}
+.mini:active,.btn:active,.cmd:active,.iacard:active{transform:translateY(1px) scale(.98)}
+/* Las 3 partes del día en fondo claro: crema con amarillo y naranja, muy suave */
+.z-idea,.z-q,.z-do{color:#2b2114;border:1px solid #e9d6ad;box-shadow:0 2px 14px rgba(0,0,0,.25)}
+.z-idea{background:linear-gradient(135deg,#fbf3e1 0%,#f8e9c4 100%);border-left:4px solid var(--gold)}
+.z-q{background:linear-gradient(135deg,#fcf2e4 0%,#f8dcc0 100%)}
+.z-do{background:linear-gradient(135deg,#fdf5dc 0%,#f6dfa4 60%,#f3cf9a 100%);border:1.5px solid #d9a93f}
+.z-idea .zhead,.z-do .zhead{color:#9a6410}
+.z-q .zhead{color:#c25a10}
+.z-idea .zidea,.z-idea .zfrase{color:#2b2114}
+.z-idea .mute,.z-q .mute,.z-do .mute{color:#6e5b3e}
+.z-q .zq{color:#2b2114}
+.z-do .zdo{color:#3a2a0e;font-weight:500}
+.z-idea .zfrase{border-left-color:#d9b46a}
+.z-do .btn{background:#2b2114;border-color:#2b2114;color:#fbf3e1}
+.z-do .btn.ghost{background:transparent;color:#2b2114;border-color:#2b2114}
+.z-do .btn.on{background:#d9a93f;border-color:#b98a26;color:#1d1509}
+.z-do .linkb{color:#9a4d0c}
+.z-do .lvl{background:rgba(255,255,255,.55);border-color:#e2c98f;color:#2b2114}
+.z-do .lvl.on{background:#fff7e3;border-color:#b98a26}
+.z-do .l-mini{color:#6e5b3e;border-color:#b9a582}.z-do .l-medio{color:#9a6410;border-color:#d9a93f}.z-do .l-pro{color:#fbf3e1;background:#2b2114;border-color:#2b2114}
+.z-do .note{background:rgba(255,255,255,.5);color:#2b2114}
 canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
@@ -374,14 +404,15 @@ function save(){
 
 /* ---------- Render ---------- */
 function renderTabs(){
-  let h='<button type="button" class="tab'+(view==="n1"?" on":"")+'" data-v="n1">Nivel 1</button>';
-  if(state.start) h+='<button type="button" class="tab'+(view==="avance"?" on":"")+'" data-v="avance">Mi avance</button>';
-  if(SESSION) h+='<button type="button" class="tab'+(view==="camino"?" on":"")+'" data-v="camino">Mi camino</button>';
-  if(cierreOpen()||(state.cierre&&state.cierre.resumen)) h+='<button type="button" class="tab'+(view==="cierre"?" on":"")+'" data-v="cierre">Mi cierre</button>';
-  if(state.cierre&&state.cierre.resumen) h+='<button type="button" class="tab'+(view==="plan"?" on":"")+'" data-v="plan">Mi plan</button>';
-  h+='<button type="button" class="tab'+(view==="n2"?" on":"")+(n2Open()?"":" lock")+'" data-v="n2">'+(n2Open()?"":"")+'Nivel 2</button>';
-  h+='<button type="button" class="tab'+(view==="n3"?" on":"")+(n3Open()?"":" lock")+'" data-v="n3">'+(n3Open()?"":"")+'Nivel 3</button>';
-  if(ADMIN) h+='<button type="button" class="tab'+(view==="admin"?" on":"")+'" data-v="admin">Panel</button>';
+  const T=(v,icon,l,lock)=>'<button type="button" class="tab'+(view===v?" on":"")+(lock?" lock":"")+'" data-v="'+v+'"'+(view===v?' aria-pressed="true"':'')+'>'+ic(lock?"lock":icon)+'<span>'+l+'</span></button>';
+  let h=T("n1","cal","Nivel 1");
+  if(state.start) h+=T("avance","axis","Mi avance");
+  if(SESSION) h+=T("camino","stairs","Mi camino");
+  if(cierreOpen()||(state.cierre&&state.cierre.resumen)) h+=T("cierre","star","Mi cierre");
+  if(state.cierre&&state.cierre.resumen) h+=T("plan","compass","Mi plan");
+  h+=T("n2","target","Nivel 2",!n2Open());
+  h+=T("n3","cam","Nivel 3",!n3Open());
+  if(ADMIN) h+=T("admin","grid","Panel");
   $("tabs").innerHTML=h;
 }
 function renderBanner(){
@@ -423,13 +454,14 @@ function renderDay(){
   const o=lv(), L=lvDef(), n=sel[view], D=L.days[n-1], d=dayOf(o,n), stage=L.stages[Math.floor((n-1)/7)];
   const chips=["R","C","M"].map(x=>'<span class="chip'+(D.e.indexOf(x)>-1?" on":"")+'" title="'+AXN[x]+'">'+x+'</span>').join("");
   let h=dayHero(n,(view==="n2"?"Nivel 2 · ":"Nivel 1 · ")+stage,D.t);
-  h+='<div class="tools"><button type="button" class="mini" data-say="day">'+ic("speak")+' Escuchar el día</button><span class="zaxis">Eje RCM <span class="chips">'+chips+'</span></span></div>';
+  h+='<div class="tools"><button type="button" class="mini" data-say="day">'+ic("speak")+' Escuchar el día</button></div>';
   h+='<div class="mood"><div class="zhead">'+ic("sun")+'<span>¿Cómo llegás hoy?</span></div><div class="emojis">'+EMO.map((x,i)=>'<button type="button" class="emo'+(d.animo===i+1?" on":"")+'" data-animo="'+(i+1)+'" aria-label="Ánimo '+(i+1)+' de 5">'+x+'</button>').join("")+'</div></div>';
   h+=zone("z-idea",1,"bulb","La idea",'<p class="zidea">'+esc(D.i)+'</p>');
   h+=zone("z-q",2,"ask","Pregunta del día",'<p class="zq">'+esc(D.q)+'</p>');
   let pr='<p class="mute" style="font-size:.9rem">Es con personas reales, no una simulación. <button type="button" data-v="camino" class="linkb">¿Dudas?</button></p><p class="zdo">'+esc(D.p)+'</p><div class="btns"><button type="button" class="btn'+(d.done?" on":"")+'" id="doneBtn">'+(d.done?"Hecho":"Lo hice")+'</button><button type="button" class="btn ghost" id="skipBtn">'+(d.skipped?"Quitar “hoy no pude”":"Hoy no pude")+'</button></div>';
   if(d.skipped&&!d.done) pr+='<p class="note">Un día perdido no es el fin. Lo que cuenta es retomar. <button type="button" class="btn ghost" data-sos="racha" style="margin-top:10px">Ayudame a retomar</button></p>';
   h+=zone("z-do",3,"bolt","Práctica de 1 a 30 segundos",pr);
+  h+='<div class="block"><p class="k">Eje RCM de hoy</p><div class="chips" aria-label="Eje RCM">'+chips+'</div><p class="mute" style="font-size:.9rem">'+D.e.split("").map(x=>AXN[x]).join(" · ")+'</p></div>';
   h+=zone("z-write",4,"pen","Mi respuesta de hoy",'<textarea id="ans" placeholder="Unas líneas alcanzan. Podés hablar en vez de escribir.">'+esc(d.answer||"")+'</textarea>'+(DICT?'<div class="tools"><button type="button" class="mini" id="micBtn">Hablar mi respuesta</button></div>':'<p class="mute" style="font-size:.9rem">Tip: tocá el micrófono de tu teclado y hablá en vez de escribir.</p>'),"ans");
   h+=iaZone(5);
   if(view==="n2"&&n===21&&d.done) h+='<div class="block"><p class="k">Nivel 2 terminado</p><div class="btns"><button type="button" class="btn ghost" data-again="n2">Hacer el nivel 2 otra vez</button></div></div>'+testiHtml("n2")+'<div class="block"><p class="k">Tu próximo nivel</p><p><b>Nivel 3 · Vender con naturalidad.</b> 21 días para que tu servicio hable por vos.</p><div class="btns"><button type="button" class="btn" data-v="n3">Ver el Nivel 3</button></div></div>';
@@ -711,6 +743,12 @@ const ICO={
  scroll:'<path d="M7 4h11v13a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-1h11v1a3 3 0 0 0 3 3"/><path d="M7 4a2 2 0 0 0-2 2v10M10 8h5M10 12h5"/>',
  axis:'<path d="M4 18l5-6 4 3 7-9"/><path d="M15 6h5v5"/>',
  speak:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9a4 4 0 0 1 0 6M19.5 6.5a8 8 0 0 1 0 11"/>',
+ cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+ stairs:'<path d="M3 20h5v-5h5v-5h5V5h3"/>',
+ star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+ compass:'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+ lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+ grid:'<rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/>',
  help:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M5.6 5.6l3.6 3.6M14.8 14.8l3.6 3.6M18.4 5.6l-3.6 3.6M9.2 14.8l-3.6 3.6"/>'
 };
 function ic(k,cls){return '<svg class="ic'+(cls?" "+cls:"")+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICO[k]||"")+'</svg>'}
@@ -955,7 +993,7 @@ function renderN2(){
   const hb=HABITOS.find(x=>x.id===o.habito);
   $("stats").innerHTML='<div class="stat"><b>'+hechos+'/21</b><span>misiones</span></div><div class="stat"><b>'+puntos+'</b><span>puntos de excelencia</span></div><div class="stat"><b>'+pros+'</b><span>en nivel Pro</span></div><div style="flex-basis:100%" class="mute">Tu hábito: <b style="color:var(--gold2)">'+esc(hb?hb.l:o.custom)+'</b></div>';
   let st="";for(let s=0;s<3;s++){st+='<div class="stage"><div class="lbl"><span>'+TRAMOS[s]+'</span><span>Misiones '+(s*7+1)+' a '+(s*7+7)+'</span></div><div class="row">';
-    for(let k=1;k<=7;k++){const i=s*7+k,x=o.days[i]||{},lk=n2Locked(i);st+='<button type="button" class="dot'+(x.done?" done":"")+(i===n?" sel":"")+'" data-n="'+i+'"'+(lk?' disabled style="opacity:.45"':'')+' aria-label="Misión '+i+(lk?", bloqueada":"")+'">'+(lk?"🔒":(x.done?(x.nivel==="pro"?"🏆":i):i))+'</button>'}
+    for(let k=1;k<=7;k++){const i=s*7+k,x=o.days[i]||{},lk=n2Locked(i);st+='<button type="button" class="dot'+(x.done?" done":"")+(i===n?" sel":"")+'" data-n="'+i+'"'+(lk?' disabled style="opacity:.45"':'')+' aria-label="Misión '+i+(lk?", bloqueada":"")+'">'+(lk?ic("lock"):i)+'</button>'}
     st+='</div></div>'}
   $("strip").innerHTML=st;
   let h=dayHero(n,'Nivel 2 · Misión '+n+' · '+TRAMOS[tr],m.t);
@@ -1062,7 +1100,7 @@ function renderN3(){
   const hechos=doneCount(o), pros=Object.values(o.days).filter(x=>x.done&&x.nivel==="pro").length;
   $("stats").innerHTML='<div class="stat"><b>'+hechos+'/21</b><span>días</span></div><div class="stat"><b>'+pros+'</b><span>videos Pro</span></div><div class="stat"><b>'+n3Ventas()+'</b><span>ventas de la vida</span></div>';
   let st="";for(let s=0;s<3;s++){st+='<div class="stage"><div class="lbl"><span>'+"RCM"[s]+' · '+TRAMOS3[s]+'</span><span>Días '+(s*7+1)+' a '+(s*7+7)+'</span></div><div class="row">';
-    for(let k=1;k<=7;k++){const i=s*7+k,x=o.days[i]||{},lk=n3Locked(i);st+='<button type="button" class="dot'+(x.done?" done":"")+(i===n?" sel":"")+'" data-n="'+i+'"'+(lk?' disabled style="opacity:.45"':'')+' aria-label="Día '+i+(lk?", bloqueado":"")+'">'+(lk?"🔒":(x.done?(x.nivel==="pro"?"🎬":i):i))+'</button>'}
+    for(let k=1;k<=7;k++){const i=s*7+k,x=o.days[i]||{},lk=n3Locked(i);st+='<button type="button" class="dot'+(x.done?" done":"")+(i===n?" sel":"")+'" data-n="'+i+'"'+(lk?' disabled style="opacity:.45"':'')+' aria-label="Día '+i+(lk?", bloqueado":"")+'">'+(lk?ic("lock"):i)+'</button>'}
     st+='</div></div>'}
   $("strip").innerHTML=st;
   let h=dayHero(n,'Nivel 3 · '+"RCM"[tr]+' · '+TRAMOS3[tr],m.t);
