@@ -295,6 +295,24 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
 .zone .iacard i{color:#9a6a12!important;font-weight:600}
 .zone .iacard.best{border-color:#D9A93F!important;box-shadow:0 0 0 2px rgba(244,205,98,.45),0 6px 16px rgba(0,0,0,.25)!important}
 .zone .iacard em{background:#2a2216!important;color:var(--zhi)!important}
+
+/* Botón de ayuda y modo tutorial */
+.helpbtn{position:fixed;top:max(14px,env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));z-index:45;width:46px;height:46px;border-radius:50%;border:1.5px solid var(--gold);background:#15110c;color:#F4CD62;font-family:var(--display);font-weight:800;font-size:1.6rem;line-height:1;display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.5),0 0 0 4px rgba(244,205,98,.08)}
+.helpbtn:active{transform:scale(.94)}
+#tut{position:fixed;inset:0;z-index:70}
+.tutspot{position:fixed;border-radius:14px;border:2px solid #F4CD62;box-shadow:0 0 0 9999px rgba(6,5,3,.80),0 0 24px rgba(244,205,98,.35);transition:top .25s,left .25s,width .25s,height .25s;pointer-events:none}
+.tutcard{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto;background:linear-gradient(180deg,#5a5c63,#4a4c53);border:1px solid rgba(226,186,96,.55);border-radius:16px;padding:16px 18px 18px;box-shadow:0 18px 40px rgba(0,0,0,.6);display:grid;gap:10px;color:#F7F1E3}
+.tuttop{display:flex;justify-content:space-between;align-items:center}
+.tutn{font-family:var(--display);letter-spacing:.16em;text-transform:uppercase;font-size:.85rem;color:#F4CD62}
+.tutx{background:none;border:0;color:#F7F1E3;font-size:1.2rem;cursor:pointer;padding:4px 8px}
+.tutcard h3{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;font-size:1.5rem;color:#F4CD62;margin:0}
+.tutcard p{font-size:1.12rem;line-height:1.5;margin:0;color:#F7F1E3}
+.tutbtns{display:flex;gap:10px;justify-content:flex-end}
+.tutbtns .btn{border-radius:999px;padding:11px 20px}
+.tutbtns .btn:not(.ghost){background:#F4CD62;color:#211a0f;border-color:#F4CD62}
+.tutbtns .btn.ghost{background:transparent;color:#F7F1E3;border:1px solid rgba(247,241,227,.55)}
+.tutbtns .btn:disabled{opacity:.4}
+body.tuton .helpbtn{z-index:71}
 </style>
 </head>
 <body>
@@ -333,7 +351,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
 <button type="button" class="sos" id="sosBtn">🛟 Estoy trabado/a</button>
 <div class="overlay" id="overlay" hidden role="dialog" aria-modal="true" aria-label="Destrabar"><div class="card" id="dtCard"></div></div>
 <canvas id="confetti" hidden></canvas>
-<div id="toast" hidden role="alert" style="position:fixed;left:16px;right:16px;top:max(14px,env(safe-area-inset-top,0px));z-index:50;background:#1f180c;border:2px solid var(--gold);color:var(--fg);padding:14px 16px;border-radius:10px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.7)"></div>
+<div id="toast" hidden role="alert" style="position:fixed;left:16px;right:72px;top:max(14px,env(safe-area-inset-top,0px));z-index:50;background:#1f180c;border:2px solid var(--gold);color:var(--fg);padding:14px 16px;border-radius:10px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.7)"></div>
 
 <script>
 /* ---------- Contenido ---------- */
@@ -1725,6 +1743,108 @@ loadLocal();
   const {data}=await SB.auth.getSession();
   if(data&&data.session) await afterLogin(data.session); else renderLogin();
 })();
+/* ---------- Modo tutorial: botón "?" en todas las páginas ---------- */
+const TUT={on:false,i:0,steps:[]};
+function tutVis(el){if(!el) return false;if(el.closest("[hidden]")) return false;const r=el.getBoundingClientRect();return r.width>2&&r.height>2}
+function tutSteps(){
+  const S=[], add=(sel,t,d)=>{const el=typeof sel==="string"?document.querySelector(sel):sel; if(tutVis(el)&&!S.some(x=>x.el===el)) S.push({el,t,d})};
+  const nivel=view==="n2"?"Nivel 2":view==="n3"?"Nivel 3":"Nivel 1";
+  if(!$("login").hidden){
+    add("#mailIn","Tu email","Escribí tu email. Con él guardamos tu proceso y lo ves en cualquier celular.");
+    add("#sendCode","Entrar","Tocá acá. Te llega un email con un link: abrilo y entrás.");
+    add("#keepIn","Mantener la sesión","Dejalo marcado para no tener que entrar cada vez.");
+    add("#goVinc","Código de vinculación","Si ya entraste en otro lugar, usá el código que te muestra la app para entrar acá sin email.");
+    return S;
+  }
+  if(!$("startPanel").hidden){
+    add("#startPanel","Empezá acá","Este es el inicio de tu reto. Son 21 días, con una práctica corta por día.");
+    add("#startBtn","Arrancar","Tocá acá para empezar tu día 1.");
+  }
+  if(!$("dayCard").hidden){
+    add("#dayCard .dayhead","Tu día de hoy","Arriba ves el número del día, el tema y el eje RCM que trabajás hoy.");
+    add("#dayCard .z-do",view==="n3"?"Grabá a tu nivel":"La práctica","Es lo más importante del día. Hacela y después tocá el botón dorado. Si hoy no pudiste, también lo podés marcar.");
+    add("#dayCard .z-idea",view==="n2"?"Por qué esta misión":"La idea","Leé esto primero. Es la idea del día, en pocas palabras.");
+    add("#dayCard .z-q",view==="n3"?"Qué decir hoy":"La pregunta del día",view==="n3"?"Una frase para decir en cámara. Es una sugerencia: decila con tus palabras.":"Pensala un momento. No hace falta tener la respuesta perfecta.");
+    add("#dayCard .z-reg","Tu registro","Anotá acá lo que te pide. Se guarda solo.");
+    add("#dayCard .z-write","Tu respuesta","Escribí unas líneas o tocá el micrófono del teclado y hablá. Se guarda solo.");
+    add("#dayCard .z-ia","Ayuda de la IA","Elegí qué querés y tocá una IA. La pregunta ya va armada con tu día. Es gratis.");
+    add("#dayCard .nextbox","Seguir","Cuando terminás, tocá acá para pasar al día siguiente.");
+    add("#strip","Tus 21 días","Tocá un número para ir a ese día. Los dorados ya están hechos."+(view!=="n1"?" Los candados se abren al completar el día anterior.":""));
+    add("#dayCard [data-say]","Escuchar","Tocá acá y la app te lee el día en voz alta.");
+    add("#dayCard .recbox","Recordatorio diario","Elegí una hora y agregalo a tu calendario. Te avisa todos los días, aunque la app esté cerrada.");
+    add("#dayCard .mood","¿Cómo llegás hoy?","Tocá la carita que más se parece a cómo estás. Sirve para ver tu evolución.");
+    add("#stats","Tus números","Cuántos días hiciste y tu racha. Se actualiza solo.");
+    add("#dayCard .nav","Moverte entre días","Con estos botones vas al día anterior o al siguiente.");
+  }else if(!$("cierre").hidden||!$("admin").hidden){
+    const root=!$("cierre").hidden?$("cierre"):$("admin");
+    const intro={avance:["Mi avance","Acá ves cómo venís: días hechos, rachas y lo que fuiste escribiendo."],camino:["Mi camino","Tu escalera de crecimiento. Cada paso te lleva un 1% más lejos. Los que tienen candado se abren con su botón."],cierre:["Mi cierre","El resumen de tu reto: lo que lograste, lo que aprendiste y tu próximo paso."],plan:["Mi plan","Tu plan de 4 semanas para que la venta consciente siga siendo un hábito."],admin:["Panel","Lo que ves vos como creador: participantes, testimonios y sugerencias."],n2:[nivel,"Desde acá abrís y hacés el Nivel 2."],n3:[nivel,"Desde acá abrís y hacés el Nivel 3."]}[view]||["Esta página","Te muestro las partes importantes."];
+    add(root.querySelector("h2")?root.querySelector("h2").parentElement:root,intro[0],intro[1]);
+    (view==="camino"?[]:root.querySelectorAll('a.btn[href*="impultienda"],#checkPago,#n3Start,#armarN2,#planStart')).forEach(b=>{});(view==="camino"?document.querySelectorAll("#__none"):root.querySelectorAll('a.btn[href*="impultienda"],#checkPago,#n3Start,#armarN2,#planStart').forEach(b=>{
+      const t=b.id==="checkPago"?"Ya pagué":b.id==="n3Start"?"Arrancar el Nivel 3":b.id==="armarN2"?"Armar tu Nivel 2":b.id==="planStart"?"Arrancar tu plan":"Desbloquear";
+      const d=b.id==="checkPago"?"Si ya pagaste y no se abrió, tocá acá y lo revisamos al instante.":b.id==="n3Start"?"Tocá acá para empezar tu día 1 del Nivel 3.":b.id==="armarN2"?"Tocá acá y la app arma tu Nivel 2 con lo que hiciste.":b.id==="planStart"?"Tocá acá para empezar las 4 semanas.":"Tocá acá para pagar en Impultienda. Usá el mismo email de la app: el nivel se abre solo.";
+      add(b,t,d);
+    });
+    Array.from(root.querySelectorAll(".week,.block,.practice")).filter(x=>!x.parentElement.closest(".week,.block,.practice")).slice(0,7).forEach(x=>{
+      const h=x.querySelector(".k,b,h3"); const t=h?h.textContent.trim().replace(/^\d+\s*/,"").slice(0,60):"Esta parte";
+      add(x,t,view==="camino"?"Un paso de tu escalera. Leé qué incluye y tocá su botón cuando quieras avanzar.":"Esta parte muestra "+t.toLowerCase()+". Tocá sus botones si querés usarla.");
+    });
+  }
+  add("#tabs","El menú","Desde acá cambiás de sección: tus niveles, tu avance y tu camino. La que está hundida es donde estás ahora.");
+  add("#sosBtn","Estoy trabado/a","Si algo te frena, tocá acá. Te ayudo a encontrar un paso chiquito para seguir.");
+  add("#sugBtn","Sugerencias","Tocá el foquito para mandarle a Rodrigo una idea o algo que no funcionó.");
+  add("#helpBtn","Este botón","Está en todas las páginas. Tocalo cada vez que no sepas qué hacer.");
+  return S;
+}
+function tutBuild(){
+  if($("tut")) return;
+  const d=document.createElement("div"); d.id="tut"; d.hidden=true;
+  d.innerHTML='<div class="tutspot" id="tutSpot"></div><div class="tutcard" role="dialog" aria-modal="true" aria-labelledby="tutT"><div class="tuttop"><span id="tutN" class="tutn"></span><button type="button" class="tutx" id="tutX" aria-label="Salir del tutorial">✕</button></div><h3 id="tutT"></h3><p id="tutD"></p><div class="tutbtns"><button type="button" class="btn ghost" id="tutPrev">Anterior</button><button type="button" class="btn" id="tutNext">Siguiente</button></div></div>';
+  document.body.appendChild(d);
+}
+function tutPlace(){
+  if(!TUT.on) return; const s=TUT.steps[TUT.i]; if(!s) return;
+  const r=s.el.getBoundingClientRect(), card=document.querySelector("#tut .tutcard"), ch=card.offsetHeight+24, vh=innerHeight, pad=8;
+  let top=Math.max(pad,r.top-pad), bot=Math.min(vh-ch-pad,r.bottom+pad); if(bot<top+40) bot=Math.min(vh-pad,top+Math.max(40,r.height+2*pad));
+  const sp=$("tutSpot"); sp.style.top=top+"px"; sp.style.left=Math.max(pad,r.left-pad)+"px"; sp.style.width=Math.min(innerWidth-2*pad,r.width+2*pad)+"px"; sp.style.height=Math.max(36,bot-top)+"px";
+}
+function tutShow(){
+  const s=TUT.steps[TUT.i]; if(!s){tutEnd();return}
+  $("tutN").textContent=(TUT.i+1)+" de "+TUT.steps.length; $("tutT").textContent=s.t; $("tutD").textContent=s.d;
+  $("tutPrev").textContent="Anterior"; $("tutPrev").disabled=TUT.i===0; $("tutNext").textContent=TUT.i===TUT.steps.length-1?"Listo":"Siguiente";
+  const r=s.el.getBoundingClientRect(), fixed=getComputedStyle(s.el).position==="fixed";
+  if(!fixed){const y=scrollY+r.top-Math.max(70,innerHeight*0.12); scrollTo({top:Math.max(0,y),behavior:"smooth"})}
+  tutPlace(); setTimeout(tutPlace,250); setTimeout(tutPlace,600);
+  $("tutNext").focus({preventScroll:true});
+}
+function tutStart(){
+  tutBuild(); TUT.steps=tutSteps(); if(!TUT.steps.length) return;
+  TUT.on=true; TUT.i=0; $("tut").hidden=false; document.body.classList.add("tuton"); tutShow();
+}
+function tutIntro(){
+  tutBuild(); TUT.steps=[{el:$("helpBtn"),t:"¿Te sentís perdido/a?",d:"Este botón está en todas las páginas. Tocalo cuando no sepas qué hacer y te muestro, paso a paso, cada parte de la página donde estés.",intro:true}];
+  TUT.on=true; TUT.i=0; $("tut").hidden=false; document.body.classList.add("tuton"); tutShow();
+  $("tutNext").textContent="Mostrame esta página"; $("tutPrev").textContent="Entendido"; $("tutPrev").disabled=false; $("tutN").textContent="Bienvenida";
+}
+function tutEnd(){TUT.on=false; const t=$("tut"); if(t) t.hidden=true; document.body.classList.remove("tuton"); try{localStorage.setItem("reto-tut-aviso","1")}catch(e){}}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button"); if(!t) return;
+  if(t.id==="helpBtn"){e.stopPropagation(); if(TUT.on) tutEnd(); else tutStart(); return}
+  if(!TUT.on) return;
+  const intro=TUT.steps[0]&&TUT.steps[0].intro;
+  if(t.id==="tutX"){tutEnd();return}
+  if(t.id==="tutPrev"){if(intro){tutEnd();return} if(TUT.i>0){TUT.i--;tutShow()} return}
+  if(t.id==="tutNext"){if(intro){tutEnd();tutStart();return} if(TUT.i<TUT.steps.length-1){TUT.i++;tutShow()}else tutEnd(); return}
+},true);
+document.addEventListener("keydown",e=>{if(!TUT.on) return; if(e.key==="Escape") tutEnd(); if(e.key==="ArrowRight") $("tutNext").click(); if(e.key==="ArrowLeft") $("tutPrev").click()});
+addEventListener("scroll",()=>{if(TUT.on) tutPlace()},{passive:true});
+addEventListener("resize",()=>{if(TUT.on) tutPlace()});
+(function(){
+  const b=document.createElement("button"); b.type="button"; b.id="helpBtn"; b.className="helpbtn"; b.setAttribute("aria-label","¿Qué hago en esta página? Abrir tutorial"); b.textContent="?";
+  document.body.appendChild(b);
+  let seen=false; try{seen=!!localStorage.getItem("reto-tut-aviso")}catch(e){}
+  if(!seen) setTimeout(()=>{if(!TUT.on&&$("overlay").hidden) tutIntro()},1600);
+})();
+
 </script>
 </body>
 </html>
