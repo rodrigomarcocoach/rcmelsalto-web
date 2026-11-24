@@ -271,6 +271,30 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
 .zone .howia summary{color:var(--zhi)!important}
 .zone .howia li{color:var(--ztxt)}
 .zone .mini{border-color:var(--zline)!important;color:var(--ztxt)!important;background:transparent!important}
+
+/* ===== Gris pizarra + dorado + crema (zonas 1 a 5) ===== */
+:root{--zbg:#4a4c53;--zbg2:#5a5c63;--zline:rgba(226,186,96,.55);--zline2:rgba(226,186,96,.28);--zhi:#F4CD62;--zink:#211a0f;--ztxt:#F7F1E3;--zmute:#D6CDBA;--zcream:#FBF5E4;--zcream2:#F3EAD2;--zdark:#3d3f45}
+.z-idea,.z-q,.z-do,.z-write,.z-reg,.z-ia{background:linear-gradient(180deg,var(--zbg2) 0%,var(--zbg) 100%)!important;border:1px solid var(--zline2)!important;box-shadow:0 1px 0 rgba(255,255,255,.07) inset,0 14px 34px rgba(0,0,0,.45)!important}
+.z-idea .zhead:after,.z-q .zhead:after,.z-do .zhead:after,.z-write .zhead:after,.z-reg .zhead:after,.z-ia .zhead:after{background:linear-gradient(90deg,var(--zline) 0%,var(--zline2) 55%,transparent 100%)}
+.zone .zhead{text-shadow:0 1px 0 rgba(0,0,0,.25)}
+/* escritura: crema */
+.zone textarea,.zone input[type=text]{background:var(--zcream)!important;color:#2a2216!important;border:1px solid #E6D3A3!important;box-shadow:0 2px 0 rgba(0,0,0,.12) inset}
+.zone textarea::placeholder,.zone input[type=text]::placeholder{color:#8f8470}
+.zone textarea:focus,.zone input[type=text]:focus{border-color:var(--zhi)!important;box-shadow:0 0 0 3px rgba(244,205,98,.30)}
+/* tarjetas internas */
+.zone .lvl{background:var(--zdark)!important;border:1px solid var(--zline2)!important}
+.zone .lvl.on{background:#44464c!important;border-color:var(--zhi)!important}
+.zone .note,.zone .howia{background:rgba(0,0,0,.14)!important;border:1px solid var(--zline2)!important}
+.zone .btn.ghost:not(.on),.zone .cmd:not(.on),.zone .mini{border-color:rgba(247,241,227,.55)!important;color:var(--ztxt)!important}
+.zone .btn.ghost:not(.on):hover,.zone .cmd:not(.on):hover{border-color:var(--zhi)!important}
+/* IA: tarjetas crema */
+.iagrid{border-top:1px solid var(--zline2)!important}
+.zone .iacard{background:linear-gradient(180deg,var(--zcream) 0%,var(--zcream2) 100%)!important;border:1px solid #E6D3A3!important;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.zone .iacard b{color:#2a2216!important}
+.zone .iacard span{color:#5f5544!important}
+.zone .iacard i{color:#9a6a12!important;font-weight:600}
+.zone .iacard.best{border-color:#D9A93F!important;box-shadow:0 0 0 2px rgba(244,205,98,.45),0 6px 16px rgba(0,0,0,.25)!important}
+.zone .iacard em{background:#2a2216!important;color:var(--zhi)!important}
 </style>
 </head>
 <body>
