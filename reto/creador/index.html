@@ -215,6 +215,13 @@ footer{text-align:center;color:var(--mute);font-size:.9rem}
 .chips2{display:grid;grid-template-columns:1fr;gap:8px}
 .chips2 .cmd{text-align:left;border-radius:8px;padding:10px 14px}
 .howia{margin:2px 0 4px}
+
+.recbox{display:inline-block;margin-left:8px}
+.recbox>summary{list-style:none;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.recbox>summary::-webkit-details-marker{display:none}
+.recbox[open]{display:block;margin:10px 0 0}
+.recin{display:grid;gap:8px;margin-top:10px;padding:14px;border:1px solid var(--line);border-radius:8px;background:#16120d}
+.pilltime{width:auto!important;max-width:160px;padding:8px 16px!important;border-radius:999px!important;border:1.5px solid #4a3c28!important;background:#15110c!important;color:var(--gold2)!important;font-size:1.1rem!important}
 canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
@@ -467,7 +474,7 @@ function renderDay(){
   const o=lv(), L=lvDef(), n=sel[view], D=L.days[n-1], d=dayOf(o,n), stage=L.stages[Math.floor((n-1)/7)];
   const chips=["R","C","M"].map(x=>'<span class="chip'+(D.e.indexOf(x)>-1?" on":"")+'" title="'+AXN[x]+'">'+x+'</span>').join("");
   let h=dayHero(n,(view==="n2"?"Nivel 2 · ":"Nivel 1 · ")+stage,D.t,chips+'<span class="axn">'+D.e.split("").map(x=>AXN[x]).join(" · ")+'</span>');
-  h+='<div class="tools"><button type="button" class="mini" data-say="day">'+ic("speak")+' Escuchar el día</button></div>';
+  h+='<div class="tools"><button type="button" class="mini" data-say="day">'+ic("speak")+' Escuchar el día</button></div>'+recDaily();
   h+='<div class="mood"><div class="zhead">'+ic("sun")+'<span>¿Cómo llegás hoy?</span></div><div class="emojis">'+EMO.map((x,i)=>'<button type="button" class="emo'+(d.animo===i+1?" on":"")+'" data-animo="'+(i+1)+'" aria-label="Ánimo '+(i+1)+' de 5">'+x+'</button>').join("")+'</div></div>';
   h+=zone("z-idea",1,"bulb","La idea",'<p class="zidea">'+esc(D.i)+'</p>');
   h+=zone("z-q",2,"ask","Pregunta del día",'<p class="zq">'+esc(D.q)+'</p>');
@@ -519,13 +526,30 @@ function planCards(r,withTime){
     if(withTime){
       const hr=(state.plan.horas&&state.plan.horas[i])||p.hora||"09:00", ws=addDays(state.plan.start,i*7);
       x+='<div class="tools"><input type="time" data-hw="'+i+'" value="'+esc(hr)+'" style="width:auto;font:inherit;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px;border-radius:2px" aria-label="Hora del recordatorio, semana '+(i+1)+'">'+
-         '<a class="mini" target="_blank" rel="noopener" href="'+esc(gcal((p.foco||"Tu 1% de hoy")+" · "+ANIMOS[i%ANIMOS.length],p.practica+"\n\nEs fácil: 30 segundos. Después marcalo en tu app: "+APP_URL,ws,hr,7))+'">Activar semana '+(i+1)+'</a></div>';
+         recBtns("Semana "+(i+1)+" · "+(p.foco||"Tu 1% de hoy"),(p.practica||"")+" Es fácil: 30 segundos. Después marcalo en tu app.",ws,hr,7,"w"+i)+'</div>';
     }
     return x+'</div>';
   }).join("")+'</div>';
   return h;
 }
-const APP_URL="https://claude.ai/artifact/NBYuAiiSoDDc8Wj6SQCMnQ";
+const APP_URL="https://rcmelsalto.com/reto/";
+/* Recordatorios: archivo de calendario (.ics) con alarma. Lo abre el calendario del teléfono (iPhone y Android) y queda guardado ahí. */
+function icsUrl(title,details,date,hora,count){return CONFIG.supabaseUrl+"/functions/v1/recordatorio?t="+encodeURIComponent(title)+"&x="+encodeURIComponent(details||"")+"&d="+encodeURIComponent(date)+"&h="+encodeURIComponent(hora||"09:00")+"&n="+encodeURIComponent(count||21)+"&u="+encodeURIComponent(APP_URL)}
+function recBtns(title,details,date,hora,count,key){
+  return '<a class="btn" data-rec="'+key+'" href="'+esc(icsUrl(title,details,date,hora,count))+'" target="_blank" rel="noopener" style="text-decoration:none">'+ic("cal")+' Agregar a mi calendario</a>'+
+    '<a class="mini" data-recg="'+key+'" href="'+esc(gcal(title,details+"\n\n"+APP_URL,date,hora,count))+'" target="_blank" rel="noopener">Uso Google Calendar</a>';
+}
+function recDaily(){
+  const o=lv(); if(!o||!o.start) return "";
+  const nombre={n1:"Nivel 1",n2:"Nivel 2",n3:"Nivel 3"}[view]||"Reto", k="rec_"+view;
+  const hr=(state.rec&&state.rec[view])||"09:00", hoy=Math.min(21,Math.max(1,todayIdx(o)||1)), left=Math.max(7,22-hoy);
+  const title="Tu 1% de hoy · "+nombre, det="Abrí la app y hacé tu práctica. Son 30 segundos.";
+  return '<details class="recbox"><summary class="mini">'+ic("cal")+' Recordatorio diario'+(state.rec&&state.rec[view]?' · '+esc(hr):'')+'</summary>'+
+    '<div class="recin"><p><b>1.</b> Elegí la hora.</p><input type="time" id="recHora" value="'+esc(hr)+'" class="pilltime" aria-label="Hora del recordatorio diario">'+
+    '<p><b>2.</b> Tocá “Agregar a mi calendario”.</p><p><b>3.</b> En el iPhone tocá <b>Agregar</b>. En Android, <b>Guardar</b>.</p>'+
+    '<div class="btns" id="recBtns">'+recBtns(title,det,ymd(new Date()),hr,left,k)+'</div>'+
+    '<p class="mute" style="font-size:.9rem">Te avisa todos los días a esa hora hasta el día 21, aunque la app esté cerrada.</p></div></details>';
+}
 function addDays(s,n){const d=parse(s);d.setDate(d.getDate()+n);return ymd(d)}
 function gcal(title,details,date,hora,count){
   const [H,M]=String(hora||"09:00").split(":").map(Number); const d=parse(date); d.setHours(H||9,M||0,0,0); const e=new Date(d.getTime()+10*60000);
@@ -605,14 +629,14 @@ function renderPlan(){
       h+='<p>Para que moverte sea lo natural: tu celu te avisa 2 veces por día.</p><div style="display:grid;gap:6px"><span>Mañana: tu paso de 30 segundos.</span><span>Noche: marcalo y festejá.</span></div><div class="btns"><button type="button" class="btn" id="modoOn">Sí, activalo</button></div>';
     }else{
       const hm=state.plan.horaM||"09:00", hn=state.plan.horaN||"21:00", left=29-n;
-      h+='<p>Tocá los dos. Se abre tu calendario. Tocá <b>Guardar</b>. Listo.</p>'+
-        '<div class="tools"><input type="time" id="horaM" value="'+hm+'" style="width:auto;font:inherit;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px"><a class="mini" target="_blank" rel="noopener" href="'+esc(gcal("Tu paso de hoy · 30 segundos","Es fácil: abrí tu plan y hacé tu paso. Ya lo sabés hacer.\n\n"+APP_URL,ymd(new Date()),hm,left))+'">Recordatorio de la mañana</a></div>'+
-        '<div class="tools"><input type="time" id="horaN" value="'+hn+'" style="width:auto;font:inherit;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px"><a class="mini" target="_blank" rel="noopener" href="'+esc(gcal("¿Lo hiciste? Marcalo y festejá","Un 1% más hoy. Si todavía no, hacé la versión mini: escribí solo “Hola”.\n\n"+APP_URL,ymd(new Date()),hn,left))+'">Recordatorio de la noche</a></div>';
+      h+='<p>Elegí la hora y tocá “Agregar a mi calendario” en los dos. En el iPhone tocá <b>Agregar</b>. Listo.</p>'+
+        '<div class="tools"><input type="time" id="horaM" value="'+hm+'" style="width:auto;font:inherit;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px"><span class="mute">Mañana</span>'+recBtns("Tu paso de hoy · 30 segundos","Es fácil: abrí tu plan y hacé tu paso. Ya lo sabés hacer.",ymd(new Date()),hm,left,"m")+'</div>'+
+        '<div class="tools"><input type="time" id="horaN" value="'+hn+'" style="width:auto;font:inherit;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px"><span class="mute">Noche</span>'+recBtns("¿Lo hiciste? Marcalo y festejá","Un 1% más hoy. Si todavía no, hacé la versión mini: escribí solo “Hola”.",ymd(new Date()),hn,left,"n")+'</div>';
     }
     h+='</div>';
   }
   if(n>=22) h+='<div class="practice"><p class="k" style="color:var(--gold)">Para no hacerlo solo/a</p><p style="color:var(--fg)">En <b>Domingos del 1%</b> seguís con la comunidad cada semana y tenés todas las clases grabadas.</p><div class="btns"><button type="button" class="btn" data-v="camino">Ver Domingos del 1%</button></div></div>';
-  h+='<div class="block"><p class="k">Recordatorios de cada semana</p><p class="mute" style="font-size:.95rem">1. Elegí la hora. 2. Tocá ⏰. 3. Tocá Guardar en tu calendario.</p>'+planCards(null,true)+'</div>';
+  h+='<div class="block"><p class="k">Recordatorios de cada semana</p><p class="mute" style="font-size:.95rem">1. Elegí la hora. 2. Tocá “Agregar a mi calendario”. 3. En el iPhone tocá Agregar; en Android, Guardar.</p>'+planCards(null,true)+'</div>';
   $("cierre").innerHTML=h;
 }
 function playWin(){
@@ -1029,7 +1053,7 @@ function renderN2(){
     st+='</div></div>'}
   $("strip").innerHTML=st;
   let h=dayHero(n,'Nivel 2 · Misión '+n+' · '+TRAMOS[tr],m.t,["R","C","M"].map((x,k)=>'<span class="chip'+(k===tr?" on":"")+'" title="'+AXN[x]+'">'+x+'</span>').join("")+'<span class="axn">'+AXN["RCM"[tr]]+'</span>');
-  h+='<div class="tools"><button type="button" class="mini" data-say="mision">'+ic("speak")+' Escuchar la misión</button></div>';
+  h+='<div class="tools"><button type="button" class="mini" data-say="mision">'+ic("speak")+' Escuchar la misión</button></div>'+recDaily();
   h+=zone("z-idea",1,"target","Por qué esta misión",'<p class="zidea">'+esc(m.por)+'</p>');
   let lv2='<div class="lvls">';
   [["mini","Mini",m.mini||m.p],["medio","Medio",m.medio||m.p],["pro","Pro",m.pro]].forEach(([k,l,txt])=>{
@@ -1137,7 +1161,7 @@ function renderN3(){
   $("strip").innerHTML=st;
   let h=dayHero(n,'Nivel 3 · '+TRAMOS3[tr],m.t,["R","C","M"].map((x,k)=>'<span class="chip'+(k===tr?" on":"")+'">'+x+'</span>').join("")+'<span class="axn">'+TRAMOS3[tr]+'</span>');
   if(n===1) h+=n3Video();
-  h+='<div class="tools"><button type="button" class="mini" data-say="mision3">'+ic("speak")+' Escuchar el día</button></div>';
+  h+='<div class="tools"><button type="button" class="mini" data-say="mision3">'+ic("speak")+' Escuchar el día</button></div>'+recDaily();
   h+=zone("z-idea",1,"bulb","La idea",'<p class="zidea">'+esc(m.i)+'</p><p class="mute">'+esc(m.por)+'</p>'+(m.frase?'<p class="zfrase">Vos escribiste en el Nivel 2: «'+esc(m.frase)+'»</p>':''));
   h+=zone("z-q",2,"quote","Qué decir hoy",'<p class="zq">«'+esc(m.decir)+'»</p><p class="mute" style="font-size:.9rem">Es una sugerencia. Decilo con tus palabras.</p>');
   let lv3='<div class="lvls">';
@@ -1484,8 +1508,9 @@ document.addEventListener("click",e=>{
   if(t.id==="dtNot"){clearInterval(cdTimer);logDt(false);dt.step=7;renderDt();return}
 });
 document.addEventListener("change",e=>{
-  if(e.target.dataset&&e.target.dataset.hw!==undefined&&e.target.value){state.plan.horas=state.plan.horas||{};state.plan.horas[e.target.dataset.hw]=e.target.value;save();render();setStatus("Hora guardada. Ahora tocá Activar.");return}
-  if((e.target.id==="horaM"||e.target.id==="horaN")&&e.target.value){state.plan[e.target.id]=e.target.value;save();render();return}
+  if(e.target.dataset&&e.target.dataset.hw!==undefined&&e.target.value){state.plan.horas=state.plan.horas||{};state.plan.horas[e.target.dataset.hw]=e.target.value;save();render();setStatus("Hora guardada. Ahora tocá “Agregar a mi calendario”.");return}
+  if((e.target.id==="horaM"||e.target.id==="horaN")&&e.target.value){state.plan[e.target.id]=e.target.value;save();render();setStatus("Hora guardada. Ahora tocá “Agregar a mi calendario”.");return}
+  if(e.target.id==="recHora"&&e.target.value){state.rec=Object.assign({},state.rec||{},{[view]:e.target.value});save();const box=e.target.closest("details");const nd=document.createElement("div");nd.innerHTML=recDaily();const fresh=nd.firstChild;fresh.open=true;box.replaceWith(fresh);setStatus("Hora guardada: "+e.target.value+". Ahora tocá “Agregar a mi calendario”.");return}
   if(e.target.id==="startEdit"&&e.target.value){lv().start=e.target.value;sel[view]=todayIdx(lv());save();render();setStatus("Día de inicio actualizado.")}
 });
 document.addEventListener("input",e=>{
