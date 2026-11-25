@@ -156,7 +156,8 @@ function esc(s){return String(s).replace(/[&<>"]/g,function(m){return {"&":"&amp
 function el(h){var d=document.createElement("div");d.innerHTML=h.trim();return d.firstChild}
 function hdr(f,c,p){document.getElementById("fase").textContent=f;document.getElementById("cuenta").textContent=c;fill.style.width=p+"%"}
 function checkoutUrl(){var q=location.search||"";return CHECKOUT+(q?(q.charAt(0)==="?"?q:"?"+q):"")}
-function go(i){if(i===0&&!S.ini){S.ini=1;try{if(window.fbq)fbq("trackCustom","TestIniciado")}catch(e){}}S.i=i;app.innerHTML="";window.scrollTo(0,0);atras.hidden=i<0||i>=PREGUNTAS.length;if(i<0)inicio();else if(i<PREGUNTAS.length)pregunta(i);else resultado()}
+function go(i){if(i===0&&!S.ini){S.ini=1;try{if(window.fbq)fbq("trackCustom","TestIniciado")}catch(e){}}if(i>=0&&i<PREGUNTAS.length&&S.ult!==i){S.ult=i;avance("En pregunta "+(i+1)+" de "+PREGUNTAS.length)}S.i=i;app.innerHTML="";window.scrollTo(0,0);atras.hidden=i<0||i>=PREGUNTAS.length;if(i<0)inicio();else if(i<PREGUNTAS.length)pregunta(i);else resultado()}
+avance("Abrió el test");
 atras.onclick=function(){if(S.i>0)go(S.i-1);else go(-1)};
 
 function inicio(){
@@ -193,8 +194,14 @@ function calcular(){
  PREGUNTAS.forEach(function(q){var j=S.a[q.id];if(j===undefined)return;var v=q.o[j][0];if(q.patron)patron=v;else{sum+=v;n++;if(v<3&&v<=min){min=v;punto=q.id}}});
  var avg=n?sum/n:1;var nivel=avg<1.67?1:avg<2.34?2:3;return {avg:avg,nivel:nivel,patron:patron,punto:punto};
 }
+function avance(paso){try{
+ var row={id:S.id,origen:"test7",nombre:S.n,paso:paso,segundos:Math.round((Date.now()-S.t0)/1000),duracion_min:Math.round((Date.now()-S.t0)/60000),utm:location.search||""};
+ if(!S.ini_env){row.inicio=new Date(S.t0).toISOString();row.fecha=row.inicio;S.ini_env=1}
+ PREGUNTAS.forEach(function(q,k){var j=S.a[q.id];if(j!==undefined)row["T"+(k+1)]=q.id+" | "+(q.patron?q.o[j][0]:"N"+q.o[j][0])+" | "+q.o[j][1]});
+ fetch(REGISTRO_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(row)}).catch(function(){})
+}catch(e){}}
 function registrar(R,extra){
- var row={id:S.id,origen:"test7",nombre:S.n,fecha:new Date().toISOString(),duracion_min:Math.round((Date.now()-S.t0)/60000),nivel:R.nivel+" · "+NIVELES[R.nivel].nombre,promedio:R.avg.toFixed(2),patron:PATRONES[R.patron].nombre,punto:PUNTOS[R.punto].t,utm:location.search||""};
+ var row={id:S.id,origen:"test7",paso:"Completo",segundos:Math.round((Date.now()-S.t0)/1000),nombre:S.n,fecha:new Date().toISOString(),duracion_min:Math.round((Date.now()-S.t0)/60000),nivel:R.nivel+" · "+NIVELES[R.nivel].nombre,promedio:R.avg.toFixed(2),patron:PATRONES[R.patron].nombre,punto:PUNTOS[R.punto].t,utm:location.search||""};
  PREGUNTAS.forEach(function(q,k){var j=S.a[q.id];row["T"+(k+1)]=j===undefined?"":q.id+" | "+(q.patron?q.o[j][0]:"N"+q.o[j][0])+" | "+q.o[j][1]});
  if(extra)for(var k in extra)row[k]=extra[k];
  try{fetch(REGISTRO_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(extra&&extra.contacto?{id:S.id,contacto:extra.contacto}:row)}).catch(function(){})}catch(e){}
@@ -216,14 +223,14 @@ function resultado(){
    '<p>'+esc(puente)+' Tu punto es <b>'+esc(U.t)+'</b>: el plan de 7 días te ayuda a practicarlo un día a la vez.</p>'+
    '<ul class="incl"><li>Ebook con el plan de 7 días: una acción de 1 a 30 segundos por día</li><li>Plan para imprimir, con casillero para marcar “lo hice”</li><li>11 tarjetas del 1% para el celular</li><li>Regalo: el recorrido completo Merecer 21</li></ul>'+
    '<p class="precio"><s>USD 19</s>USD 9</p><p class="sub">En Argentina lo pagás en pesos con Mercado Pago.</p>'+
-   '<a class="btn full" id="comprar" onclick=\'try{if(window.fbq)fbq(\"trackCustom\",\"Clic_ver_plan\")}catch(e){}\' href="'+esc(checkoutUrl())+'">Ver el plan de 7 días</a>'+
+   '<a class="btn full" id="comprar" onclick=\'avance(\"Fue al plan de 7 días\");try{if(window.fbq)fbq(\"trackCustom\",\"Clic_ver_plan\")}catch(e){}\' href="'+esc(checkoutUrl())+'">Ver el plan de 7 días</a>'+
    '<p class="nota"><b>Garantía:</b> hacé el plan de 7 días. Si lo aplicaste y no te sirvió, te devuelvo tu plata.</p></div>'+
   '<div class="card"><p class="pk">Opcional</p><p>¿Querés que Rodrigo te escriba sobre tu resultado? Dejá tu WhatsApp o tu email.</p><label class="vh" for="cto">WhatsApp o email</label><input id="cto" type="text" autocomplete="email" placeholder="WhatsApp o email"><div class="row"><button class="btn ghost" type="button" id="cto-ok">Enviar</button></div><p class="nota" id="cto-msg" role="status"></p></div>'+
   '<div class="card g"><p>'+(S.n?esc(S.n)+', r':'R')+'espondiste con honestidad, y eso no es poco. Mirarte así, sin culpa ni reproche, ya es empezar a elegirte.</p><p class="firma">Rodrigo</p></div>'+'<p class="nota">Este test es un ejercicio de entrenamiento de la mentalidad. No es un test psicológico ni un diagnóstico. Si estás atravesando una situación de violencia, la Línea 144 atiende en Argentina, gratis, las 24 horas. <a href=\"/privacidad/\" style=\"color:var(--gold2)\">Privacidad</a>.</p>'+
   '<div class="row" style="justify-content:center"><button class="btn ghost" type="button" id="otra">Volver a empezar</button></div></section>');
  app.appendChild(sec);
  document.getElementById("cto-ok").onclick=function(){var v=document.getElementById("cto").value.trim();var m=document.getElementById("cto-msg");if(v.length<5){m.textContent="Escribí tu WhatsApp o tu email.";return}registrar(R,{contacto:v});m.textContent="Listo. Rodrigo te va a escribir.";this.disabled=true};
- document.getElementById("otra").onclick=function(){S={n:S.n,i:-1,a:{},id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),t0:Date.now()};go(-1)};
+ document.getElementById("otra").onclick=function(){S={n:S.n,i:-1,a:{},id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),t0:Date.now()};avance("Abrió el test");go(-1)};
 }
 go(-1);
 </script>
