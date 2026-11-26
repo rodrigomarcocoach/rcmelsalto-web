@@ -198,13 +198,13 @@ function avance(paso){try{
  var row={id:S.id,origen:"test7",nombre:S.n,paso:paso,segundos:Math.round((Date.now()-S.t0)/1000),duracion_min:Math.round((Date.now()-S.t0)/60000),utm:location.search||""};
  if(!S.ini_env){row.inicio=new Date(S.t0).toISOString();row.fecha=row.inicio;S.ini_env=1}
  PREGUNTAS.forEach(function(q,k){var j=S.a[q.id];if(j!==undefined)row["T"+(k+1)]=q.id+" | "+(q.patron?q.o[j][0]:"N"+q.o[j][0])+" | "+q.o[j][1]});
- fetch(REGISTRO_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(row)}).catch(function(){})
+ fetch(REGISTRO_URL,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(row)}).catch(function(){})
 }catch(e){}}
 function registrar(R,extra){
  var row={id:S.id,origen:"test7",paso:"Completo",segundos:Math.round((Date.now()-S.t0)/1000),nombre:S.n,fecha:new Date().toISOString(),duracion_min:Math.round((Date.now()-S.t0)/60000),nivel:R.nivel+" · "+NIVELES[R.nivel].nombre,promedio:R.avg.toFixed(2),patron:PATRONES[R.patron].nombre,punto:PUNTOS[R.punto].t,utm:location.search||""};
  PREGUNTAS.forEach(function(q,k){var j=S.a[q.id];row["T"+(k+1)]=j===undefined?"":q.id+" | "+(q.patron?q.o[j][0]:"N"+q.o[j][0])+" | "+q.o[j][1]});
  if(extra)for(var k in extra)row[k]=extra[k];
- try{fetch(REGISTRO_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(extra&&extra.contacto?{id:S.id,contacto:extra.contacto}:row)}).catch(function(){})}catch(e){}
+ try{fetch(REGISTRO_URL,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(extra&&extra.contacto?{id:S.id,contacto:extra.contacto}:row)}).catch(function(){})}catch(e){}
 }
 
 function resultado(){
