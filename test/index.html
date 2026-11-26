@@ -155,6 +155,7 @@ var app=document.getElementById("app"),fill=document.getElementById("fill"),atra
 function esc(s){return String(s).replace(/[&<>"]/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]})}
 function el(h){var d=document.createElement("div");d.innerHTML=h.trim();return d.firstChild}
 function hdr(f,c,p){document.getElementById("fase").textContent=f;document.getElementById("cuenta").textContent=c;fill.style.width=p+"%"}
+function planUrl(nivel){var q=(location.search||"").replace(/^\?/,"");var x="nivel="+nivel+(S.n?"&n="+encodeURIComponent(S.n):"");return "/plan/?"+x+(q?"&"+q:"")}
 function checkoutUrl(){var q=location.search||"";return CHECKOUT+(q?(q.charAt(0)==="?"?q:"?"+q):"")}
 function go(i){if(i===0&&!S.ini){S.ini=1;try{if(window.fbq)fbq("trackCustom","TestIniciado")}catch(e){}}if(i>=0&&i<PREGUNTAS.length&&S.ult!==i){S.ult=i;avance("En pregunta "+(i+1)+" de "+PREGUNTAS.length)}S.i=i;app.innerHTML="";window.scrollTo(0,0);atras.hidden=i<0||i>=PREGUNTAS.length;if(i<0)inicio();else if(i<PREGUNTAS.length)pregunta(i);else resultado()}
 avance("Abrió el test");
@@ -223,7 +224,7 @@ function resultado(){
    '<p>'+esc(puente)+' Tu punto es <b>'+esc(U.t)+'</b>: el plan de 7 días te ayuda a practicarlo un día a la vez.</p>'+
    '<ul class="incl"><li>Ebook con el plan de 7 días: una acción de 1 a 30 segundos por día</li><li>Plan para imprimir, con casillero para marcar “lo hice”</li><li>11 tarjetas del 1% para el celular</li><li>Regalo: el recorrido completo Merecer 21</li></ul>'+
    '<p class="precio"><s>USD 19</s>USD 9</p><p class="sub">En Argentina lo pagás en pesos con Mercado Pago.</p>'+
-   '<a class="btn full" id="comprar" onclick=\'avance(\"Fue al plan de 7 días\");try{if(window.fbq)fbq(\"trackCustom\",\"Clic_ver_plan\")}catch(e){}\' href="'+esc(checkoutUrl())+'">Ver el plan de 7 días</a>'+
+   '<a class="btn full" id="comprar" onclick=\'avance(\"Fue al plan de 7 días\");try{if(window.fbq)fbq(\"trackCustom\",\"Clic_ver_plan\")}catch(e){}\' href="'+esc(planUrl(R.nivel))+'">Ver el plan de 7 días</a>'+
    '<p class="nota"><b>Garantía:</b> hacé el plan de 7 días. Si lo aplicaste y no te sirvió, te devuelvo tu plata.</p></div>'+
   '<div class="card"><p class="pk">Opcional</p><p>¿Querés que Rodrigo te escriba sobre tu resultado? Dejá tu WhatsApp o tu email.</p><label class="vh" for="cto">WhatsApp o email</label><input id="cto" type="text" autocomplete="email" placeholder="WhatsApp o email"><div class="row"><button class="btn ghost" type="button" id="cto-ok">Enviar</button></div><p class="nota" id="cto-msg" role="status"></p></div>'+
   '<div class="card g"><p>'+(S.n?esc(S.n)+', r':'R')+'espondiste con honestidad, y eso no es poco. Mirarte así, sin culpa ni reproche, ya es empezar a elegirte.</p><p class="firma">Rodrigo</p></div>'+'<p class="nota">Este test es un ejercicio de entrenamiento de la mentalidad. No es un test psicológico ni un diagnóstico. Si estás atravesando una situación de violencia, la Línea 144 atiende en Argentina, gratis, las 24 horas. <a href=\"/privacidad/\" style=\"color:var(--gold2)\">Privacidad</a>.</p>'+
