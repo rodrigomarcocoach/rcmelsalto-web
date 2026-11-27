@@ -70,9 +70,9 @@ ul li:before{content:"";display:inline-block;width:7px;height:7px;border-radius:
 (function(){
 var P=new URLSearchParams(location.search);
 var N={
- "1":{badge:"Nivel 1 · Tu foco: Reconocer",titulo:'Hoy te das cuenta después. <span>Este plan te entrena para darte cuenta en el momento.</span>',dias:[1,2],porque:"Ahí entrenás a frenar un segundo y reconocer qué te pasa, antes de decir que sí."},
- "2":{badge:"Nivel 2 · Tu foco: Comunicar",titulo:'Ya te das cuenta. <span>Lo que te falta es decirlo.</span>',dias:[3,4,5],porque:"Ahí entrenás frases cortas para decir lo que preferís, sin explicar de más."},
- "3":{badge:"Nivel 3 · Tu foco: Moverte",titulo:'Ya lo hacés. <span>Ahora, sostenelo cuando hay presión.</span>',dias:[6,7],porque:"Ahí entrenás a darte evidencia de que elegiste, también en los días difíciles."}
+ "1":{badge:"Nivel 1 · Tu foco: Reconocer",titulo:'Decís que sí, después te arrepentís y te tratás con dureza. <span>Estos 7 días te entrenan para frenar un segundo antes del sí.</span>',dias:[1,2],porque:"Ya sabés lo que te pasa. Acá lo llevás a la acción, un segundo por vez, sin retarte cuando no sale."},
+ "2":{badge:"Nivel 2 · Tu foco: Comunicar",titulo:'Lo notás, pero esperás a ver qué pasa. <span>Estos 7 días te dan las palabras para decirlo y soltarlo.</span>',dias:[3,4,5],porque:"Frases cortas para decir que no sin explicar de más y sin quedarte dándole vueltas. Una acción por día, de 1 a 30 segundos: no compite con tu rutina."},
+ "3":{badge:"Nivel 3 · Tu foco: Moverte",titulo:'Ya elegís y lo decís con respeto. <span>Lo que te frena es esperar a ver qué pasa.</span>',dias:[6,7],porque:"Acá entrenás a moverte en el momento y a darte evidencia de que elegiste, también cuando hay presión."}
 };
 var n=N[P.get("nivel")]||{badge:"Tu plan de 7 días",titulo:'Ponés un límite y te sentís mala persona. <span>Eso se entrena.</span>',dias:[],porque:"Reconocer, comunicar y moverte: una acción por día, de 1 a 30 segundos."};
 document.getElementById("badge").textContent=n.badge;
