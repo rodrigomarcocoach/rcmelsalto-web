@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="es" translate="no" class="notranslate"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plantilla email RCM</title>
+<style>body{font-family:Arial,sans-serif;background:#0b0907;color:#F7F1E3;padding:24px;max-width:900px;margin:auto}h1{color:#F4CD62}button{font-size:20px;padding:14px 22px;border-radius:999px;border:0;background:#F4CD62;color:#211a0f;font-weight:bold;cursor:pointer;margin:8px 0 20px}pre{white-space:pre-wrap;background:#1a1610;border:1px solid #6b5426;padding:14px;border-radius:10px;font-size:13px;color:#D6CDBA}.ok{color:#9be39b;font-size:18px;margin-left:10px}</style></head>
+<body translate="no"><h1>Plantilla del email</h1>
+<h2>1. Asunto</h2><button onclick="cp('s',this)">Copiar asunto</button><span class="ok" id="oks"></span><pre id="s" translate="no">Tu código para entrar al Reto RCM: {{ .Token }}</pre>
+<h2>2. Cuerpo</h2><button onclick="cp('b',this)">Copiar cuerpo</button><span class="ok" id="okb"></span><pre id="b" translate="no">&lt;table width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;background:#0b0907;padding:32px 0;font-family:Arial,Helvetica,sans-serif&quot;&gt;
+&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;
+&lt;table width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;max-width:480px;background:#1a1610;border:1px solid #6b5426;border-radius:16px&quot;&gt;
+&lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:32px 28px 8px&quot;&gt;
+&lt;img src=&quot;https://rcmelsalto.com/reto/icon-192.png&quot; width=&quot;72&quot; height=&quot;72&quot; alt=&quot;Método RCM&quot; style=&quot;border-radius:50%;display:block&quot;&gt;
+&lt;p style=&quot;margin:18px 0 0;color:#F4CD62;font-size:13px;letter-spacing:3px;text-transform:uppercase&quot;&gt;Método RCM · Reto de 21 días&lt;/p&gt;
+&lt;h1 style=&quot;margin:10px 0 0;color:#F7F1E3;font-size:24px&quot;&gt;Tu código para entrar&lt;/h1&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:20px 28px&quot;&gt;
+&lt;div style=&quot;background:#FBF5E4;border-radius:12px;padding:18px 10px;color:#211a0f;font-size:38px;font-weight:bold;letter-spacing:10px&quot;&gt;{{ .Token }}&lt;/div&gt;
+&lt;p style=&quot;margin:16px 0 0;color:#D6CDBA;font-size:16px;line-height:1.5&quot;&gt;Escribilo en la app. Vence en 1 hora y sirve una sola vez.&lt;/p&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:4px 28px 28px&quot;&gt;
+&lt;p style=&quot;margin:0 0 12px;color:#B9AE98;font-size:14px&quot;&gt;¿Abriste este email en el mismo teléfono?&lt;/p&gt;
+&lt;a href=&quot;{{ .ConfirmationURL }}&quot; style=&quot;display:inline-block;background:#F4CD62;color:#211a0f;text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:999px;font-size:16px&quot;&gt;Entrar al reto&lt;/a&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:16px 28px 26px;border-top:1px solid #3a3226&quot;&gt;
+&lt;p style=&quot;margin:0;color:#8f8470;font-size:12px&quot;&gt;Si no pediste este código, ignorá este email.&lt;br&gt;Un 1% por día · rcmelsalto.com&lt;/p&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+</pre>
+<script>function cp(id){navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>{document.getElementById('ok'+id).textContent='✓ Copiado. Ahora pegalo en Supabase con Ctrl + V'})}</script>
+</body></html>
