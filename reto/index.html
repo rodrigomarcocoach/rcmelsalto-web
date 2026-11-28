@@ -1630,7 +1630,7 @@ function renderLogin(){
       '<div><label class="eyebrow" for="vincIn">Código de vinculación</label><input type="text" id="vincIn" maxlength="7" autocapitalize="characters" autocomplete="off" style="margin-top:6px;font-size:1.6rem;letter-spacing:.3em;text-align:center;text-transform:uppercase"></div>'+
       '<div class="btns"><button type="button" class="btn" id="doVinc">Entrar</button><button type="button" class="btn ghost" id="otherEmail">Volver</button></div>';
   }else{
-    h+='<p>Te mandamos un email a <b>'+esc(loginEmail)+'</b>.</p><div class="note">Abrilo <b>en este mismo teléfono</b> y tocá <b>“Sign in”</b>. Te trae de vuelta a la app, ya adentro.</div><p class="mute">Si no lo ves, mirá en Spam o Promociones. Si el email trae un código de números, escribilo acá:</p>'+
+    h+='<p>Te mandamos un email a <b>'+esc(loginEmail)+'</b>.</p><p><b>Escribí acá el código de 6 números</b> que te llegó.</p><p class="mute">Si no lo ves, mirá en Spam o Promociones. También podés tocar el botón “Entrar al reto” del email, abriéndolo en este mismo teléfono.</p>'+
       '<div><label class="eyebrow" for="codeOtp">Código</label><input type="text" inputmode="numeric" autocomplete="one-time-code" id="codeOtp" maxlength="10" style="margin-top:6px;font-size:1.6rem;letter-spacing:.3em;text-align:center"></div>'+
       '<div class="btns"><button type="button" class="btn" id="verifyCode">Entrar</button><button type="button" class="btn ghost" id="otherEmail">Cambiar email</button></div>';
   }
