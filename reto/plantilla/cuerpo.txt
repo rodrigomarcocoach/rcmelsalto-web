@@ -1,0 +1,21 @@
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#0b0907;padding:32px 0;font-family:Arial,Helvetica,sans-serif">
+<tr><td align="center">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#1a1610;border:1px solid #6b5426;border-radius:16px">
+<tr><td align="center" style="padding:32px 28px 8px">
+<img src="https://rcmelsalto.com/reto/icon-192.png" width="72" height="72" alt="Método RCM" style="border-radius:50%;display:block">
+<p style="margin:18px 0 0;color:#F4CD62;font-size:13px;letter-spacing:3px;text-transform:uppercase">Método RCM · Reto de 21 días</p>
+<h1 style="margin:10px 0 0;color:#F7F1E3;font-size:24px">Tu código para entrar</h1>
+</td></tr>
+<tr><td align="center" style="padding:20px 28px">
+<div style="background:#FBF5E4;border-radius:12px;padding:18px 10px;color:#211a0f;font-size:38px;font-weight:bold;letter-spacing:10px">{{ .Token }}</div>
+<p style="margin:16px 0 0;color:#D6CDBA;font-size:16px;line-height:1.5">Escribilo en la app. Vence en 1 hora y sirve una sola vez.</p>
+</td></tr>
+<tr><td align="center" style="padding:4px 28px 28px">
+<p style="margin:0 0 12px;color:#B9AE98;font-size:14px">¿Abriste este email en el mismo teléfono?</p>
+<a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#F4CD62;color:#211a0f;text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:999px;font-size:16px">Entrar al reto</a>
+</td></tr>
+<tr><td align="center" style="padding:16px 28px 26px;border-top:1px solid #3a3226">
+<p style="margin:0;color:#8f8470;font-size:12px">Si no pediste este código, ignorá este email.<br>Un 1% por día · rcmelsalto.com</p>
+</td></tr>
+</table>
+</td></tr></table>
